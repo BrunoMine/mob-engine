@@ -3,7 +3,7 @@
 Copyright (C) 2017 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-common.lua
+params.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,41 +21,18 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Engine params
+creatures.params = {}
 
--- Get random index
-creatures.get_random_index = function(tb)
-	local index_table = {}
-	for index,d in pairs(tb) do
-		table.insert(index_table, index)
-	end
-	return index_table[math.random(1, table.maxn(index_table))]
-end
+-- Allow hostile
+creatures.params.disable_hostile = minetest.settings:get_bool("creatures_disable_hostile") or false
 
--- Error msg
-creatures.throw_error = function(msg)
-	core.log("error", "[Creatures]: " .. msg)
-end
+-- Allow hostile
+creatures.params.disable_particles = minetest.settings:get_bool("creatures_disable_particles") or false
 
--- Get distance p1 to p2
-creatures.get_dist_p1top2 = function(p1, p2)
-	if not p1 or not p2 then
-		return
-	end
-	local dist = {
-		x=p2.x-p1.x, 
-		y=p2.y-p1.y, 
-		z=p2.z-p1.z
-	}
-	local real_dist = math.hypot(math.hypot(math.abs(dist.x), math.abs(dist.z)), math.abs(dist.y))
-	return real_dist, dist
-end
+-- Default values
+creatures.default_value = {}
 
--- Velocity add
-creatures.velocity_add = function(self, v_add)
-	local obj = self.object
-	local v = obj:getvelocity()
-	
-	local new_v = vector.add(v, v_add)
-	
-	obj:setvelocity(new_v)
-end
+-- Aspects
+creatures.default_value.hp = 5
+creatures.default_value.breath = 5

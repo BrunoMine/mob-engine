@@ -3,7 +3,7 @@
 Copyright (C) 2017 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-common.lua
+random_yaw.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,41 +21,37 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+local changeHP = creatures.change_hp
 
--- Get random index
-creatures.get_random_index = function(tb)
-	local index_table = {}
-	for index,d in pairs(tb) do
-		table.insert(index_table, index)
-	end
-	return index_table[math.random(1, table.maxn(index_table))]
-end
-
--- Error msg
-creatures.throw_error = function(msg)
-	core.log("error", "[Creatures]: " .. msg)
-end
-
--- Get distance p1 to p2
-creatures.get_dist_p1top2 = function(p1, p2)
-	if not p1 or not p2 then
-		return
-	end
-	local dist = {
-		x=p2.x-p1.x, 
-		y=p2.y-p1.y, 
-		z=p2.z-p1.z
-	}
-	local real_dist = math.hypot(math.hypot(math.abs(dist.x), math.abs(dist.z)), math.abs(dist.y))
-	return real_dist, dist
-end
-
--- Velocity add
-creatures.velocity_add = function(self, v_add)
-	local obj = self.object
-	local v = obj:getvelocity()
+-- Check random yaw
+creatures.random_yaw_step = function(self, dtime)
 	
-	local new_v = vector.add(v, v_add)
+	-- MOB type settings
+	local def = creatures.get_def(self)
 	
-	obj:setvelocity(new_v)
+	-- Timer updates
+	self.timers.yaw = self.timers.yaw + dtime
+		
+	if self.timers.yaw >= def.modes[self.mode].update_yaw then
+		local tl = def.modes[self.mode].update_yaw
+		self.timers.yaw = math.random(tl/3, tl)
+		
+		-- Random dir
+		creatures.set_dir(self, creatures.get_random_dir())
+		return true
+	end
+	return false
 end
+
+-- Register 'on_register_mob'
+creatures.register_on_register_mob(function(mob_name, def)
+	
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		-- Timers
+		self.timers.yaw = 0
+		
+	end)
+	
+end)

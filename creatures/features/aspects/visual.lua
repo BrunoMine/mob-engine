@@ -3,7 +3,7 @@
 Copyright (C) 2017 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-common.lua
+visual.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -22,40 +22,24 @@ be misrepresented as being the original software.
 ]]
 
 
--- Get random index
-creatures.get_random_index = function(tb)
-	local index_table = {}
-	for index,d in pairs(tb) do
-		table.insert(index_table, index)
-	end
-	return index_table[math.random(1, table.maxn(index_table))]
-end
-
--- Error msg
-creatures.throw_error = function(msg)
-	core.log("error", "[Creatures]: " .. msg)
-end
-
--- Get distance p1 to p2
-creatures.get_dist_p1top2 = function(p1, p2)
-	if not p1 or not p2 then
-		return
-	end
-	local dist = {
-		x=p2.x-p1.x, 
-		y=p2.y-p1.y, 
-		z=p2.z-p1.z
-	}
-	local real_dist = math.hypot(math.hypot(math.abs(dist.x), math.abs(dist.z)), math.abs(dist.y))
-	return real_dist, dist
-end
-
--- Velocity add
-creatures.velocity_add = function(self, v_add)
-	local obj = self.object
-	local v = obj:getvelocity()
+-- Register 'on_register_mob'
+creatures.register_on_register_mob(function(mob_name, def)
 	
-	local new_v = vector.add(v, v_add)
+	-- Entity definitions
 	
-	obj:setvelocity(new_v)
-end
+	-- Mesh
+	def.ent_def.visual = "mesh"
+	def.ent_def.mesh = def.model.mesh
+	def.ent_def.automatic_face_movement_dir = def.model.rotation or 0.0
+	def.ent_def.backface_culling = def.model.backface_culling or false
+	
+	-- Textures
+	def.ent_def.textures = def.model.textures
+	
+	-- General
+	def.ent_def.visual_size = def.model.scale or {x = 1, y = 1}
+	
+	-- Model params
+	def.ent_def.model = def.model
+	
+end)
