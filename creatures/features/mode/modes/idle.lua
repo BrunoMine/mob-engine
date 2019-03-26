@@ -3,7 +3,7 @@
 Copyright (C) 2017 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-kill_mob.lua
+idle.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,28 +21,37 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-
--- Kill a Mob
-creatures.kill_mob = function(self, reason)
-	if not self then return end
+-- Register idle mode
+creatures.register_idle_mode = function(mode_name)
 	
-	local def = creatures.mob_def(self)
-	local me = self.object
+	-- Idle mode
+	creatures.register_mode(mode_name, {
+		
+		-- On start
+		start = function(self)
+			
+			local mode_def = creatures.mode_def(self)
+			
+			-- Random dir
+			if mode_def.random_yaw then
+				creatures.set_dir(self, creatures.get_random_dir())
+			end
+			
+			-- Remove target
+			self.target = nil
+			
+			-- Stop movement
+			creatures.send_in_dir(self, 0)
+			
+			-- Update animation
+			creatures.mode_animation_update(self)
+		end,
+	})
 	
-	local pos = me:getpos()
-	me:setvelocity({x=0,z=0,y=0})
-	me:set_hp(1)
-	
-	if def.drops then
-		if type(def.drops) == "function" then
-			def.drops(me:get_luaentity())
-		else
-			creatures.drop_items(pos, def.drops)
-		end
-	end
-	
-	creatures.on_die_mob(self.mob_name, self, reason)
-	
-	return true
 end
+
+-- Idle mode ("idle")
+creatures.register_idle_mode("idle")
+
+
 

@@ -3,7 +3,7 @@
 Copyright (C) 2017 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-kill_mob.lua
+remove.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,28 +21,24 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-
--- Kill a Mob
-creatures.kill_mob = function(self, reason)
-	if not self then return end
+-- Register 'on_register_mob'
+creatures.register_on_register_mob(function(mob_name, def)
 	
-	local def = creatures.mob_def(self)
-	local me = self.object
-	
-	local pos = me:getpos()
-	me:setvelocity({x=0,z=0,y=0})
-	me:set_hp(1)
-	
-	if def.drops then
-		if type(def.drops) == "function" then
-			def.drops(me:get_luaentity())
-		else
-			creatures.drop_items(pos, def.drops)
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		-- Check if remove
+		if self.remove == true then
+			self.object:remove()
 		end
-	end
+		
+	end)
 	
-	creatures.on_die_mob(self.mob_name, self, reason)
+	-- Register 'get_staticdata'
+	creatures.register_get_staticdata(mob_name, function(self)
+		return {
+			remove = self.remove,
+		}
+	end)
 	
-	return true
-end
-
+end)
