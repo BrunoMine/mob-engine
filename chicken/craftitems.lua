@@ -3,7 +3,7 @@
 Copyright (C) 2019 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-init.lua
+craftitems.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,27 +21,27 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Global table
-chicken = {}
+-- Flesh
+core.register_craftitem("chicken:chicken_flesh", {
+	description = "Raw Chicken Flesh",
+	inventory_image = "chicken_flesh.png",
+	on_use = core.item_eat(1)
+})
 
--- Params
+core.register_craftitem("chicken:chicken_meat", {
+	description = "Chicken Meat",
+	inventory_image = "chicken_meat.png",
+	on_use = core.item_eat(3)
+})
 
--- Time for AMB interval at nest node
-chicken.nest_update_time = 30
+core.register_craft({
+	type = "cooking",
+	output = "chicken:chicken_meat",
+	recipe = "chicken:chicken_flesh",
+})
 
-chicken.chicken_timer = 10
-
--- Egg
-dofile(core.get_modpath("chicken") .. "/egg.lua")
-
--- Craftitems
-dofile(core.get_modpath("chicken") .. "/craftitems.lua")
-
--- Chicken
-dofile(core.get_modpath("chicken") .. "/chicken.lua")
-
--- Nest
-dofile(core.get_modpath("chicken") .. "/nest.lua")
-
--- Feeder
-dofile(core.get_modpath("chicken") .. "/feeder.lua")
+-- Feather
+core.register_craftitem("chicken:feather", {
+	description = "Feather",
+	inventory_image = "chicken_feather.png",
+})
