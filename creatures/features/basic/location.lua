@@ -55,7 +55,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			if self.current_node == nil then self.current_node = core.get_node_or_nil(current_pos) end
 			
 			-- Update pos and current node if necessary
-			if self.moved == true or self.last_node.name == "ignore" then
+			if self.moved == true and self.current_node then
 			
 				-- Update last locate
 				self.last_pos = current_pos
