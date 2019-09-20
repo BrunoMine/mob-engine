@@ -137,7 +137,7 @@ end)
 
 -- Check player hit bottom
 creatures.check_player_hit_bottom = function(player, loop)
-	if not player then return end
+	if not player or not player:getpos() then return end
 	
 	local me = player
 	local current_pos = me:getpos()
