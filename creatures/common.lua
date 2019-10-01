@@ -121,7 +121,7 @@ creatures.check_free_pos = function(pos)
 	local node = creatures.get_far_node(pos)
 	if node.name == "air" then return true end
 	local def = minetest.registered_nodes[node.name]
-	if def.walkable == false then return true end
+	if def ~= nil and def.walkable == false then return true end
 	return false
 end
 
