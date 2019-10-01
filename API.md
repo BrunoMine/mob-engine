@@ -410,6 +410,7 @@ Definition tables
             textures = {"creatures_sheep.png"}, 	-- table of textures; see Minetest Documentation
             collisionbox_width = 0.9, 			-- defines mesh width collision box;
             collisionbox_height = 0.9, 			-- defines mesh height collision box;
+            center_height = 0, 				-- Adjust y difference for the mesh <optional> (default is 0)
             rotation = 0.0, 				-- sets rotation offset when moving
             backface_culling = false, 			-- set true to enable backface culling
             vision_height = 0,                          -- MOB viewing height <optional> (default is 0)

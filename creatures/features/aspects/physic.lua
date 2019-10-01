@@ -42,11 +42,12 @@ creatures.reset_physic = function(self)
 end
 
 -- Make collisionbox
-creatures.make_collisionbox = function(width, height)
+creatures.make_collisionbox = function(width, height, y_diff)
 	if not width then return end
+	y_diff = y_diff or 0
 	return {
-		(width/-2), -0.01, (width/-2), 
-		(width/2), height, (width/2)
+		(width/-2), -0.01+y_diff, (width/-2), 
+		(width/2), height+y_diff, (width/2)
 	}
 end
 
@@ -66,7 +67,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Entity definitions
 	def.ent_def.stepheight = 0.1 -- ensure we get over slabs/stairs
-	def.ent_def.collisionbox = creatures.make_collisionbox(def.model.collisionbox_width, def.model.collisionbox_height) or def.model.collisionbox
+	def.ent_def.collisionbox = creatures.make_collisionbox(def.model.collisionbox_width, def.model.collisionbox_height, def.model.center_height) or def.model.collisionbox
 	def.model.collisionbox = def.ent_def.collisionbox
 	def.ent_def.collide_with_objects = def.model.collide_with_objects or true
 	def.ent_def.physical = true
