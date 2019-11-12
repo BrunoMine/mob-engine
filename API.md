@@ -412,6 +412,7 @@ Definition tables
             collisionbox_height = 0.9, 			-- defines mesh height collision box;
             center_height = 0, 				-- Adjust y difference for the mesh <optional> (default is 0)
             rotation = 0.0, 				-- sets rotation offset when moving
+            scale = {x = 1, y = 1}, 			-- set mesh scale <optional> (default is {x = 1, y = 1})
             backface_culling = false, 			-- set true to enable backface culling
             vision_height = 0,                          -- MOB viewing height <optional> (default is 0)
             weight = 45, 				-- Weight (in kilograms) used to calculate some physical aspects <optional> (default is 45)
