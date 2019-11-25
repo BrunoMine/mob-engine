@@ -137,11 +137,17 @@ creatures.register_mob("sheep:sheep", {
 		},
 		-- special modes
 		follow = {chance = 0, duration = 20, radius = 4, moving_speed = 1, items = {["farming:wheat"]=true}, search_timer = 4},
-		eat = {	chance = 0.25,
+		eat = {	
+			chance = 0.25,
 			duration = 4,
+			eat_time = 2,
 			nodes = {
-				"default:grass_1", "default:grass_2", "default:grass_3",
-				"default:grass_4", "default:grass_5", "default:dirt_with_grass"
+				["default:grass_1"] = {remove=true}, 
+				["default:grass_2"] = {remove=true}, 
+				["default:grass_3"] = {remove=true}, 
+				["default:grass_4"] = {remove=true}, 
+				["default:grass_5"] = {remove=true}, 
+				["default:dirt_with_grass"] = {replace="default:dirt"}, 
 			}
 		},
 	},

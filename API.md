@@ -151,8 +151,29 @@ Modes can be started randomly by the engine.
 * `fly`
 * `attack`
 * `follow`
-* `eat`
 * `panic`
+* `eat`
+
+#### Eat mode
+In this mode the MOB feeds at its current location.
+    {
+        chance = 1,
+        duration = 4, 
+        eat_time = 2, -- Exact moment in the animation when the node is affected.
+        nodes = {
+            ["default:grass_1"] = {
+                drop = "",
+                remove = true,
+                replace = "default:dirt",
+            }, 
+            ["default:grass_2"] = {replace_item = "remove"}, 
+            ["default:grass_3"] = {replace_item = "remove"},
+            ["default:grass_4"] = {replace_item = "remove"}, 
+            ["default:grass_5"] = {replace_item = "remove"}, 
+            ["default:dirt_with_grass"] = {replace_item = "default:dirt"}
+        }
+    }
+
 
 #### Methods
 * `creatures.register_mode(mode_name, {mode definition})`: Register a mode
