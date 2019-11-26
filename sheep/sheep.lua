@@ -136,11 +136,19 @@ creatures.register_mob("sheep:sheep", {
 			moving_speed = 0.7
 		},
 		-- special modes
-		follow = {chance = 0, duration = 20, radius = 4, moving_speed = 1, items = {["farming:wheat"]=true}, search_timer = 4},
+		follow = {
+			chance = 0, 
+			duration = 20, 
+			radius = 4, 
+			moving_speed = 1, 
+			items = {["farming:wheat"]=true}, 
+			search_timer = 4
+		},
 		eat = {	
 			chance = 0.25,
 			duration = 4,
 			eat_time = 2,
+			sound = "creatures_eat_grass",
 			nodes = {
 				["default:grass_1"] = {remove=true}, 
 				["default:grass_2"] = {remove=true}, 
