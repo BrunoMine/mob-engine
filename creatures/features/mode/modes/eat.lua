@@ -37,7 +37,6 @@ creatures.register_mode("eat", {
 		
 		-- Check eat node
 		if not self.eat_node and self.last_node.name then
-			local nodes = mode_def.nodes
 			
 			-- Sub Node
 			local p = {x = current_pos.x, y = current_pos.y - 1, z = current_pos.z}
@@ -45,9 +44,9 @@ creatures.register_mode("eat", {
 			
 			local eat_node -- eaten node
 			
-			if nodes[self.last_node.name] then
+			if mode_def.nodes[self.last_node.name] then
 				eat_node = current_pos
-			elseif nodes[sn.name] then
+			elseif mode_def.nodes[sn.name] then
 				eat_node = p
 			end
 
@@ -69,7 +68,7 @@ creatures.register_mode("eat", {
 		
 		self.mdt.eat = self.mdt.eat + dtime
 		
-		local mode_def = creatures.mode_def(self)
+		local mode_def = creatures.mode_def(self, "eat")
 		
 		if self.mdt.eat >= mode_def.eat_time and self.eat_node then
 			
@@ -77,6 +76,13 @@ creatures.register_mode("eat", {
 			local nnn = n.name
 			local action_def = mode_def.nodes[nnn]
 			local node_def = core.registered_nodes[n.name]
+			
+			-- Check node
+			if not action_def then
+				-- Finish mode
+				creatures.start_mode(self, "idle")
+				return
+			end
 			
 			-- Node modify
 			if action_def.replace then
@@ -88,7 +94,7 @@ creatures.register_mode("eat", {
 			-- Sounds
 			local sound = action_def.sound or mode_def.sound
 			if sound then 
-				core.sound_play(sounds.dug, {pos = self.eat_node, max_hear_distance = 5, gain = 1})
+				core.sound_play(sound, {pos = self.eat_node, max_hear_distance = 5, gain = 1})
 			end
 			
 			-- Drop
