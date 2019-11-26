@@ -33,3 +33,7 @@ BlockMen 2014-2016 (CC-BY-SA 3.0)
 [SmartWentCody](https://freesound.org/people/SmartWentCody) (CC-BY 3.0)
 	creatures_shears.ogg
 
+[gibarroule](https://freesound.org/people/gibarroule) (CC0)
+	creatures_eat_grass.ogg
+	creatures_eat_grass.0.ogg
+	creatures_eat_grass.1.ogg
