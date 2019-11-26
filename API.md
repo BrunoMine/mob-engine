@@ -148,29 +148,89 @@ Modes can be started randomly by the engine.
 ### Default modes
 * `idle`
 * `walk`
+* `walk_around`
 * `fly`
 * `attack`
 * `follow`
 * `panic`
 * `eat`
 
-#### Eat mode
-In this mode the MOB feeds at its current location.
+#### Idle mode
+Random MOB animation.
     {
-        chance = 1,
-        duration = 4, 
-        eat_time = 2, -- Exact moment in the animation when the node is affected.
-        nodes = {
-            ["default:grass_1"] = {
-                drop = "",
-                remove = true,
-                replace = "default:dirt",
+        chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 10, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, 	-- Moving speed in blocks per second (flying/walking) <optional>
+        update_yaw = 1 		--[[ Timer in seconds until the looking dir is changed <optional>
+                                     if moving_speed > 0 then the moving direction is also changed ]]
+    }
+            
+#### Walk mode
+MOB walk settings
+    {
+        chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 10, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, 	-- Moving speed in blocks per second (flying/walking) <optional>
+        search_radius = 5, 	-- Radius for search a node for walk <optional>
+    }
+
+#### Walk Around mode
+MOB walks around in any available random direction. Walk animation settings is used.
+    {
+        chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 3, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 0.7, 	-- Moving speed in blocks per second (flying/walking) <optional>
+    }
+
+#### Attack mode
+Attack mode bahavior.
+    {
+        chance = 0, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 10, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, 	-- Moving speed in blocks per second (flying/walking) <optional>
+    }
+
+#### Follow mode
+MOB follows another entity or player.
+    {
+        chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 10, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, 	-- Moving speed in blocks per second (flying/walking) <optional>
+        radius = <number>, 	-- search distance in blocks/nodes for player
+        timer = <time>, 	-- time in seconds between each check for player
+        items = <table> 	-- table of items to make mob follow in format {<Itemname>, <Itemname>}; e.g. {"farming:wheat"}
+    }
+
+#### Panic mode
+Panic mode bahavior.
+    {
+        chance = 0, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                                     if chance is 0 then mode is not chosen automatically ]]
+        duration = 10, 		-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, 	-- Moving speed in blocks per second (flying/walking) <optional>
+    }
+
+#### Eat mode
+In this mode the MOB execute eat animation on current location.
+    {
+        chance = 0.25, 	--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+                             if chance is 0 then mode is not chosen automatically ]]
+        duration = 4, 	-- Mode time duration in seconds until the next mode is chosen (depending on chance)
+        moving_speed = 1, -- Moving speed in blocks per second (flying/walking) <optional>
+        eat_time = 2, 	-- Exact moment in the animation when the node is affected
+        sound = "eat", 	-- Generic sound file to play when node is affected
+        nodes = { 	-- Nodes to eat
+            ["itemstring1"] = { -- Eat node itemstring (!!NOTE: sum of all modes MUST be 1.0!!)
+                drop = "", 	-- Drop this on location
+                remove = true, 	-- Remove eat node
+                replace = "item", -- Replace eat node
+                sound = "eat", 	-- Specific sound file to play when node is affected
             }, 
-            ["default:grass_2"] = {replace_item = "remove"}, 
-            ["default:grass_3"] = {replace_item = "remove"},
-            ["default:grass_4"] = {replace_item = "remove"}, 
-            ["default:grass_5"] = {replace_item = "remove"}, 
-            ["default:dirt_with_grass"] = {replace_item = "default:dirt"}
         }
     }
 
@@ -369,31 +429,13 @@ Definition tables
             }
         }
         
-        modes = {
-            idle = {
-                chance = 0.5, 		--[[ number between 0.0 and 1.0 (!!NOTE: sum of all modes MUST be 1.0!!)
-                                             if chance is 0 then mode is not chosen automatically]]
-                duration = 10, 		-- time in seconds until the next mode is chosen (depending on chance)
-                moving_speed = 1, 	-- moving speed(flying/walking) <optional>
-                update_yaw = 1 		--[[ timer in seconds until the looking dir is changed <optional>
-                                             if moving_speed > 0 then the moving direction is also changed ]]
-            },
-            walk = {
-                <same as above>, 	-- all possible values like specified above
-                search_radius = 5, 	-- Radius for search a node for walk <optional>
-            }
-            -- special modes
-            attack = {<same as above>}
-            follow = {
-                <same as above>, 	-- all possible values like specified above
-                radius = <number>, 	-- search distance in blocks/nodes for player
-                timer = <time>, 	-- time in seconds between each check for player
-                items = <table> 	-- table of items to make mob follow in format {<Itemname>, <Itemname>}; e.g. {"farming:wheat"}
-            },
-            eat = {
-                <same as above>, 	-- all possible values like specified above
-                nodes = <table> 	-- eatable nodes in format {<Itemname>, <Itemname>}; e.g. {"default:dirt_with_grass"}
-            },
+        modes = { 			-- Mode settings for each mode, See Modes
+            idle = {<settings>}, 	-- See Default Modes/Idle mode
+            walk = {<settings>}, 	-- See Default Modes/Walk mode
+            attack = {<settings>}, 	-- See Default Modes/Attack mode
+            follow = {<settings>}, 	-- See Default Modes/Follow mode
+            eat = {<settings>}, 	-- See Default Modes/Eat mode
+            <...>
         },
         
         child = {
