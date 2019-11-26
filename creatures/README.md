@@ -27,8 +27,8 @@ BlockMen 2014-2016 (CC-BY-SA 3.0)
 	creatures_shears.png
 	creatures_spawn_egg.png
 	creatures_spawner.png
-	creatures_splash.1.ogg
-	creatures_splash.2.ogg
+	creatures_splash.ogg
+	creatures_splash.0.ogg
 
 [SmartWentCody](https://freesound.org/people/SmartWentCody) (CC-BY 3.0)
 	creatures_shears.ogg
