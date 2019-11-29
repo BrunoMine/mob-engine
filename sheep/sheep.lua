@@ -49,7 +49,7 @@ end
 minetest.register_node("sheep:dirt_spawn_env", {
 	description = "Dirt",
 	tiles = {"default_dirt.png"},
-	groups = {crumbly = 3, soil = 1},
+	groups = {crumbly = 3, soil = 1, not_in_creative_inventory = 1},
 	sounds = default.node_sound_dirt_defaults(),
 	drop = "default:dirt",
 })
