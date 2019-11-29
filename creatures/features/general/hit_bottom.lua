@@ -107,7 +107,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			local def = creatures.get_def(self)
 			
 			local me = self.object
-			local current_pos = me:getpos()
+			local current_pos = me:get_pos()
 			
 			-- Search objects in the bottom
 			for _,obj in ipairs(
@@ -137,10 +137,10 @@ end)
 
 -- Check player hit bottom
 creatures.check_player_hit_bottom = function(player, loop)
-	if not player or not player:getpos() then return end
+	if not player or not player:get_pos() then return end
 	
 	local me = player
-	local current_pos = me:getpos()
+	local current_pos = me:get_pos()
 	
 	-- Search objects in the bottom
 	for _,obj in ipairs(
