@@ -157,6 +157,7 @@ Modes can be started randomly by the engine.
 
 #### Idle mode
 Random MOB animation.
+
     {
         chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -167,7 +168,8 @@ Random MOB animation.
     }
             
 #### Walk mode
-MOB walk settings
+MOB walk settings.
+
     {
         chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -178,6 +180,7 @@ MOB walk settings
 
 #### Walk Around mode
 MOB walks around in any available random direction. Walk animation settings is used.
+
     {
         chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -187,6 +190,7 @@ MOB walks around in any available random direction. Walk animation settings is u
 
 #### Attack mode
 Attack mode bahavior.
+
     {
         chance = 0, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -196,6 +200,7 @@ Attack mode bahavior.
 
 #### Follow mode
 MOB follows another entity or player.
+
     {
         chance = 0.25, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -208,6 +213,7 @@ MOB follows another entity or player.
 
 #### Panic mode
 Panic mode bahavior.
+
     {
         chance = 0, 		--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                                      if chance is 0 then mode is not chosen automatically ]]
@@ -217,6 +223,7 @@ Panic mode bahavior.
 
 #### Eat mode
 In this mode the MOB execute eat animation on current location.
+
     {
         chance = 0.25, 	--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
                              if chance is 0 then mode is not chosen automatically ]]
