@@ -5,7 +5,7 @@
 Currently includes:
 - chickens
 - ghosts
-- mob engine
+- creatures
 - oerrkis
 - sheep
 - zombies
