@@ -35,37 +35,38 @@ end
 
 
 -- Make entity of the spawner node
-local function makeSpawnerEntiy(mob_name, model)
+local function makeSpawnerEntity(mob_name, model)
+	
 	core.register_entity(":" .. mob_name .. "_spawner_dummy", {
-	hp_max = 1,
-	physical = false,
-	collide_with_objects = false,
-	collisionbox = {0,0,0, 0,0,0},
-	visual = "mesh",
-	visual_size = {x = 0.42, y = 0.42},
-	mesh = model.mesh,
-	textures = model.textures,
-	makes_footstep_sound = false,
-	automatic_rotate = math.pi * -2.9,
-	mob_name = "_" .. mob_name .. "_dummy",
+		hp_max = 1,
+		physical = false,
+		collide_with_objects = false,
+		collisionbox = {0,0,0, 0,0,0},
+		visual = "mesh",
+		visual_size = model.scale,
+		mesh = model.mesh,
+		textures = model.textures,
+		makes_footstep_sound = false,
+		automatic_rotate = math.pi * -0.5,
+		mob_name = "_" .. mob_name .. "_dummy",
 
-	on_activate = function(self)
-		self.timer = 0
-		self.object:setvelocity({x=0,y=0,z=0})
-		self.object:setacceleration({x=0,y=0,z=0})
-		self.object:set_armor_groups({immortal = 1})
-	end,
-
-	on_step = function(self, dtime)
-		self.timer = self.timer + dtime
-		if self.timer > 30 then
+		on_activate = function(self)
 			self.timer = 0
-			local n = core.get_node_or_nil(self.object:getpos())
-			if n and n.name and n.name ~= mob_name .. "_spawner" then
-				self.object:remove()
+			self.object:setvelocity({x=0,y=0,z=0})
+			self.object:setacceleration({x=0,y=0,z=0})
+			self.object:set_armor_groups({immortal = 1})
+		end,
+
+		on_step = function(self, dtime)
+			self.timer = self.timer + dtime
+			if self.timer > 30 then
+				self.timer = 0
+				local n = core.get_node_or_nil(self.object:getpos())
+				if n and n.name and n.name ~= mob_name .. "_spawner" then
+					self.object:remove()
+				end
 			end
-		end
-	end,
+		end,
 	})
 end
 
@@ -135,7 +136,7 @@ function creatures.register_spawner(spawner_def)
 		return false
 	end
 
-	makeSpawnerEntiy(spawner_def.mob_name, spawner_def.model)
+	makeSpawnerEntity(spawner_def.mob_name, spawner_def.model)
 
 	core.register_node(":" .. spawner_def.mob_name .. "_spawner", {
 		description = spawner_def.description or spawner_def.mob_name .. " spawner",
@@ -230,6 +231,24 @@ creatures.register_on_register_mob(function(mob_name, def)
 			spawner_def.range = spawner_def.range or 4
 			spawner_def.number = spawner_def.number or 6
 			spawner_def.model = def.model
+			
+			do
+				local visual_size = {x=0.42, y=0.42}
+				if def.model.scale then
+					visual_size = {
+						x = visual_size.x * def.model.scale.x, 
+						y = visual_size.y * def.model.scale.y
+					}
+				end
+				if spawner_def.dummy_scale then
+					visual_size = {
+						x = visual_size.x * spawner_def.dummy_scale.x, 
+						y = visual_size.y * spawner_def.dummy_scale.y
+					}
+				end
+				spawner_def.model.scale = table.copy(visual_size)
+			end
+			
 			creatures.register_spawner(spawner_def)
 		end
 		

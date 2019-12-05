@@ -155,6 +155,7 @@ local def = {
 			range = 8,
 			number = 6,
 			light = {min = 0, max = 8},
+			dummy_scale = {x=1.25, y=1.25},
 		}
 	},
 }

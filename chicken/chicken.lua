@@ -186,6 +186,13 @@ creatures.register_mob("chicken:chicken", {
 		spawn_egg = {
 			description = "Chicken Spawn-Egg",
 		},
+		spawner = {
+			description = "Chicken Spawner",
+			range = 8,
+			player_range = 20,
+			number = 8,
+			dummy_scale = {x=2.2, y=2.2},
+		}
 	},
 
 	drops = {

@@ -289,6 +289,7 @@ creatures.register_mob("sheep:sheep", {
 			range = 8,
 			player_range = 20,
 			number = 6,
+			dummy_scale = {x=1.7, y=1.7},
 		}
 	},
 

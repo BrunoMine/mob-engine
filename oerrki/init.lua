@@ -163,6 +163,7 @@ local def = {
 			player_range = 20,
 			number = 6,
 			light = {min = 0, max = 8},
+			dummy_scale = {x=0.9, y=0.9},
 		}
 	},
 }

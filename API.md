@@ -530,9 +530,10 @@ Definition tables
             },
 
             spawner = { -- is set a spawner_node is added to creative inventory <optional>
+                description = <desc>, 	-- Item description as string <optional>
                 range = <number>, 	-- defines an area (in blocks/nodes) within mobs are spawned
                 number = <number>, 	-- maxmimum number of mobs spawned in area defined via range
-                description = <desc>, 	-- Item description as string <optional>
+                dummy_scale = <scale>, 	-- Dummy scale (default is {x=0.42, y=0.42})
                 light = <range>, 	-- min and max lightvalue at spawn position <optional>
                     ^ range  -- table {min = <value>, max = <value>}
             }
