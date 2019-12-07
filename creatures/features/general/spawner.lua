@@ -144,11 +144,12 @@ function creatures.register_spawner(spawner_def)
 		tiles = {"creatures_spawner.png"},
 		is_ground_content = true,
 		drawtype = "glasslike",
-		groups = {cracky = 1, level = 1},
+		groups = {cracky = 1, level = 1, mob_spawner = 1},
 		drop = "",
 		on_construct = function(pos)
-			pos.y = pos.y - 0.3
+			pos.y = pos.y - 0.35
 			core.add_entity(pos, spawner_def.mob_name .. "_spawner_dummy")
+			minetest.get_meta(pos):set_float("cleaning_cycle", creatures.cleaning_cycle)
 		end,
 		on_destruct = function(pos)
 			for _,obj in ipairs(core.get_objects_inside_radius(pos, 1)) do
@@ -159,7 +160,7 @@ function creatures.register_spawner(spawner_def)
 			end
 		end
 	})
-
+	
 	local box = spawner_def.model.collisionbox
 	local height = (box[5] or 2) - (box[2] or 0)
 	spawner_def.height = height
@@ -205,7 +206,20 @@ function creatures.register_spawner(spawner_def)
 			end
 		})
 	end
-
+	
+	-- Check spawner dummy
+	minetest.register_lbm({
+		name = ":"..minetest.get_current_modname()..":check_spawner_dummy3",
+		run_at_every_load = true,
+		nodenames = {spawner_def.mob_name .. "_spawner"},
+		action = function(pos, node)
+			if minetest.get_meta(pos):get_float("cleaning_cycle") ~= creatures.cleaning_cycle then
+				minetest.add_entity({x=pos.x, y=pos.y-0.35, z=pos.z}, spawner_def.mob_name .. "_spawner_dummy")
+				minetest.get_meta(pos):set_float("cleaning_cycle", creatures.cleaning_cycle)
+			end
+		end,
+	})
+	
 	return true
 end
 

@@ -188,7 +188,6 @@ creatures.register_mob("zombie:zombie", def)
 
 
 -- Place spawners in dungeons
-
 local function place_spawner(tab)
 	local pos = tab[math.random(1, (#tab or 4))]
 	pos.y = pos.y - 1
@@ -205,3 +204,12 @@ core.register_on_generated(function(minp, maxp, blockseed)
 		core.after(3, place_spawner, table.copy(ntf.dungeon))
 	end
 end)
+
+-- Replace old zombie spawner
+minetest.register_lbm({
+	name = "zombie:replace_old_spawner",
+	nodenames = {"creatures:zombie_spawner"},
+	action = function(pos, node)
+		minetest.set_node(pos, {name = "zombie:zombie_spawner"})
+	end,
+})
