@@ -73,7 +73,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				
 				-- choose a random target
 				if #targets > 1 then
-					self.target = targets[rnd(1, #targets)]
+					self.target = targets[math.random(1, #targets)]
 				elseif #targets == 1 then
 					self.target = targets[1]
 				end
