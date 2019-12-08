@@ -209,7 +209,7 @@ function creatures.register_spawner(spawner_def)
 	
 	-- Check spawner dummy
 	minetest.register_lbm({
-		name = ":"..minetest.get_current_modname()..":check_spawner_dummy3",
+		name = ":"..minetest.get_current_modname()..":check_spawner_dummy",
 		run_at_every_load = true,
 		nodenames = {spawner_def.mob_name .. "_spawner"},
 		action = function(pos, node)
