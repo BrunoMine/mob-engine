@@ -113,7 +113,7 @@ local function spawnerSpawn(pos, spawner_def)
 		end
 		local p = {x = math.random(area.min.x, area.max.x), y = area.min.y + i, z = math.random(area.min.z, area.max.z)}
 		local n = core.get_node_or_nil(p)
-		if n and n.name then
+		if n and n.name and core.registered_nodes[n.name] then
 			local walkable = core.registered_nodes[n.name].walkable or false
 			p.y = p.y + 1
 			if walkable and checkSpace(p, spawner_def.height) == true then
