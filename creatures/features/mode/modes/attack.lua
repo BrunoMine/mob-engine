@@ -43,7 +43,12 @@ local rotate_to_target = function(self, current_pos, target_pos)
 	-- Rotate
 	local new_dir = creatures.get_dir_p1top2(current_pos, target_pos, self.can_fly)
 	if new_dir then
-		creatures.set_dir(self, new_dir)
+		--[[ 
+			WARNING: For some totally unknown reason. 
+			The object is rotated -90 degrees in this attack mode only. 
+			Third parameter fix this temporarily.
+		]]
+		creatures.set_dir(self, new_dir, 90)
 	end
 end
 

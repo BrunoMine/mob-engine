@@ -88,15 +88,16 @@ end
 -- Applying values
 
 -- Set yaw
-creatures.set_yaw = function(self, yaw)
-	self.object:setyaw(yaw)
-	self.dir = creatures.yaw_to_dir(yaw+math.rad(self.model.rotation))
+creatures.set_yaw = function(self, yaw, rotate)
+	rotate = rotate or 0
+	self.object:set_yaw(yaw+math.rad(self.model.rotation+rotate))
 end
 
 -- Set dir
-creatures.set_dir = function(self, dir)
+creatures.set_dir = function(self, dir, rotate)
+	rotate = rotate or 0
 	local yaw = creatures.dir_to_yaw(dir)
-	self.object:setyaw(yaw+math.rad(self.model.rotation))
+	self.object:set_yaw(yaw+math.rad(self.model.rotation+rotate))
 	self.dir = dir
 end
 

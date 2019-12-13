@@ -311,8 +311,9 @@ Exists basically two formats for get or manipulate directions wich this feature:
 * `creatures.get_yaw_p1top2(pos, target_pos)`: Get direction in yaw type of position to target pos
 * `creatures.get_random_dir()`: Get random direction in dir type
 * `creatures.get_random_yaw()`: Get random direction in yaw type
-* `creatures.set_dir(luaentity, dir)`: Set a rotation in dir for the MOB
-* `creatures.set_yaw(luaentity, yaw)`: Set a rotation in yaw for the MOB
+* `creatures.set_dir(luaentity, dir, [rotate])`: Set a rotation in dir for the MOB
+  * `rotate` is used to include an additional rotation in degrees
+* `creatures.set_yaw(luaentity, yaw, [rotate])`: Set a rotation in yaw for the MOB
 * `creatures.send_in_dir(luaentity, speed, [dir], [include_y])`: Start MOB moviment in a dir
   * if `include_y` is true then start moviment in y direction
   * if `dir` is nil uses `luaentity.dir` direction
