@@ -31,9 +31,9 @@ local def = {
 		lifetime = 300, -- 5 Minutes
 		can_jump = 1,
 		can_swim = true,
-		can_burn = true,
-		burn_light = {min = 15, max = 15},
-		burn_time_of_day = {min = 6000, max = 18000},
+		--can_burn = true,
+		--burn_light = {min = 15, max = 15},
+		--burn_time_of_day = {min = 6000, max = 18000},
 		has_falldamage = true,
 		has_kockback = true,
 		hostile = true,
@@ -73,8 +73,8 @@ local def = {
 
 	combat = {
 		attack_damage = 1,
-		attack_speed = 0.6,
-		attack_radius = 1.5,
+		attack_hit_interval = 2.6,
+		attack_radius = 2,
 
 		search_enemy = true,
 		search_timer = 2,

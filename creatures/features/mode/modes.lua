@@ -80,9 +80,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		self.mode = "idle"
+		self.last_mode = "idle"
+		self.mode_vars = {}
 		
 		-- Timers
-		self.modetimer = math.random()
+		self.modetimer = 0
 		
 		-- Timers for modes
 		self.mdt = {}
@@ -151,6 +153,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_get_staticdata(mob_name, function(self)
 		return {
 			mode = self.mode,
+			last_mode = self.last_mode,
+			mdt = core.serialize(self.mdt),
+			mode_vars = core.serialize(self.mode_vars),
 			modetimer = self.modetimer,
 		}
 	end)
@@ -176,6 +181,8 @@ creatures.start_mode = function(self, mode)
 	-- Update mode settings
 	self.mode = mode
 	self.modetimer = 0
+	self.mode_vars = {}
+	self.mdt = {}
 	
 	if creatures.registered_modes[mode] and creatures.registered_modes[mode].start then
 		creatures.registered_modes[mode].start(self)

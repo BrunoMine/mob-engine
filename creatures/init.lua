@@ -52,6 +52,7 @@ dofile(modpath .."/methods/kill_mob.lua")
 dofile(modpath .."/methods/spawn_particles.lua")
 dofile(modpath .."/methods/get_under_walkable_height.lua")
 dofile(modpath .."/methods/get_under_walkable_nodes_in_area.lua")
+dofile(modpath .."/methods/mob_sight.lua")
 
 -- Engine Features
 

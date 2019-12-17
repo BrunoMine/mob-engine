@@ -42,6 +42,17 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Model params
 	def.ent_def.model = def.model
 	
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		self.animation = self.animation or ""
+	end)
+	
+	-- Register 'get_staticdata'
+	creatures.register_get_staticdata(mob_name, function(self)
+		return {
+			animation = self.animation,
+		}
+	end)
 end)
 
 -- Update animation
@@ -61,4 +72,7 @@ creatures.set_animation = function(self, anim_name)
 		0, 
 		def.loop
 	)
+	
+	-- Update animation name
+	self.animation = anim_name
 end

@@ -49,7 +49,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		-- Search a target (1-2ms)
 		if 
-			-- if not target yet
+			-- and has not target yet
 			not self.target 
 			-- and is a hostile
 			and (self.hostile and def.combat.search_enemy)

@@ -56,12 +56,14 @@ These values are reserved for the engine resources operation.
   * `child_grow`: for grow child feature
   
 ##### General
-* `mode`: current mode
-* `last_mode`: last mode
+* `mode`: current mode name
+* `last_mode`: last mode nome
+* `mode_vars`: mode variables
 * `last_pos`: last pos
 * `last_light`: last pos light
 * `can_fly`: is true if MOB can fly
 * `can_jump`: block height MOB can jump
+* `weight`: MOB weight in kilograms
 * `remove`: mark to remove MOB
 * `current_node`: current node
 * `last_node`: last node
@@ -69,19 +71,19 @@ These values are reserved for the engine resources operation.
 * `drops`: table used for drops
 * `stats`: table for MOB stats
 * `model`: table for model settings
+* `animation`: current animation name
 * `sounds`: table for sound settings
 * `combat`: table for combat settings
 * `path`: table for path params
 * `mob_node`: table for mob node params
 * `walk_around_time`: time of walk around mode
 * `fly_time`: time limit of fly
-* `is_died`: true if died
 * `satiated`: boolean for if MOB is nourished
 * `last_satiated_day`: last satiated day
-* `weight`: MOB weight in kilograms
 * `is_child`: is true when MOB is a child
 * `randomized`: is true if is randomized
-* `activated`: for check if MOB is activated
+* `activated`: is true if MOB is activated
+* `is_died`: is true if MOB is died
 * `is_wild`: boolean for if MOB is wild
 
 
@@ -345,6 +347,9 @@ Methods are useful for different purposes of the engine.
   * Returns (#1) table of found objects (as ObjectRef) and (#2) boolean if player near
   * `pos` is starting position for search radius
   * `radius` for searching in blocks/node
+* `creatures.mob_sight(viewer_entity, target_object, {mob sight definition})`: MOB signt
+  * `viewer_entity` is a MOB lua entity
+  * `target_object` is a object that line of sight is checked
 * `creatures.set_animation(luaentity, anim_name)`: Set an animation
   * `anim_name` is an animation defined in the MOB
 * `creatures.path_finder(luaentity, target_pos, {path finder definition})`: Path finder
@@ -508,7 +513,7 @@ Definition tables
         
         combat = { 			-- specifies behavior of hostile mobs in "attack" mode
             attack_damage = 1, 		-- how much damage deals each hit
-            attack_speed = 0.6, 	-- time in seconds between hits
+            attack_hit_interval = 0.6, 	-- time in seconds between hits
             attack_radius = 1.1, 	-- distance in blocks mob can reach to hit
             
             search_enemy = true, 	-- true to search enemies to attack
@@ -720,6 +725,12 @@ Definition tables
         max_jump = 1,         -- max number of nodes for climb on a node in the path <optional> (default is 1)
         max_drop = 2,         -- max number of nodes for fallen in the path <optional> (default is 2)
         target_dist = 1,      -- target distance to reach between MOB and target_pos <optional> (default is 1)
+    }
+
+
+## MOB sight definition (`mob_sight`)
+    {
+        ignore_obj = {obj1, ...},  -- is searching object; can be nil
     }
 
 
