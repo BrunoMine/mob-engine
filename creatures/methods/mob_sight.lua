@@ -47,8 +47,13 @@ creatures.line_of_sight = function(pos1, pos2, def)
 		
 		-- Nodes
 		elseif n.type == "node" then
+			if def.physical_access == true then return false end
+			
 			local nn = minetest.get_node(n.under).name
-			return false
+			
+			if not creatures.transparent_nodes[nn] then
+				return false
+			end
 		
 		-- Nothing
 		elseif n.type == "nothing" then
@@ -112,10 +117,7 @@ creatures.mob_sight = function(viewer, target, def)
 		if creatures.line_of_sight(viewer_pos, target_pos, {
 			ignore_obj = def.ignore_obj,
 			stepsize = def.stepsize or 0.5,
-			ignore_nodes = {
-				["air"]=true,
-				["flowers:geranium"]=true
-			}
+			physical_access = def.physical_access,
 		}) == true then
 			return true
 		end

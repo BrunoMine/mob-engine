@@ -55,4 +55,17 @@ creatures.mob_node_save_tags = {}
 -- Distance for nodes near on spawning
 creatures.default_value.nodes_near_radius = 8
 
+-- Ignored nodes from mob sight
+creatures.transparent_nodes = {}
+
+-- Default
+if minetest.get_modpath("default") then
+	for _,nn in ipairs({
+		"default:glass",
+		"default:obsidian_glass",
+	}) do
+		creatures.transparent_nodes[nn] = true
+	end
+end
+
 

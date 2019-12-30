@@ -32,6 +32,25 @@ local on_finish_path = function(self)
 	creatures.set_animation(self, "idle")
 end
 
+-- On interrupt path
+local on_interrupt_path = function(self)
+	-- Stop movement
+	creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
+	creatures.set_animation(self, "idle")
+end
+
+-- Check step
+local check_step = function(self, step_pos, target_pos)
+	if creatures.get_dist_p1top2(step_pos, target_pos) > 2 then 
+		return true 
+	end
+	
+	-- Vision height pos
+	local vision_pos = creatures.get_vision_pos(self, step_pos)
+	local r = creatures.mob_sight(vision_pos, self.target, {physical_access=true})
+	return r
+end
+
 -- Enable to punch target
 local enable_punch = function(self)
 	if not self then return end
@@ -65,16 +84,6 @@ local rotate_to_target = function(self, current_pos, target_pos)
 	end
 end
 
--- Register 'on_register_mob'
-creatures.register_on_register_mob(function(mob_name, def)
-	
-	-- Register 'on_activate'
-	creatures.register_on_activate(mob_name, function(self, staticdata)
-		self.mode_vars.can_punch = true
-	end)
-	
-end)
-
 
 -- Attack mode ("attack")
 creatures.register_mode("attack", {
@@ -83,7 +92,6 @@ creatures.register_mode("attack", {
 	start = function(self)
 		-- Random dir
 		creatures.set_dir(self, creatures.get_random_dir())
-		
 		-- Update mode settings
 		creatures.mode_velocity_update(self)
 		creatures.mode_animation_update(self)
@@ -93,14 +101,20 @@ creatures.register_mode("attack", {
 		
 		-- first target memory
 		self.mode_vars.target_memory = 1
+		core.after(5, reset_target_memory, self, 1)
 		
 		self.mode_vars.can_find_path = true
+		self.mode_vars.can_punch = true
 	end,
 	
 	-- On step
 	on_step = function(self, dtime)
+		
+		-- Execute path step
+		creatures.path_step(self, dtime)
+		
 		self.mdt.attack = self.mdt.attack + dtime
-		if self.mdt.attack < 0.25 then
+		if self.mdt.attack < 0.10 then
 			return
 		end
 		self.mdt.attack = 0
@@ -108,6 +122,7 @@ creatures.register_mode("attack", {
 		-- Check target
 		if not self.target or not self.target:get_pos() then
 			self.target = nil
+			self.path.status = false
 			creatures.start_mode(self, "idle")
 			return
 		end
@@ -135,9 +150,10 @@ creatures.register_mode("attack", {
 		
 		-- Check attack distance
 		if dist < def.combat.attack_radius 
-			and creatures.mob_sight(self, self.target) == true -- Check line of sight
+			and creatures.mob_sight(self, self.target, {physical_access=true}) == true -- Check line of sight
 		then
 			-- Stop movement
+			self.path.status = false
 			creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
 			if self.animation ~= "attack" then
 				creatures.set_animation(self, "attack")
@@ -148,6 +164,7 @@ creatures.register_mode("attack", {
 			
 			-- Check punch interval
 			if self.mode_vars.can_punch == true then
+				
 				self.mode_vars.can_punch = false
 				core.after(def.combat.attack_hit_interval, enable_punch,  self)
 				-- Attack
@@ -156,7 +173,8 @@ creatures.register_mode("attack", {
 					damage_groups = {fleshy = def.combat.attack_damage}
 				})
 			end
-			return
+			
+			return 
 		end
 		
 		--
@@ -166,6 +184,7 @@ creatures.register_mode("attack", {
 		-- Check if target is too far
 		if dist > def.combat.search_radius then 
 			self.target = nil
+			self.path.status = false
 			creatures.start_mode(self, "idle")
 			return
 		end
@@ -173,39 +192,33 @@ creatures.register_mode("attack", {
 		-- Check memory
 		if self.mode_vars.target_memory == 0 then
 			self.target = nil
+			self.path.status = false
 			creatures.start_mode(self, "idle")
 			return
 		end
 		
 		-- More target values
-		local see_target = core.line_of_sight(current_pos, target_pos)
+		local see_target = creatures.mob_sight(self, self.target)
 		
 		-- Check target memory
 		if see_target == true then
-			
 			-- Reload target memory
 			local memory_number = self.mode_vars.target_memory + 1
 			self.mode_vars.target_memory = memory_number
 			core.after(5, reset_target_memory, self, memory_number)
 		end
-		
-		-- Check if has a path to target
-		if self.path.status == true then
-		
-			-- Execute path to target
-			creatures.path_step(self, dtime)
-			return
 			
-		elseif self.can_fly == true then
+		if self.can_fly == true then
 		
 			-- Fly to target
 			rotate_to_target(self, current_pos, target_pos)
 			creatures.send_in_dir(self, def_mode.moving_speed, self.dir, self.can_fly)
 			return
+		
 		end
 		
 		-- Can try find a path
-		if self.mode_vars.can_find_path == true then
+		if self.path.status == false and self.mode_vars.can_find_path == true then
 			self.mode_vars.can_find_path = false
 			core.after(3, enable_to_find_path, self)
 			
@@ -213,27 +226,30 @@ creatures.register_mode("attack", {
 			if creatures.new_path(
 				self, 
 				creatures.get_node_pos_object(self.target), 
-				def_mode.moving_speed,
-				on_finish_path,
-				on_finish_path
+				{
+					speed = def_mode.moving_speed,
+					on_finish = on_finish_path,
+					on_interrupt = on_interrupt_path,
+					search_def = {
+						target_dist = 2,
+						check_step = check_step,
+					},
+				}
 			) == true then
 				creatures.set_animation(self, "attack")
-				-- Execute path
-				creatures.path_step(self, dtime)
-				return
-			else
-				-- Stand rotated to target
-				creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
-				creatures.set_animation(self, "idle")
-				return
 			end
-		else
+		end
+		
+		if self.path.status == false then
+		
 			-- Stand rotated to target
 			creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
 			rotate_to_target(self, current_pos, target_pos)
-			creatures.set_animation(self, "idle")
-			return
+			if self.animation ~= "idle" then
+				creatures.set_animation(self, "idle")
+			end
 		end
+		
 	end,
 })
 

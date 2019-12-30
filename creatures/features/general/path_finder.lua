@@ -62,7 +62,7 @@ end
 
 
 -- Check new point
-local check_new_p = function(self, w, new_p, max_jump, max_drop)
+local check_new_p = function(self, w, new_p, max_jump, max_drop, check_step)
 	
 	-- Get height
 	local maxh = new_p.y + max_jump
@@ -73,7 +73,6 @@ local check_new_p = function(self, w, new_p, max_jump, max_drop)
 	
 	-- Check height limits
 	if h > maxh or h < minh then
-		
 		-- Remove way
 		return
 	end
@@ -179,7 +178,9 @@ creatures.direct_path_finder = function(self, target_pos, search_def)
 			Uses 1 to consider arriving at the top block to the nodebox block
 		]]
 		if d <= (search_def.target_dist or 1) then
-			return cp(way.pts)
+			if search_def.check_step and search_def.check_step(self, last_pos, target_pos) == true then
+				return cp(way.pts)
+			end
 		end
 		
 		local new_p = get_pos_p1top2(cp(last_pos), cp(target_pos), 1)
@@ -188,7 +189,7 @@ creatures.direct_path_finder = function(self, target_pos, search_def)
 			return
 		end
 		
-		way = check_new_p(self, cp(way), new_p, search_def.max_jump, search_def.max_drop)
+		way = check_new_p(self, cp(way), new_p, search_def.max_jump, search_def.max_drop, search_def.check_step)
 		if not way then
 			return
 		end
@@ -272,7 +273,9 @@ creatures.path_finder = function(self, target_pos, search_def)
 				Uses 1 to consider arriving at the top block to the nodebox block
 			]]
 			if d <= (search_def.target_dist or 1) then
-				return cp(w.pts)
+				if search_def.check_step and search_def.check_step(self, last_pos, target_pos) == true then
+					return cp(w.pts)
+				end
 			end
 			
 			-- Check max target distance

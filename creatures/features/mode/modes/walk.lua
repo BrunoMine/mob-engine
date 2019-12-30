@@ -68,12 +68,14 @@ creatures.register_mode("walk", {
 				if creatures.new_path(
 					self, 
 					{x=p.x, y=p.y, z=p.z}, 
-					def_mode.moving_speed,
-					on_finish_path,
-					on_finish_path,
 					{
-						max_jump = math.floor(mob_def.stats.can_jump),
-						search_radius = def_mode.search_radius,
+						speed = def_mode.moving_speed,
+						on_finish = on_finish_path,
+						on_interrupt = on_finish_path,
+						search_def = {
+							max_jump = math.floor(mob_def.stats.can_jump),
+							search_radius = def_mode.search_radius,
+						}
 					}
 				) == true then
 					

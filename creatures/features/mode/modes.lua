@@ -30,18 +30,8 @@ local hasMoved = creatures.compare_pos
 -- Update animation
 creatures.mode_animation_update = function(self)
 	local obj = self.object
-	local mode = self.mode
-	local def = creatures.get_def(self).model.animations[mode]
 	
-	-- Check animation
-	if not def then return end
-	
-	obj:set_animation(
-		{x = def.start, y = def.stop}, 
-		def.speed, 
-		0, 
-		def.loop
-	)
+	creatures.set_animation(self, self.mode)
 end
 
 -- Update velocity
@@ -155,7 +145,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 			mode = self.mode,
 			last_mode = self.last_mode,
 			mdt = core.serialize(self.mdt),
-			mode_vars = core.serialize(self.mode_vars),
 			modetimer = self.modetimer,
 		}
 	end)

@@ -46,7 +46,7 @@ local interrupt_path = function(self)
 end
 
 -- Find path
-creatures.find_path = function(self, target_pos, search_def, search_distance, max_jump, max_drop)
+creatures.find_path = function(self, target_pos, search_def)
 	
 	-- Minetest path finder
 	if search_def.algorithm == "A*_noprefetch"
@@ -74,10 +74,10 @@ creatures.find_path = function(self, target_pos, search_def, search_distance, ma
 end
 
 -- Find path
-creatures.new_path = function(self, target_pos, speed, on_finish, on_interrupt, search_def)
+creatures.new_path = function(self, target_pos, def)
 	local my_pos = self.object:getpos()
 	
-	search_def = search_def or {}
+	search_def = def.search_def or {}
 	
 	self.path.way = creatures.find_path(
 		self, 
@@ -87,7 +87,8 @@ creatures.new_path = function(self, target_pos, speed, on_finish, on_interrupt, 
 			max_jump = search_def.max_jump or 1, 
 			max_drop = search_def.max_drop or 2,
 			algorithm = search_def.algorithm,
-			target_dist = search_def.target_dist
+			target_dist = search_def.target_dist,
+			check_step = search_def.check_step,
 		}
 	)
 	
@@ -98,9 +99,9 @@ creatures.new_path = function(self, target_pos, speed, on_finish, on_interrupt, 
 	
 	-- Set params
 	self.path.status = true
-	self.path.speed = speed
-	self.path.on_finish = on_finish
-	self.path.on_interrupt = on_interrupt
+	self.path.speed = def.speed
+	self.path.on_finish = def.on_finish
+	self.path.on_interrupt = def.on_interrupt
 	
 	return true
 end
@@ -125,7 +126,7 @@ creatures.path_step = function(self, dtime)
 		end
 		
 		-- MOB pos
-		local mypos = self.object:getpos()
+		local mypos = self.object:get_pos()
 		
 		-- Check path step
 		do

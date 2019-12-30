@@ -52,10 +52,13 @@ creatures.make_collisionbox = function(width, height, y_diff)
 end
 
 -- Get position of MOB vision
-creatures.get_vision_pos = function(self)
-	local pos = self.object:get_pos()
-	pos.y = pos.y + self.vision_height
-	return pos
+creatures.get_vision_pos = function(self, pos)
+	pos =  pos or self.object:get_pos()
+	return {
+		x = pos.x,
+		y = pos.y + self.vision_height or 0,
+		z = pos.z,
+	}
 end
 
 -- Register 'on_register_mob'
@@ -89,25 +92,28 @@ end)
 -- Checks whether a body can be placed in a pos
 creatures.check_mob_in_pos = function(self, pos)
 	local c = self.collisionbox
-	local w, h = math.ceil(math.abs(c[1]) + c[4]), math.ceil(math.abs(c[2]) + c[5])
+	local w = math.ceil(math.abs(c[1]) + c[4])
+	local h = math.ceil(math.abs(c[2]) + c[5])
 	
 	-- Extra nodes for width
 	local ew = 0
-	w = (w/2)-0.5
+	w = (w/2) - 0.5
 	while w > 0 do
 		ew = ew + 1
 		w = w - 1
 	end
 	
 	-- Extra nodes for height
-	local eh = h
+	local eh = h - 1
 	
-	local x, y, z = (ew*-1), 0, (ew*-1)
+	local x = (ew*-1)
 	while x <= ew do
+		local y = 0
 		while y <= eh do
+			local z = (ew*-1)
 			while z <= ew do
-				if creatures.check_free_pos(pos) == false then
-					return true
+				if creatures.check_free_pos({x=pos.x+x, y=pos.y+y, z=pos.z+z}) == false then
+					return false
 				end
 				z = z + 1
 			end
