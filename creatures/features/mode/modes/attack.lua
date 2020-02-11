@@ -114,7 +114,7 @@ creatures.register_mode("attack", {
 		creatures.path_step(self, dtime)
 		
 		self.mdt.attack = self.mdt.attack + dtime
-		if self.mdt.attack < 0.10 then
+		if self.mdt.attack < 0.50 then
 			return
 		end
 		self.mdt.attack = 0
@@ -166,9 +166,10 @@ creatures.register_mode("attack", {
 			if self.mode_vars.can_punch == true then
 				
 				self.mode_vars.can_punch = false
-				core.after(def.combat.attack_hit_interval, enable_punch,  self)
+				core.after(def.combat.attack_hit_interval, enable_punch, self)
+				
 				-- Attack
-				self.target:punch(me, 1.0,  {
+				self.target:punch(me, def.combat.attack_hit_interval,  {
 					full_punch_interval = def.combat.attack_hit_interval,
 					damage_groups = {fleshy = def.combat.attack_damage}
 				})
@@ -231,7 +232,7 @@ creatures.register_mode("attack", {
 					on_finish = on_finish_path,
 					on_interrupt = on_interrupt_path,
 					search_def = {
-						target_dist = 2,
+						target_dist = def.combat.attack_radius,
 						check_step = check_step,
 					},
 				}
