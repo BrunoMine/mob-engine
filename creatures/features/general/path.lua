@@ -78,7 +78,6 @@ creatures.new_path = function(self, target_pos, def)
 	local my_pos = self.object:getpos()
 	
 	search_def = def.search_def or {}
-	
 	self.path.way = creatures.find_path(
 		self, 
 		target_pos, 
@@ -89,6 +88,7 @@ creatures.new_path = function(self, target_pos, def)
 			algorithm = search_def.algorithm,
 			target_dist = search_def.target_dist,
 			check_step = search_def.check_step,
+			time_to_find = search_def.time_to_find or 0.1,
 		}
 	)
 	

@@ -60,6 +60,7 @@ creatures.register_mode("walk", {
 			)
 			-- Try find path
 			local n = table.maxn(nodes)
+			if n > 3 then n = 3 end
 			while n > 0 do
 				
 				local p
@@ -75,6 +76,7 @@ creatures.register_mode("walk", {
 						search_def = {
 							max_jump = math.floor(mob_def.stats.can_jump),
 							search_radius = def_mode.search_radius,
+							time_to_find = 0.08,
 						}
 					}
 				) == true then

@@ -725,6 +725,7 @@ Definition tables
         max_jump = 1,         -- max number of nodes for climb on a node in the path <optional> (default is 1)
         max_drop = 2,         -- max number of nodes for fallen in the path <optional> (default is 2)
         target_dist = 1,      -- target distance to reach between MOB and target_pos <optional> (default is 1)
+        time_to_find = 0.1,   -- max time  in seconds for find a path <optional> (default is 0.1)
     }
 
 
