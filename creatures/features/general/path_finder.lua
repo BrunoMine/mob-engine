@@ -60,6 +60,13 @@ local get_node_def = function(nn)
 	return minetest.registered_nodes[nn]
 end
 
+-- Check elapsed time
+local check_elapsed_time = function(elapsed_time)
+	if elapsed_time >= 0.2 then
+		return false
+	end
+	return true
+end
 
 -- Check new point
 local check_new_p = function(self, w, new_p, max_jump, max_drop, check_step)
@@ -201,11 +208,14 @@ end
 
 -- Find a path
 creatures.path_finder = function(self, target_pos, search_def)
+
+	local start_time = os.clock()
 	
 	-- Try direct way
 	do
 		local way = creatures.direct_path_finder(self, target_pos, search_def)
 		if way then
+			if check_elapsed_time((os.clock() - start_time)) == false then return end
 			return cp(way)
 		end
 	end
@@ -274,6 +284,7 @@ creatures.path_finder = function(self, target_pos, search_def)
 			]]
 			if d <= (search_def.target_dist or 1) then
 				if search_def.check_step and search_def.check_step(self, last_pos, target_pos) == true then
+					if check_elapsed_time((os.clock() - start_time)) == false then return end
 					return cp(w.pts)
 				end
 			end
@@ -308,5 +319,6 @@ creatures.path_finder = function(self, target_pos, search_def)
 		
 	end
 	
+	if check_elapsed_time((os.clock() - start_time)) == false then return end
 	return 
 end
