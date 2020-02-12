@@ -515,6 +515,7 @@ Definition tables
             attack_damage = 1, 		-- how much damage deals each hit
             attack_hit_interval = 0.6, 	-- time in seconds between hits
             attack_radius = 1.1, 	-- distance in blocks mob can reach to hit
+            attack_collide_with_target = false, -- if mob try colide wotk target when attack <optional> (default is false)
             
             search_enemy = true, 	-- true to search enemies to attack
             search_timer = 2, 		-- time in seconds to search an enemy (only if none found yet)

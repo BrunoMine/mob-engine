@@ -201,6 +201,23 @@ creatures.register_mode("attack", {
 		-- More target values
 		local see_target = creatures.mob_sight(self, self.target)
 		
+		-- Can walk directly to target
+		if see_target == true 
+			and (
+				dist > def.combat.attack_radius
+				or def.combat.attack_collide_with_target == true
+			)
+			and creatures.mob_sight(self, self.target, {physical_access=true}) == true
+		then
+			
+			creatures.send_in_dir(self, def_mode.moving_speed, self.dir)
+			rotate_to_target(self, current_pos, target_pos)
+			if self.animation ~= "attack" then
+				creatures.set_animation(self, "attack")
+			end
+			return
+		end
+		
 		-- Check target memory
 		if see_target == true then
 			-- Reload target memory
@@ -243,26 +260,11 @@ creatures.register_mode("attack", {
 		end
 		
 		if self.path.status == false then
-			
-			-- Can walk directly to target
-			if see_target == true 
-				and dist < def.combat.attack_radius+0.5 and dist > def.combat.attack_radius 
-				and creatures.mob_sight(self, self.target, {physical_access=true}) == true
-			then
-				
-				creatures.send_in_dir(self, def_mode.moving_speed, self.dir)
-				rotate_to_target(self, current_pos, target_pos)
-				if self.animation ~= "walk" then
-					creatures.set_animation(self, "walk")
-				end
-			
-			else
-				-- Stand rotated to target
-				creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
-				rotate_to_target(self, current_pos, target_pos)
-				if self.animation ~= "idle" then
-					creatures.set_animation(self, "idle")
-				end
+			-- Stand rotated to target
+			creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
+			rotate_to_target(self, current_pos, target_pos)
+			if self.animation ~= "idle" then
+				creatures.set_animation(self, "idle")
 			end
 		end
 		

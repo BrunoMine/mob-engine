@@ -73,6 +73,7 @@ local def = {
 		attack_speed = 1.1,
 		attack_radius = 1.5,
 		attack_hit_interval = 1.5,
+		attack_collide_with_target = true,
 		
 		search_enemy = true,
 		search_timer = 2,
