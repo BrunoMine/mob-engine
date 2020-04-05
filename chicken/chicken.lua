@@ -22,7 +22,9 @@ be misrepresented as being the original software.
 ]]
 
 -- Idle 2
-creatures.register_idle_mode("chicken:idle2")
+creatures.register_idle_mode("chicken:idle2", {
+	time = 2,
+})
 
 -- Pick
 creatures.register_idle_mode("chicken:pick")

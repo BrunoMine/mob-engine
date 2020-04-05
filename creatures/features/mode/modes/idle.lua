@@ -21,37 +21,66 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Registered idle modes
+creatures.registered_idle_modes = {}
+
 -- Register idle mode
-creatures.register_idle_mode = function(mode_name)
+creatures.register_idle_mode = function(mode_name, def)
 	
-	-- Idle mode
-	creatures.register_mode(mode_name, {
+	def = def or {}
+	
+	creatures.registered_idle_modes[mode_name] = def
+	
+	-- Mode def
+	local mode_def = {}
+	
+	-- On start
+	mode_def.start = function(self)
 		
-		-- On start
-		start = function(self)
+		local mode_def = creatures.mode_def(self)
+		
+		-- Random dir
+		if mode_def.random_yaw then
+			creatures.set_dir(self, creatures.get_random_dir())
+		end
+		
+		-- Remove target
+		self.target = nil
+		
+		-- Stop movement
+		creatures.send_in_dir(self, 0)
+		
+		-- Update animation
+		creatures.mode_animation_update(self)
+	end
+	
+	
+	-- On step
+	mode_def.on_step = function(self, dtime)
+		
+		self.mdt[mode_name] = (self.mdt[mode_name] or 0) + dtime
+		
+		if def.time ~= nil and self.mdt[mode_name] >= def.time then
 			
-			local mode_def = creatures.mode_def(self)
+			local mode_def = creatures.mode_def(self, mode_name)
 			
-			-- Random dir
-			if mode_def.random_yaw then
-				creatures.set_dir(self, creatures.get_random_dir())
+			if self.mdt[mode_name] >= def.time then
+				-- Finish mode
+				creatures.start_mode(self, "idle")
+				return
 			end
-			
-			-- Remove target
-			self.target = nil
-			
-			-- Stop movement
-			creatures.send_in_dir(self, 0)
-			
-			-- Update animation
-			creatures.mode_animation_update(self)
-		end,
-	})
+		end
+	end
+	
+	
+	-- Register mode
+	creatures.register_mode(mode_name, mode_def)
 	
 end
 
 -- Idle mode ("idle")
-creatures.register_idle_mode("idle")
+creatures.register_idle_mode("idle", {})
 
 
 

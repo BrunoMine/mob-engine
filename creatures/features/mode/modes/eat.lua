@@ -57,9 +57,11 @@ creatures.register_mode("eat", {
 			end
 			
 			self.eat_node = table.copy(eat_node)
-			self.mdt.eat = 0
-			creatures.set_animation(self, "eat")
 		end
+		
+		-- Prepare to eat
+		self.mdt.eat = 0
+		creatures.set_animation(self, "eat")
 		
 	end,
 	

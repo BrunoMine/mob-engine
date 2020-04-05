@@ -248,7 +248,7 @@ In this mode the MOB execute eat animation on current location.
 * `creatures.register_mode(mode_name, {mode definition})`: Register a mode
   * `mode_name` is a string of mode ID
   * Returns `true` when sucessfull
-* `creatures.register_idle_mode(mode_name)`: Register a custom idle mode
+* `creatures.register_idle_mode(mode_name, {idle mode definition})`: Register a custom idle mode
 * `creatures.mode_def(luaentity, [mode_name])`: Get mode definitions
   * If `mode_name` is nil, current mode is used
 * `creatures.start_mode(luaentity, mode_name)`: Start a mode in a MOB
@@ -766,6 +766,12 @@ Definition tables
                                               <function> is 'function(pos, luaentity) end'
         on_load_mob = <function>,        --[[ callback for on load MOB
                                               <function> is 'function(pos, luaentity) end'
+    }
+
+
+### Idle mode definition(`register_idle_mode`)
+    {
+        time = 2,    -- Mode duration time (in seconds) <optional>
     }
 
 
