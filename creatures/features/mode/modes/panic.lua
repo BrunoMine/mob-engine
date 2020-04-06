@@ -87,7 +87,7 @@ creatures.register_mode("panic", {
 
 -- For when attacked
 creatures.register_on_hitted(function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-	if self.hostile ~= true then
+	if self.stats.hostile ~= true then
 		-- change mode
 		creatures.start_mode(self, "panic")
 	end
