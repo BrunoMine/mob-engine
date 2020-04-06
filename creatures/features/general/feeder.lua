@@ -143,9 +143,6 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 			
 			if not pointed_thing or not pointed_thing.above then return end
 			
-			local meta = itemstack:get_meta()
-			local supply = meta:get_float("food")
-			
 			-- Verifica se esta acessando outro node
 			local under = pointed_thing.under
 			local node = minetest.get_node(under)
@@ -156,18 +153,27 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 					pointed_thing) or itemstack
 			end
 			
-			if not minetest.item_place(itemstack, placer, pointed_thing) then
+			local result
+			itemstack, result = minetest.item_place(itemstack, placer, pointed_thing)
+			if result ~= true then
 				return itemstack
 			end
 			
-			creatures.set_feeder_level(pointed_thing.above, supply)
-			
-			itemstack:take_item()
 			if creatures.registered_feeder_nodes[nodename].old_on_place then
 				return creatures.registered_feeder_nodes[nodename].old_on_place(itemstack, placer, pointed_thing)
 			end
-			return itemstack
 			
+			return itemstack
+		end,
+		
+		after_place_node = function(pos, placer, itemstack, pointed_thing)
+			
+			local meta = itemstack:get_meta()
+			local supply = meta:get_float("food")
+			
+			creatures.set_feeder_level(pos, supply)
+			
+			itemstack:take_item()
 		end,
 		
 		on_dig = function(pos, node, digger)
