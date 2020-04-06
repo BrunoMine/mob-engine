@@ -246,7 +246,7 @@ function creatures.register_spawn(label, def)
 	-- 'ABM' spawn type
 	if def.spawn_type == "abm" then
 	
-		def.abm_interval = def.abm_interval or 44
+		def.abm_interval = def.abm_interval or 60
 		def.abm_chance = def.abm_chance or 7000
 		
 		-- Register ABM
@@ -324,11 +324,16 @@ function creatures.register_spawn(label, def)
 					n = n + 1
 				end
 				
+				local search_radius = (def.spawn_zone_width or 0) / 2
+				if not def.spawn_zone_width then
+					search_radius = creatures.default_value.nodes_near_radius
+				end
+				
 				-- Check node near
 				if def.on_generated_nodes.near 
 				and minetest.find_node_near(
 					pos, 
-					def.on_generated_nodes.near_radius or creatures.default_value.nodes_near_radius, 
+					search_radius, 
 					def.on_generated_nodes.near
 				) == nil then
 					return

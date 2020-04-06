@@ -28,12 +28,12 @@ local def = {
 	-- general
 	stats = {
 		hp = 20,
-		lifetime = 300, -- 5 Minutes
+		lifetime = 600, -- 5 Minutes
 		can_jump = 1,
 		can_swim = true,
-		--can_burn = true,
-		--burn_light = {min = 15, max = 15},
-		--burn_time_of_day = {min = 6000, max = 18000},
+		can_burn = true,
+		burn_light = {min = 15, max = 15},
+		burn_time_of_day = {min = 6000, max = 18000},
 		has_falldamage = true,
 		has_kockback = true,
 		hostile = true,
@@ -89,11 +89,15 @@ local def = {
 			{
 				spawn_type = "abm",
 				
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -200, max = 0},
 				
+				abm_interval = 300,
+				abm_chance = 7600,
 				abm_nodes = {
 					spawn_on = {
 						"default:stone", 
@@ -108,14 +112,14 @@ local def = {
 						"group:sand"
 					},
 				},
-				abm_interval = 36,
-				abm_chance = (7600/spawn_chance),
 			},
 			{
 				spawn_type = "generated",
 				
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -200, max = 0},
 				
@@ -133,29 +137,31 @@ local def = {
 					get_under_air = true, 
 				},
 			},
+			
 			-- Deep
 			{ 
 				spawn_type = "abm",
 				
-				max_number = 3*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 3,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = 0},
 				
+				abm_interval = 300,
+				abm_chance = 5500,
 				abm_nodes = {
 					spawn_on = {"default:stone"},
 				},
-				abm_interval = 55,
-				abm_chance = 5500/spawn_chance,
 			},
 			{ 
 				spawn_type = "generated",
 				
-				max_number = 3*spawn_chance,
-				number = {
-					min = 1*spawn_chance, 
-					max = 2*spawn_chance
-				},
+				number = {min = 1, max = 2},
+				max_number = 3,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = 0},
 				

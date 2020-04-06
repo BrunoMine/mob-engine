@@ -27,7 +27,7 @@ local spawn_chance = tonumber(minetest.settings:get("chicken_spawn_chance") or 1
 local def = {
 	stats = {
 		hp = 13,
-		lifetime = 540, -- 9 Minutes
+		lifetime = 600,
 		can_jump = 1,
 		can_swim = true,
 		can_burn = true,
@@ -95,22 +95,27 @@ local def = {
 			{ 
 				spawn_type = "abm",
 				
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -300, max = 50},
 				
+				abm_interval = 300,
+				abm_chance = 7800,
 				abm_nodes = {
 					spawn_on = {"default:stone"},
 				},
-				abm_interval = 55,
-				abm_chance = 7800/spawn_chance,
+				
 			},
 			{ 
 				spawn_type = "generated",
 				
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -300, max = 50},
 				
@@ -120,29 +125,32 @@ local def = {
 					get_under_air = true, 
 				},
 			},
+			
 			-- Deep
 			{ 
 				spawn_type = "abm",
 				
-				max_number = 3*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 3,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = -300},
 				
+				abm_interval = 300,
+				abm_chance = 5500,
 				abm_nodes = {
 					spawn_on = {"default:stone"},
 				},
-				abm_interval = 55,
-				abm_chance = 5500/spawn_chance,
+				
 			},
 			{ 
 				spawn_type = "generated",
 				
-				max_number = 3*spawn_chance,
-				number = {
-					min = 1*spawn_chance, 
-					max = 2*spawn_chance
-					},
+				number = {min = 1, max = 2},
+				max_number = 3,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = -300},
 				

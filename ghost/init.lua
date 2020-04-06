@@ -28,7 +28,7 @@ local def = {
 	-- general
 	stats = {
 		hp = 12,
-		lifetime = 300, -- 5 Minutes
+		lifetime = 600, 
 		can_burn = true,
 		can_fly = true,
 		burn_light = {min = 15, max = 15},
@@ -87,24 +87,27 @@ local def = {
 			{
 				spawn_type = "abm",
 				
-				abm_interval = 40,
-				abm_chance = 7300/spawn_chance,
-				max_number = 1*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 1,
+				spawn_zone_width = 80,
+				
 				time_range = {min = 18500, max = 4000},
 				light = {min = 0, max = 8},
 				height_limit = {min = 1, max = 80},
 				
+				abm_interval = 300,
+				abm_chance = 7000,
 				abm_nodes = {
 					spawn_on = {"default:gravel", "default:dirt_with_grass", "default:dirt",
-					"group:leaves", "group:sand"},
+						"group:leaves", "group:sand"},
 				},
 			},
 			{
 				spawn_type = "generated",
 				
-				max_number = 1*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 1,
+				
 				time_range = {min = 18500, max = 4000},
 				light = {min = 0, max = 8},
 				height_limit = {min = 1, max = 80},
@@ -112,20 +115,23 @@ local def = {
 				on_generated_chance = 60*spawn_chance,
 				on_generated_nodes = {
 					spawn_on = {"default:gravel", "default:dirt_with_grass", "default:dirt",
-					"group:leaves", "group:sand"},
+						"group:leaves", "group:sand"},
 				},
 			},
+			
 			-- Deep
 			{
 				spawn_type = "abm",
 				
-				abm_interval = 40,
-				abm_chance = 7300/spawn_chance,
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = {min = 1, max = 2},
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = 0},
 				
+				abm_interval = 300,
+				abm_chance = 7300,
 				abm_nodes = {
 					spawn_on = {"default:stone"},
 				},
@@ -133,10 +139,10 @@ local def = {
 			{
 				spawn_type = "generated",
 				
-				abm_interval = 40,
-				abm_chance = 7300/spawn_chance,
-				max_number = 2*spawn_chance,
-				number = 1*spawn_chance,
+				number = 1,
+				max_number = 2,
+				spawn_zone_width = 80,
+				
 				light = {min = 0, max = 8},
 				height_limit = {min = -30000, max = 0},
 				
