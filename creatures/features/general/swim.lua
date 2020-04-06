@@ -39,9 +39,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		local me = self.object
-		local current_pos = me:get_pos()
-		
 		-- Remove gravity when in water
 		if self.in_water then
 			
@@ -62,12 +59,13 @@ creatures.register_on_register_mob(function(mob_name, def)
 			creatures.update_physic(self)
 		end
 		
-		-- Timer updates
 		self.timers.swim = self.timers.swim + dtime
-		self.timers.drown = self.timers.drown + dtime
 		
 		-- Check swim
 		if self.timers.swim > 0.4 then
+			
+			local me = self.object
+			local current_pos = me:get_pos()
 			
 			-- MOB definition
 			local mob_def = creatures.mob_def(self)
@@ -125,6 +123,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 				end
 			end
 		end
+		
+		self.timers.drown = self.timers.drown + dtime
 		
 		-- Add damage when drowning
 		if self.timers.drown > 3 then

@@ -181,7 +181,7 @@ creatures.register_mob("sheep:sheep", {
 		on_death = {name = "sheep", gain = 1.0, distance = 10},
 		swim = {name = "creatures_splash", gain = 1.0, distance = 10,},
 		random = {
-			idle = {name = "sheep", gain = 0.6, distance = 10, time_min = 23},
+			idle = {name = "sheep", gain = 0.6, distance = 10, time_min = 20, time_max = 30},
 		},
 	},
 	

@@ -26,53 +26,46 @@ local hasMoved = creatures.compare_pos
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
+	if not def.modes.follow then return end
+	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.follow_search = 0
+		self.timers.follow_search = def.modes.follow.search_timer or 4
 		
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		-- Timer update
-		self.timers.follow_search = self.timers.follow_search + dtime
-		local modes = def.modes
+		self.timers.follow_search = self.timers.follow_search - dtime
 		
-		-- localize some things
-		local modes = def.modes
-		local current_mode = self.mode
-		local me = self.object
-		local current_pos = me:getpos()
-		current_pos.y = current_pos.y + 0.5
-		local moved = self.moved
-		
-		-- Search a target (1-2ms)
-		if 
-			-- if not target yet
-			not self.target 
-			-- and is a follower
-			and modes.follow
-			-- and not in "idle" mode
-			and current_mode == "idle" 
-		then
+		if self.timers.follow_search <= 0 then
+			self.timers.follow_search = def.modes.follow.search_timer or 4
 			
-			-- if elapsed timer
-			if self.timers.follow_search > (modes.follow.search_timer or 4) then
-				self.timers.follow_search = 0
-				
+			-- Current mode
+			if self.mode ~= "idle" then return end
+			
+			local current_pos = self.object:getpos()
+			current_pos.y = current_pos.y + 0.5
+			
+			-- Search a target
+			if 
+				-- if not target yet
+				not self.target 
+			then
+					
 				-- if a target was found
-				for _,target in ipairs(creatures.find_target(creatures.get_vision_pos(self), modes.follow.radius or 5, {
+				for _,target in ipairs(creatures.find_target(creatures.get_vision_pos(self), (def.modes.follow.radius or 5), {
 					search_type = "player",
-					ignore_obj = {me}
+					ignore_obj = {self.object}
 				})) do
 					
 					-- change mode
 					-- check target wielded item
 					local name = target:get_wielded_item():get_name()
-					if name and modes.follow.items[name] == true then
+					if name and def.modes.follow.items[name] == true then
 						self.target = target
 						creatures.start_mode(self, "follow")
 					end

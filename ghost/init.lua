@@ -64,7 +64,7 @@ local def = {
 		on_damage = {name = "ghost_hit", gain = 0.4, distance = 10},
 		on_death = {name = "ghost_death", gain = 0.7, distance = 10},
 		random = {
-			idle = {name = "ghost", gain = 0.5, distance = 10, time_min = 23},
+			idle = {name = "ghost", gain = 0.5, distance = 10, time_min = 20, time_max = 30},
 		},
 	},
 

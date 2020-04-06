@@ -60,7 +60,7 @@ creatures.register_mode("eat", {
 		end
 		
 		-- Prepare to eat
-		self.mdt.eat = 0
+		self.mdt.eat = mode_def.eat_time
 		creatures.set_animation(self, "eat")
 		
 	end,
@@ -68,12 +68,18 @@ creatures.register_mode("eat", {
 	-- On step
 	on_step = function(self, dtime)
 		
-		self.mdt.eat = self.mdt.eat + dtime
+		-- Check eat node
+		if self.eat_node == nil then
+			-- Finish mode
+			creatures.start_mode(self, "idle")
+			return
+		end
 		
-		local mode_def = creatures.mode_def(self, "eat")
+		self.mdt.eat = self.mdt.eat - dtime
 		
-		if self.mdt.eat >= mode_def.eat_time and self.eat_node then
+		if self.mdt.eat <= 0 then
 			
+			local mode_def = creatures.mode_def(self)
 			local n = core.get_node_or_nil(self.eat_node)
 			local nnn = n.name
 			local action_def = mode_def.nodes[nnn]

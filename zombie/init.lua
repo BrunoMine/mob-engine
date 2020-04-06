@@ -66,7 +66,7 @@ local def = {
 		on_damage = {name = "zombie_hit", gain = 0.4, distance = 10},
 		on_death = {name = "zombie_death", gain = 0.7, distance = 10},
 		swim = {name = "creatures_splash", gain = 1.0, distance = 10},
-			random = {
+		random = {
 			idle = {name = "zombie", gain = 0.7, distance = 12},
 		},
 	},

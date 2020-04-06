@@ -109,10 +109,14 @@ end
 -- Path step
 creatures.path_step = function(self, dtime)
 	
+	if self.path.status ~= true then 
+		return 
+	end
+	
 	-- Timer updates
 	self.timers.path = self.timers.path + dtime
 	
-	if self.timers.path >= self.path.time and self.path.status == true then
+	if self.timers.path >= self.path.time then
 		self.timers.path = 0
 		
 		-- Path params

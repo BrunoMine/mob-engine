@@ -47,9 +47,12 @@ creatures.on_step = function(mob_name, self, dtime)
 		creatures.registered_mobs[mob_name].on_step_table = {}
 	end
 	
+	-- Round dtime
+	local rdtime = math.floor(dtime * 100) / 100 
+	
 	-- Run registered 'on_step'
 	for _,f in ipairs(creatures.registered_mobs[mob_name].on_step_table) do
-		local r = f(self, dtime)
+		local r = f(self, rdtime)
 		if r == true then
 			return r
 		end

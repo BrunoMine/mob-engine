@@ -25,11 +25,13 @@ be misrepresented as being the original software.
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
+	if not def.combat then return end
+	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.search_enemy = 0
+		self.timers.search_enemy = def.combat.search_timer or 2
 		
 	end)
 	
@@ -37,38 +39,34 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.search_enemy = self.timers.search_enemy + dtime
+		self.timers.search_enemy = self.timers.search_enemy - dtime
 		
-		-- localize some things
-		local modes = def.modes
-		local current_mode = self.mode
-		local me = self.object
-		local current_pos = me:getpos()
-		current_pos.y = current_pos.y + 0.5
-		local moved = self.moved
-		
-		-- Search a target (1-2ms)
-		if 
-			-- and has not target yet
-			not self.target 
-			-- and is a hostile
-			and (self.hostile and def.combat.search_enemy)
-			-- and not in "panic" mode
-			and current_mode ~= "panic" 
-		then
+		-- if elapsed timer
+		if self.timers.search_enemy <= 0 then
+			self.timers.search_enemy = def.combat.search_timer or 2
 			
-			-- if elapsed timer
-			if self.timers.search_enemy > (def.combat.search_timer or 2) then
+			-- Current mode
+			if self.mode ~= "idle" then return end
+			
+			-- Search a target (1-2ms)
+			if 
+				-- has no target yet
+				not self.target 
+				-- and is a hostile
+				and (self.stats.hostile and def.combat.search_enemy)
+				-- and not in "panic" mode
+				and self.mode ~= "panic" 
+			then 
 				
-				-- reset timer
-				self.timers.search_enemy = 0
+				local current_pos = self.object:getpos()
+				current_pos.y = current_pos.y + 0.5
 				
 				-- targets list
 				local targets = creatures.find_target(creatures.get_vision_pos(self), def.combat.search_radius, {
 					search_type = def.combat.search_type, 
 					mob_name = def.combat.search_name, 
 					xray = def.combat.search_xray,
-					ignore_obj = {me},
+					ignore_obj = {self.object},
 				})
 				
 				-- choose a random target

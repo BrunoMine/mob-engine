@@ -36,28 +36,24 @@ creatures.register_mode("follow", {
 	-- On step
 	on_step = function(self, dtime)
 		
-		-- localize some things
-		local mode_def = creatures.mode_def(self)
-		local def = creatures.registered_mobs[self.mob_name]
-		local modes = def.modes
-		local current_mode = self.mode
-		local me = self.object
-		local current_pos = me:getpos()
-		current_pos.y = current_pos.y + 0.5
-		local moved = self.moved
-		
-		-- Timer update
-		self.mdt.follow = self.mdt.follow + dtime
-		self.mdt.follow_walk = self.mdt.follow_walk + dtime
-		
 		-- Check target
 		if not self.target then
 			self.mode = ""
 			return
 		end
 		
+		-- Timer update
+		self.mdt.follow = self.mdt.follow + dtime
+		self.mdt.follow_walk = self.mdt.follow_walk + dtime
+		
 		if self.mdt.follow > 0.5 then
 			self.mdt.follow = 0
+			
+			-- localize some things
+			local mode_def = creatures.mode_def(self)
+			local current_mode = self.mode
+			local current_pos = self.object:getpos()
+			current_pos.y = current_pos.y + 0.5
 			
 			-- Check target
 			if not self.target
@@ -74,12 +70,12 @@ creatures.register_mode("follow", {
 			local dist = creatures.get_dist_p1top2(current_pos, p2)
 			
 			-- Max distance radius for have a target
-			local radius = modes["follow"].radius
+			local radius = mode_def.radius
 			
 			-- Check if target is too far
 			if dist == -1 or dist > (radius or 5) then
 				self.target = nil
-				current_mode = ""
+				creatures.start_mode(self, "idle")
 				return
 			end
 			
@@ -92,8 +88,6 @@ creatures.register_mode("follow", {
 				creatures.set_animation(self, "walk")
 			end
 		end
-		
-		self.mode = current_mode
 	end,
 })
 

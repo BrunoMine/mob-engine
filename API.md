@@ -54,6 +54,8 @@ These values are reserved for the engine resources operation.
   * `hunger`: for nutrition feature
   * `mating`: for mating feature
   * `child_grow`: for grow child feature
+  * `rdm_sound`: for random sounds feature
+
   
 ##### General
 * `mode`: current mode name
