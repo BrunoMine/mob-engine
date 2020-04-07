@@ -60,6 +60,8 @@ creatures.register_mode("walk_around", {
 		local current_pos = me:getpos()
 		current_pos.y = current_pos.y + 0.5
 		
+		-- [PROBLEM!] Causes performance issues above 100 MOBs
+		
 		local nodes = creatures.get_under_walkable_nodes_in_area(
 			{ -- min pos
 				x = current_pos.x - 1,

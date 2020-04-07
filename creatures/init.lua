@@ -74,6 +74,8 @@ dofile(modpath .."/features/basic/direction.lua")
 dofile(modpath .."/features/basic/fly.lua")
 
 -- General
+dofile(modpath .."/features/general/action_factor.lua")
+dofile(modpath .."/features/general/mobs_near.lua")
 dofile(modpath .."/features/general/cleaning_cycles.lua")
 dofile(modpath .."/features/general/remove.lua")
 dofile(modpath .."/features/general/death_effects.lua")

@@ -56,6 +56,7 @@ These values are reserved for the engine resources operation.
   * `mating`: for mating feature
   * `child_grow`: for grow child feature
   * `rdm_sound`: for random sounds feature
+  * `mobs_near`: for random sounds feature
 
   
 ##### General
@@ -88,6 +89,7 @@ These values are reserved for the engine resources operation.
 * `activated`: is true if MOB is activated
 * `is_died`: is true if MOB is died
 * `is_wild`: boolean for if MOB is wild
+* `mobs_near`: MOBs count near
 
 
 Registering a mob

@@ -48,6 +48,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 			-- Current mode
 			if self.mode ~= "idle" then return end
 			
+			-- Action factor
+			if creatures.action_factor(self, 0.8) == false then return end
+			
 			-- Search a target (1-2ms)
 			if 
 				-- has no target yet

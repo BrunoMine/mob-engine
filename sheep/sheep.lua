@@ -144,7 +144,7 @@ creatures.register_mob("sheep:sheep", {
 			items = {["farming:wheat"]=true}, 
 			search_timer = 4
 		},
-		eat = {	
+		--[[eat = {	
 			chance = 0.25,
 			duration = 4,
 			eat_time = 2,
@@ -157,7 +157,7 @@ creatures.register_mob("sheep:sheep", {
 				["default:grass_5"] = {remove=true}, 
 				["default:dirt_with_grass"] = {replace="default:dirt"}, 
 			}
-		},
+		},]]
 	},
 	
 	model = {

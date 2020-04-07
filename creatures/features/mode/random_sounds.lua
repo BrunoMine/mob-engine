@@ -42,6 +42,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		if self.timers.rdm_sound <= 0 then
 			
+			-- Action factor
+			if creatures.action_factor(self) == false then
+				-- Cancel and restart loop
+				self.timers.rdm_sound = math.random(5, 15)
+				return 
+			end
+			
+			
 			-- Current mode
 			if self.mode == "" then 
 				-- Cancel and restart loop

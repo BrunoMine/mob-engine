@@ -41,18 +41,21 @@ creatures.register_idle_mode = function(mode_name, def)
 		local mode_def = creatures.mode_def(self)
 		
 		-- Random dir
-		if mode_def.random_yaw then
+		if creatures.action_factor(self) == true and mode_def.random_yaw then
 			creatures.set_dir(self, creatures.get_random_dir())
 		end
 		
-		-- Remove target
-		self.target = nil
+		if self.last_mode ~= "idle" then
 		
-		-- Stop movement
-		creatures.send_in_dir(self, 0)
-		
-		-- Update animation
-		creatures.mode_animation_update(self)
+			-- Remove target
+			self.target = nil
+			
+			-- Update animation
+			creatures.mode_animation_update(self)
+			
+			-- Stop movement
+			creatures.send_in_dir(self, 0)
+		end
 	end
 	
 	if def.time then

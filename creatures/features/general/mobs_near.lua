@@ -3,7 +3,7 @@
 Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-follow_search.lua
+mobs_near.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,60 +21,47 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-local hasMoved = creatures.compare_pos
-
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
-	
-	if not def.modes.follow then return end
 	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.follow_search = math.random(0, def.modes.follow.search_timer or 4)
+		self.timers.mobs_near = math.random(0.1, 5)
+		
+		self.mobs_near = 0
 		
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		self.timers.follow_search = self.timers.follow_search - dtime
-		
-		if self.timers.follow_search <= 0 then
-			self.timers.follow_search = def.modes.follow.search_timer or 4
+		self.timers.mobs_near = self.timers.mobs_near - dtime
 			
-			-- Current mode
-			if self.mode ~= "idle" then return end
+		if self.timers.mobs_near <= 0 then
+			self.timers.mobs_near = 5
 			
-			-- Action factor
-			if creatures.action_factor(self, 0.8) == false then return end
+			self.mobs_near = #creatures.find_target(self.object:get_pos(), 4, {
+				search_type = "all", 
+				xray = true,
+			})
 			
-			local current_pos = self.object:getpos()
-			current_pos.y = current_pos.y + 0.5
+			self.mobs_near = self.mobs_near - 1
 			
-			-- Search a target
-			if 
-				-- if not target yet
-				not self.target 
-			then
-					
-				-- if a target was found
-				for _,target in ipairs(creatures.find_target(creatures.get_vision_pos(self), (def.modes.follow.radius or 5), {
-					search_type = "player",
-					ignore_obj = {self.object}
-				})) do
-					
-					-- change mode
-					-- check target wielded item
-					local name = target:get_wielded_item():get_name()
-					if name and def.modes.follow.items[name] == true then
-						self.target = target
-						creatures.start_mode(self, "follow")
-					end
-				end
+			-- Choose a time for update
+			if self.mobs_near < 8 then
+				self.timers.mobs_near = math.random(4, 6)
+			elseif self.mobs_near < 15 then
+				self.timers.mobs_near = math.random(7, 9)
+			elseif self.mobs_near < 20 then
+				self.timers.mobs_near = math.random(9, 11)
+			else
+				self.timers.mobs_near = math.random(19, 21)
 			end
+			
 		end
+		
 	end)
 	
 end)

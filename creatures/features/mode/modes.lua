@@ -24,9 +24,6 @@ be misrepresented as being the original software.
 -- Modpath
 local modpath = core.get_modpath("creatures")
 
--- Compare pos
-local hasMoved = creatures.compare_pos
-
 -- Update animation
 creatures.mode_animation_update = function(self)
 	local obj = self.object
@@ -74,7 +71,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.mode_vars = {}
 		
 		-- Timers
-		self.modetimer = 0
+		self.modetimer = math.random(1, 5)
 		
 		-- Timers for modes
 		self.mdt = {}
@@ -87,28 +84,26 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- 'on_step' callback for modes control
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		local def = creatures.get_def(self)
-		
 		-- Timer updates
-		self.modetimer = self.modetimer + dtime
-		
-		-- Localize some things
-		local modes = def.modes
-		local current_mode = self.mode
-		local me = self.object
-		local current_pos = me:getpos()
-		local moved = self.moved
-		
-		-- Current pos adjustment
-		current_pos.y = current_pos.y + 0.5
-		
-		-- Check modetimer
-		if current_mode ~= "" and self.modetimer >= (def.modes[current_mode].duration or 0) then
-			current_mode = ""
-		end
+		self.modetimer = self.modetimer - dtime
 		
 		-- Select a mode
-		if current_mode == "" then
+		if self.modetimer <= 0 then
+			self.modetimer = math.random(5)
+			
+			local def = creatures.get_def(self)
+			
+			-- Localize some things
+			local modes = def.modes
+			local current_mode = self.mode
+			
+			-- Current pos adjustment
+			local current_pos = self.object:get_pos()
+			current_pos.y = current_pos.y + 0.5
+			
+			
+			-- Get a random mode
+			
 			local new_mode = creatures.get_random_index(modes) or "idle"
 			
 			if new_mode == "panic" 
@@ -123,19 +118,24 @@ creatures.register_on_register_mob(function(mob_name, def)
 				new_mode = "idle"
 			end
 			
+			-- Check action factor
+			if new_mode ~= "idle" and creatures.action_factor(self) == false then
+				new_mode = "idle"
+			end
+			
 			current_mode = new_mode
+			
+			-- Update current_mode if changed when start
+			self.mode = current_mode
 			
 			-- Start
 			creatures.start_mode(self, current_mode)
-			
-			-- Update current_mode if changed when start
-			current_mode = self.mode
 		end
 		
-		-- Execute step modes
-		if creatures.registered_modes[current_mode] and creatures.registered_modes[current_mode].on_step then
+		-- Execute mode step
+		if creatures.registered_modes[self.mode] and creatures.registered_modes[self.mode].on_step then
 			
-			creatures.registered_modes[current_mode].on_step(self, dtime)
+			creatures.registered_modes[self.mode].on_step(self, dtime)
 		end
 	end)
 	
@@ -169,7 +169,7 @@ creatures.start_mode = function(self, mode)
 	
 	-- Update mode settings
 	self.mode = mode
-	self.modetimer = 0
+	self.modetimer = mob_def.modes[mode].duration or 5
 	self.mode_vars = {}
 	self.mdt = {}
 	
