@@ -32,7 +32,7 @@ creatures.register_mode("follow", {
 		
 		-- Timer
 		self.mdt.follow = math.random(0, 5)
-		self.mdt.follow_walk = math.random(0, 0.5)
+		self.mdt.follow_walk = math.random(0, creatures.action_factor_time(self, 0.3))
 		
 		self.mode_vars.speed = mode_def.moving_speed
 	end,
@@ -79,11 +79,11 @@ creatures.register_mode("follow", {
 		end
 		
 		
-		self.mdt.follow_walk = self.mdt.follow_walk + dtime
+		self.mdt.follow_walk = self.mdt.follow_walk - dtime
 		
 		-- Walk or run to the target
-		if self.mdt.follow_walk > 0.5 then
-			self.mdt.follow_walk = 0
+		if self.mdt.follow_walk <= 0 then
+			self.mdt.follow_walk = creatures.action_factor_time(self, 0.3)
 			
 			creatures.set_dir(self, creatures.get_dir_p1top2(self.object:get_pos(), self.target:get_pos()))
 			creatures.send_in_dir(self, self.mode_vars.speed)

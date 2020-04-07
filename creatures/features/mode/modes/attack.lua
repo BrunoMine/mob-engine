@@ -265,7 +265,7 @@ creatures.register_mode("attack", {
 				-- Cancel path way
 				self.path.status = false
 				
-				self.mdt.ai = 0.6
+				self.mdt.ai = creatures.action_factor_time(self, 0.3)
 				return
 			end
 			
