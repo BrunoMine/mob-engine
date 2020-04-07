@@ -60,7 +60,7 @@ creatures.register_mode("eat", {
 		end
 		
 		-- Prepare to eat
-		self.mdt.eat = mode_def.eat_time
+		self.mdt.eat = math.random(0, mode_def.eat_time)
 		creatures.set_animation(self, "eat")
 		
 	end,

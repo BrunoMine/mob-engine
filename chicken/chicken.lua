@@ -78,7 +78,10 @@ creatures.register_mob("chicken:chicken", {
 	modes = {
 		-- Standard Modes
 		idle = {chance = 0.25, duration = 2, update_yaw = 3},
-		panic = {moving_speed = 2.1},
+		panic = {
+			duration = 6, 
+			moving_speed = 2.7
+		},
 		walk = {
 			chance = 0.2, 
 			duration = 20, 

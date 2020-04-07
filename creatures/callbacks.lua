@@ -50,6 +50,7 @@ creatures.on_step = function(mob_name, self, dtime)
 	-- Round dtime
 	local rdtime = math.floor(dtime * 100) / 100 
 	
+	
 	-- Run registered 'on_step'
 	for _,f in ipairs(creatures.registered_mobs[mob_name].on_step_table) do
 		local r = f(self, rdtime)
@@ -57,6 +58,7 @@ creatures.on_step = function(mob_name, self, dtime)
 			return r
 		end
 	end
+	
 end
 
 
@@ -170,6 +172,7 @@ end
 
 -- Execute 'on_activate'
 creatures.on_activate = function(mob_name, self, staticdata)
+	
 	
 	-- Restore Staticdata for entity
 	if staticdata then

@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 follow.lua
@@ -28,9 +28,13 @@ creatures.register_mode("follow", {
 	-- On start
 	start = function(self)
 		
+		local mode_def = creatures.mode_def(self)
+		
 		-- Timer
-		self.mdt.follow = 0
-		self.mdt.follow_walk = 0
+		self.mdt.follow = math.random(0, 5)
+		self.mdt.follow_walk = math.random(0, 0.5)
+		
+		self.mode_vars.speed = mode_def.moving_speed
 	end,
 	
 	-- On step
@@ -38,55 +42,52 @@ creatures.register_mode("follow", {
 		
 		-- Check target
 		if not self.target then
-			self.mode = ""
+			creatures.start_mode(self, "idle")
 			return
 		end
 		
-		-- Timer update
 		self.mdt.follow = self.mdt.follow + dtime
-		self.mdt.follow_walk = self.mdt.follow_walk + dtime
 		
-		if self.mdt.follow > 0.5 then
+		-- Check follow mode
+		if self.mdt.follow > 5 then
 			self.mdt.follow = 0
 			
 			-- localize some things
 			local mode_def = creatures.mode_def(self)
 			local current_mode = self.mode
-			local current_pos = self.object:getpos()
+			local current_pos = self.object:get_pos()
 			current_pos.y = current_pos.y + 0.5
 			
-			-- Check target
-			if not self.target
-				or not (mode_def.items and mode_def.items[self.target:get_wielded_item():get_name()] == true)
-			then 
+			-- Check target item
+			if mode_def.items and not mode_def.items[self.target:get_wielded_item():get_name()] == true then 
 				self.target = nil
 				creatures.start_mode(self, "idle")
 				return
 			end
 			
-			-- Target values
-			local p2 = self.target:getpos()
-			
-			local dist = creatures.get_dist_p1top2(current_pos, p2)
-			
-			-- Max distance radius for have a target
-			local radius = mode_def.radius
+			-- Check target distance
+			local dist = creatures.get_dist_p1top2(current_pos, self.target:get_pos())
+			local max_dist = mode_def.radius
 			
 			-- Check if target is too far
-			if dist == -1 or dist > (radius or 5) then
+			if dist == -1 or dist > (max_dist or 5) then
 				self.target = nil
 				creatures.start_mode(self, "idle")
 				return
 			end
 			
-			-- Walk or run to the target
-			if self.mdt.follow_walk > 1 then
-				self.mdt.follow_walk = 0
-				
-				creatures.set_dir(self, creatures.get_dir_p1top2(current_pos, p2))
-				creatures.send_in_dir(self, mode_def.moving_speed)
-				creatures.set_animation(self, "walk")
-			end
+		end
+		
+		
+		self.mdt.follow_walk = self.mdt.follow_walk + dtime
+		
+		-- Walk or run to the target
+		if self.mdt.follow_walk > 0.5 then
+			self.mdt.follow_walk = 0
+			
+			creatures.set_dir(self, creatures.get_dir_p1top2(self.object:get_pos(), self.target:get_pos()))
+			creatures.send_in_dir(self, self.mode_vars.speed)
+			creatures.set_animation(self, "walk")
 		end
 	end,
 })

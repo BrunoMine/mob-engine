@@ -55,20 +55,22 @@ creatures.register_idle_mode = function(mode_name, def)
 		creatures.mode_animation_update(self)
 	end
 	
+	if def.time then
 	
-	-- On step
-	mode_def.on_step = function(self, dtime)
-		
-		self.mdt[mode_name] = (self.mdt[mode_name] or 0) + dtime
-		
-		if def.time ~= nil and self.mdt[mode_name] >= def.time then
+		-- On step
+		mode_def.on_step = function(self, dtime)
 			
-			local mode_def = creatures.mode_def(self, mode_name)
+			self.mdt[mode_name] = (self.mdt[mode_name] or 0) + dtime
 			
 			if self.mdt[mode_name] >= def.time then
-				-- Finish mode
-				creatures.start_mode(self, "idle")
-				return
+				
+				local mode_def = creatures.mode_def(self, mode_name)
+				
+				if self.mdt[mode_name] >= def.time then
+					-- Finish mode
+					creatures.start_mode(self, "idle")
+					return
+				end
 			end
 		end
 	end

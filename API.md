@@ -45,12 +45,13 @@ These values are reserved for the engine resources operation.
   * `swim`: for swim feature
   * `drown`: for swim feature
   * `yaw`: for random yaw feature
-  * `loc`: for location feature
+  * `pos`: for location feature
   * `path`: for MOB path feature
   * `hit_bottom`: for hit bottom feature
   * `mob_node`: for MOB path feature
   * `attack`: for attack interval
   * `follow_search`: for follow search sistem
+  * `enemy_search`: for enemy search sistem
   * `hunger`: for nutrition feature
   * `mating`: for mating feature
   * `child_grow`: for grow child feature
@@ -256,10 +257,6 @@ In this mode the MOB execute eat animation on current location.
 * `creatures.start_mode(luaentity, mode_name)`: Start a mode in a MOB
 * `creatures.mode_animation_update(luaentity)`: Apply animation of current mode
 * `creatures.mode_velocity_update(luaentity)`: Apply velocity of current mode
-* `creatures.random_yaw_step(luaentity, dtime)`: luaentity step callback for change yaw randomly
-  * Uses `update_yaw` from current mode for maximum elapsed time between changes
-  * Minimun elapsed time between changes is 33% of `update_yaw`
-  * Return `true` when direction is changed
 
 ### MOB Node
 

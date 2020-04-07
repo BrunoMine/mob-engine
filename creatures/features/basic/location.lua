@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 location.lua
@@ -28,11 +28,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.loc = 0
+		self.timers.pos = 0
 		
 		self.last_node = {name="ignore"}
 		self.current_node = {name="ignore"}
-		self.last_pos = self.object:getpos()
+		self.last_pos = self.object:get_pos()
 		
 		
 	end)
@@ -41,22 +41,16 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.loc = self.timers.loc + dtime
+		self.timers.pos = self.timers.pos + dtime
 		
-		if self.timers.loc >= 0.2 then
-			self.timers.loc = 0
+		if self.timers.pos >= 0.5 then
+			self.timers.pos = 0
 			
 			-- localize some things
-			local me = self.object
-			local current_pos = me:get_pos()
-			self.moved = not vector.equals(current_pos, self.last_pos)
+			local current_pos = self.object:get_pos()
 			
-			-- Check 'current_node'
-			if self.current_node == nil then self.current_node = core.get_node_or_nil(current_pos) end
-			
-			-- Update pos and current node if necessary
-			if self.moved == true and self.current_node then
-			
+			if not vector.equals(current_pos, self.last_pos) then
+				
 				-- Update last locate
 				self.last_pos = current_pos
 				self.last_node = self.current_node

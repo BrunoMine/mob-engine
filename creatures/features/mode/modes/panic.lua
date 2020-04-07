@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 panic.lua
@@ -63,11 +63,15 @@ creatures.register_mode("panic", {
 	-- On start
 	start = function(self)
 		
+		local mode_def = creatures.mode_def(self)
+		
 		-- Reset timer
-		self.timers.yaw = 0
+		self.mdt.yaw = math.random(0, 1)
 		
 		-- Random dir
 		creatures.set_dir(self, creatures.get_random_dir())
+		
+		self.mode_vars.moving_speed = mode_def.moving_speed
 		
 		-- Update mode settings
 		creatures.mode_velocity_update(self)
@@ -77,9 +81,14 @@ creatures.register_mode("panic", {
 	-- On step
 	on_step = function(self, dtime)
 		
-		local r = creatures.random_yaw_step(self, dtime)
-		if r == true then
-			creatures.mode_velocity_update(self)
+		self.mdt.yaw = self.mdt.yaw - dtime
+		
+		if self.mdt.yaw <= 0 then
+			self.mdt.yaw = math.random(1, 2)
+			
+			creatures.set_dir(self, creatures.get_random_dir())
+			
+			creatures.send_in_dir(self, self.mode_vars.moving_speed, self.dir, self.can_fly)
 		end
 	end,
 })

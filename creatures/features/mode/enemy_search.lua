@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 enemy_search.lua
@@ -31,7 +31,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.search_enemy = def.combat.search_timer or 2
+		self.timers.enemy_search = math.random(0, (def.combat.search_timer or 2))
 		
 	end)
 	
@@ -39,11 +39,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.search_enemy = self.timers.search_enemy - dtime
+		self.timers.enemy_search = self.timers.enemy_search - dtime
 		
 		-- if elapsed timer
-		if self.timers.search_enemy <= 0 then
-			self.timers.search_enemy = def.combat.search_timer or 2
+		if self.timers.enemy_search <= 0 then
+			self.timers.enemy_search = def.combat.search_timer or 2
 			
 			-- Current mode
 			if self.mode ~= "idle" then return end

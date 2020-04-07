@@ -74,7 +74,7 @@ local def = {
 	combat = {
 		attack_damage = 1,
 		attack_hit_interval = 0.9,
-		attack_radius = 2,
+		attack_radius = 2.1,
 		attack_collide_with_target = true,
 
 		search_enemy = true,

@@ -99,7 +99,6 @@ dofile(modpath .."/features/general/spawn_env.lua")
 
 -- Mode
 dofile(modpath .."/features/mode/modes.lua")
-dofile(modpath .."/features/mode/random_yaw.lua")
 dofile(modpath .."/features/mode/enemy_search.lua")
 dofile(modpath .."/features/mode/follow_search.lua")
 dofile(modpath .."/features/mode/random_sounds.lua")

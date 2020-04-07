@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 fly.lua
@@ -27,7 +27,6 @@ creatures.register_mode("fly", {
 	-- On start
 	start = function(self)
 		
-		self.mdt.fly = 0
 		self.fly_time = 0
 		
 		local mode_def = creatures.mode_def(self)
@@ -56,9 +55,10 @@ creatures.register_mode("fly", {
 				-- Send
 				creatures.send_in_dir(self, mode_def.moving_speed, self.dir, true)
 				creatures.set_animation(self, "fly")
-				return
 			end
 		end
+		
+		self.mdt.fly = math.random(0, self.fly_time)
 		
 	end,
 	
