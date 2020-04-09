@@ -29,54 +29,41 @@ end
 
 -- Get action factor
 creatures.action_factor = function(self, post_factor)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.action_factor' method (use 'self:mob_actfac_bool')")
+	return self:mob_actfac_bool(post_factor)
+end
+creatures.entity_meta.mob_actfac_bool = function(self, post_factor)
 	post_factor = post_factor or 1
 	
-	local can_act = true
+	--[[
+		percent_of_chance = (100/mobs_near) * mobs_in_action
+	  ]]
+	local percent = (100/self.mobs_near) * 20
 	
-	if self.mobs_near < 3 then
-		can_act = sort(math.floor(60 * post_factor))
-	elseif self.mobs_near < 6 then
-		can_act = sort(math.floor(40 * post_factor))
-	elseif self.mobs_near < 9 then
-		can_act = sort(math.floor(30 * post_factor))
-	elseif self.mobs_near < 12 then
-		can_act = sort(math.floor(25 * post_factor))
-	elseif self.mobs_near < 20 then
-		can_act = sort(math.floor(15 * post_factor))
-	elseif self.mobs_near < 40 then
-		can_act = sort(math.floor(10 * post_factor))
-	elseif self.mobs_near < 60 then
-		can_act = sort(math.floor(5 * post_factor))
-	elseif self.mobs_near < 80 then
-		can_act = sort(math.floor(2 * post_factor))
-	else
-		can_act = sort(math.floor(1 * post_factor))
-	end
+	local can_act = sort(math.floor(percent / post_factor))
 	
 	return can_act
 end
 
 -- Get action factor time
 creatures.action_factor_time = function(self, n_time, post_factor)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.action_factor_time' method (use 'self:mob_actfac_time')")
+	return self:mob_actfac_time(n_time, post_factor)
+end
+creatures.entity_meta.mob_actfac_time = function(self, n_time, post_factor)
 	post_factor = post_factor or 1
 	
 	local time = n_time
 	
-	if self.mobs_near < 3 then
-		time = time * 1
-	elseif self.mobs_near < 4 then
-		time = time * 1.1
-	elseif self.mobs_near < 5 then
-		time = time * 1.2
-	elseif self.mobs_near < 6 then
-		time = time * 1.4
-	elseif self.mobs_near < 7 then
-		time = time * 1.7
-	elseif self.mobs_near < 8 then
-		time = time * 2
-	else
-		time = time * 2.5
+	if self.mobs_near < 4 then
+		if self.mobs_near < 20 then
+			time = self.mobs_near/3
+		else
+			time = 5
+		end
+		
+		time = time * post_factor
 	end
 	
-	return time / post_factor
+	return time
 end

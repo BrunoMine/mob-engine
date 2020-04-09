@@ -108,6 +108,10 @@ end
 
 -- Path step
 creatures.path_step = function(self, dtime)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.path_step' method (use 'self:mob_path_step')")
+	self:mob_path_step(dtime)
+end
+creatures.entity_meta.mob_path_step = function(self, dtime)
 	
 	if self.path.status ~= true then 
 		return 
@@ -180,12 +184,11 @@ creatures.path_step = function(self, dtime)
 		-- Rotate to next location path
 		local new_dir = creatures.get_dir_p1top2(mypos, way[1])
 		if new_dir then
-			creatures.set_dir(self, new_dir)
+			self:mob_set_dir(new_dir)
 		end
 		
 		-- Start movement
-		creatures.send_in_dir(self, speed)
-		
+		self:mob_go_dir(speed)
 	end
 end
 

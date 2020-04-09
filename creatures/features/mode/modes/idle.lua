@@ -38,11 +38,8 @@ creatures.register_idle_mode = function(mode_name, def)
 	-- On start
 	mode_def.start = function(self)
 		
-		local mode_def = creatures.mode_def(self)
-		
-		-- Random dir
-		if creatures.action_factor(self) == true and mode_def.random_yaw then
-			creatures.set_dir(self, creatures.get_random_dir())
+		if self:mob_actfac_bool(1) == true then
+			self:mob_random_dir()
 		end
 		
 		if self.last_mode ~= "idle" then
@@ -51,10 +48,10 @@ creatures.register_idle_mode = function(mode_name, def)
 			self.target = nil
 			
 			-- Update animation
-			creatures.mode_animation_update(self)
+			self:mob_mode_set_anim()
 			
 			-- Stop movement
-			creatures.send_in_dir(self, 0)
+			self:mob_go_dir(0)
 		end
 	end
 	
@@ -66,8 +63,6 @@ creatures.register_idle_mode = function(mode_name, def)
 			self.mdt[mode_name] = (self.mdt[mode_name] or 0) + dtime
 			
 			if self.mdt[mode_name] >= def.time then
-				
-				local mode_def = creatures.mode_def(self, mode_name)
 				
 				if self.mdt[mode_name] >= def.time then
 					-- Finish mode

@@ -24,9 +24,9 @@ be misrepresented as being the original software.
 -- On finish path
 local on_finish_path = function(self)
 	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,z=0})
+	self:mob_go_dir(0, {x=0,z=0})
 	-- Stop walk animation
-	creatures.set_animation(self, "idle")
+	self:mob_set_animation("idle")
 end
 
 -- Walk mode ("walk")
@@ -42,9 +42,9 @@ creatures.register_mode("walk", {
 			
 			local mob_def = creatures.get_def(self)
 			
-			local me = self.object
-			local current_pos = me:getpos()
+			local current_pos = self.object:getpos()
 			current_pos.y = current_pos.y + 0.5
+			
 			local search_radius = def_mode.search_radius
 			local nodes = creatures.get_under_walkable_nodes_in_area(
 				{ -- min pos
@@ -58,6 +58,7 @@ creatures.register_mode("walk", {
 					z = current_pos.z + search_radius,
 				}
 			)
+			
 			-- Try find path
 			local n = table.maxn(nodes)
 			if n > 3 then n = 3 end
@@ -82,7 +83,7 @@ creatures.register_mode("walk", {
 				) == true then
 					
 					-- Start walk animation
-					creatures.mode_animation_update(self)
+					self:mob_mode_set_anim()
 					break
 				end
 				
@@ -98,20 +99,20 @@ creatures.register_mode("walk", {
 		-- Random dir
 		else
 			-- Set random dir
-			creatures.set_dir(self, creatures.get_random_dir())
+			self:mob_random_dir()
 			
 			-- Start movement
-			creatures.send_in_dir(self, def_mode.moving_speed)
+			self:mob_go_dir(def_mode.moving_speed)
 			
 			-- Update animation
-			creatures.mode_animation_update(self)
+			self:mob_mode_set_anim()
 		end
 	end,
 	
 	-- On step
 	on_step = function(self, dtime)
 		
-		creatures.path_step(self, dtime)
+		return self:mob_path_step(dtime)
 		
 	end,
 })

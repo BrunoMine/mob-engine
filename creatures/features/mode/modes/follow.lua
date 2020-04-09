@@ -28,23 +28,15 @@ creatures.register_mode("follow", {
 	-- On start
 	start = function(self)
 		
-		local mode_def = creatures.mode_def(self)
-		
 		-- Timer
 		self.mdt.follow = math.random(0, 5)
-		self.mdt.follow_walk = math.random(0, creatures.action_factor_time(self, 0.3))
+		self.mdt.follow_walk = math.random(0, self:mob_actfac_time(0.3))
 		
-		self.mode_vars.speed = mode_def.moving_speed
+		self.mode_vars.speed = self.mode_def.moving_speed
 	end,
 	
 	-- On step
 	on_step = function(self, dtime)
-		
-		-- Check target
-		if not self.target then
-			creatures.start_mode(self, "idle")
-			return
-		end
 		
 		self.mdt.follow = self.mdt.follow + dtime
 		
@@ -52,9 +44,17 @@ creatures.register_mode("follow", {
 		if self.mdt.follow > 5 then
 			self.mdt.follow = 0
 			
+			-- Check target
+			if not self.target or not self.target:get_pos() then
+				self.target = nil
+				self.path.status = false
+				creatures.start_mode(self, "idle")
+				return
+			end
+			
 			-- localize some things
-			local mode_def = creatures.mode_def(self)
-			local current_mode = self.mode
+			local mode_def = self.mode_def
+			
 			local current_pos = self.object:get_pos()
 			current_pos.y = current_pos.y + 0.5
 			
@@ -85,9 +85,17 @@ creatures.register_mode("follow", {
 		if self.mdt.follow_walk <= 0 then
 			self.mdt.follow_walk = creatures.action_factor_time(self, 0.3)
 			
-			creatures.set_dir(self, creatures.get_dir_p1top2(self.object:get_pos(), self.target:get_pos()))
-			creatures.send_in_dir(self, self.mode_vars.speed)
-			creatures.set_animation(self, "walk")
+			-- Check target
+			if not self.target or not self.target:get_pos() then
+				self.target = nil
+				self.path.status = false
+				creatures.start_mode(self, "idle")
+				return
+			end
+			
+			self:mob_set_dir(creatures.get_dir_p1top2(self.object:get_pos(), self.target:get_pos()))
+			self:mob_go_dir(self.mode_vars.speed)
+			self:mob_set_anim("walk")
 		end
 	end,
 })

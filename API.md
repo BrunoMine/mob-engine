@@ -57,12 +57,16 @@ These values are reserved for the engine resources operation.
   * `child_grow`: for grow child feature
   * `rdm_sound`: for random sounds feature
   * `mobs_near`: for random sounds feature
+  * `fall`: for fall damage
 
   
 ##### General
 * `mode`: current mode name
+* `mode_def`: current mode definitions
 * `last_mode`: last mode nome
+* `mob_modes`: MOB modes
 * `mode_vars`: mode variables
+* `fall`: falling feature
 * `last_pos`: last pos
 * `last_light`: last pos light
 * `can_fly`: is true if MOB can fly
@@ -90,6 +94,25 @@ These values are reserved for the engine resources operation.
 * `is_died`: is true if MOB is died
 * `is_wild`: boolean for if MOB is wild
 * `mobs_near`: MOBs count near
+
+#### Luaentity methods
+* `luaentity:mob_set_dir(dir, [rotate])`: Set a rotation in dir for the MOB
+  * `rotate` is used to include an additional rotation in degrees
+* `luaentity:mob_set_yaw(yaw, [rotate])`: Set a rotation in yaw for the MOB
+* `luaentity:mob_go_dir(speed, [dir], [include_y])`: Start MOB moviment in a dir
+  * if `include_y` is true then start moviment in y direction
+  * if `dir` is nil uses `luaentity.dir` direction
+* `luaentity:mob_go_yaw(speed, [yaw])`: Start MOB moviment in a yaw
+  * if `yaw` is nil uses `luaentity.dir` direction
+* `luaentity:mob_set_animation(anim_name)`: Set an animation
+  * `anim_name` is an animation defined in the MOB
+* `luaentity:mob_mode_set_anim()`: Apply animation of current mode
+* `luaentity:mob_mode_set_velocity()`: Apply velocity of current mode
+* `luaentity:mob_mode_on_step(dtime)`: Run on_step for current mode
+* `luaentity:mob_on_step(dtime)`: Run default on_step callback
+* `luaentity:mob_on_activate(staticdata)`: Run default on_activate callback
+* `luaentity:mob_get_staticdata()`: Run default get_staticdata callback
+
 
 
 Registering a mob
@@ -257,8 +280,6 @@ In this mode the MOB execute eat animation on current location.
 * `creatures.mode_def(luaentity, [mode_name])`: Get mode definitions
   * If `mode_name` is nil, current mode is used
 * `creatures.start_mode(luaentity, mode_name)`: Start a mode in a MOB
-* `creatures.mode_animation_update(luaentity)`: Apply animation of current mode
-* `creatures.mode_velocity_update(luaentity)`: Apply velocity of current mode
 
 ### MOB Node
 
@@ -314,14 +335,6 @@ Exists basically two formats for get or manipulate directions wich this feature:
 * `creatures.get_yaw_p1top2(pos, target_pos)`: Get direction in yaw type of position to target pos
 * `creatures.get_random_dir()`: Get random direction in dir type
 * `creatures.get_random_yaw()`: Get random direction in yaw type
-* `creatures.set_dir(luaentity, dir, [rotate])`: Set a rotation in dir for the MOB
-  * `rotate` is used to include an additional rotation in degrees
-* `creatures.set_yaw(luaentity, yaw, [rotate])`: Set a rotation in yaw for the MOB
-* `creatures.send_in_dir(luaentity, speed, [dir], [include_y])`: Start MOB moviment in a dir
-  * if `include_y` is true then start moviment in y direction
-  * if `dir` is nil uses `luaentity.dir` direction
-* `creatures.send_in_yaw(luaentity, speed, [yaw])`: Start MOB moviment in a yaw
-  * if `yaw` is nil uses `luaentity.dir` direction
 
 ### Feeder
 Feeder nodes are used to accumulate food for nearby MOBs.
@@ -351,8 +364,6 @@ Methods are useful for different purposes of the engine.
 * `creatures.mob_sight(viewer_entity, target_object, {mob sight definition})`: MOB signt
   * `viewer_entity` is a MOB lua entity
   * `target_object` is a object that line of sight is checked
-* `creatures.set_animation(luaentity, anim_name)`: Set an animation
-  * `anim_name` is an animation defined in the MOB
 * `creatures.path_finder(luaentity, target_pos, {path finder definition})`: Path finder
 * `creatures.int(n)`: Convert float to interger number
 * `creatures.get_node_pos_object(object)`: Get node coordinate of central base object

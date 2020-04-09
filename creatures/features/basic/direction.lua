@@ -29,11 +29,13 @@ creatures.dir_to_yaw = function(dir)
 	if a < 0 then a = a + 360 end
 	return math.rad(a)
 end
+local dir_to_yaw = creatures.dir_to_yaw
 
 -- Convert yaw to dir
 creatures.yaw_to_dir = function(yaw)
 	return {x = math.sin(yaw)*-1, y = 0, z = math.cos(yaw)}
 end
+local yaw_to_dir = creatures.yaw_to_dir
 
 -- Pos to pos
 
@@ -78,26 +80,37 @@ end
 creatures.get_random_yaw = function()
 	return math.rad(math.random(0, 359))
 end
+local get_random_yaw = creatures.get_random_yaw
 
 -- Get random dir
 creatures.get_random_dir = function()
-	local yaw = creatures.get_random_yaw()
-	return creatures.yaw_to_dir(yaw)
+	return yaw_to_dir(get_random_yaw())
 end
+local random_dir = creatures.get_random_dir
 
 -- Applying values
 
 -- Set yaw
 creatures.set_yaw = function(self, yaw, rotate)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.set_yaw' method (use 'self:mob_set_yaw')")
+	self:mob_set_yaw(yaw, rotate)
+end
+creatures.entity_meta.mob_set_yaw = function(self, yaw, rotate)
 	rotate = rotate or 0
-	self.object:set_yaw(yaw+math.rad(self.model.rotation+rotate))
+	local new_yaw = yaw+math.rad(self.model.rotation+rotate)
+	self.object:set_yaw(new_yaw)
 end
 
 -- Set dir
-creatures.set_dir = function(self, dir, rotate)
+creatures.set_dir = function(self, yaw, rotate)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.set_dir' method (use 'self:mob_set_dir')")
+	self:mob_set_dir(dir, rotate)
+end
+creatures.entity_meta.mob_set_dir = function(self, dir, rotate)
 	rotate = rotate or 0
 	local yaw = creatures.dir_to_yaw(dir)
-	self.object:set_yaw(yaw+math.rad(self.model.rotation+rotate))
+	local new_yaw = yaw+math.rad(self.model.rotation+rotate)
+	self.object:set_yaw(new_yaw)
 	self.dir = dir
 end
 
@@ -105,19 +118,21 @@ end
 
 -- Send in dir
 creatures.send_in_dir = function(self, speed, dir, include_y)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.send_in_dir' method (use 'self:mob_go_dir')")
+	self:mob_go_dir(speed, dir, include_y)
+end
+creatures.entity_meta.mob_go_dir = function(self, speed, dir, include_y)
 	if not dir then
 		dir = self.dir
 	end
 	
-	local obj = self.object
-	
-	local y = obj:getvelocity().y
+	local y = self.object:get_velocity().y
 	
 	if include_y == true then
 		y = (dir.y or 0) * speed
 	end
 	
-	obj:setvelocity({
+	self.object:set_velocity({
 		x = (dir.x or 0) * speed, 
 		y = y, 
 		z = (dir.z or 0) * speed
@@ -126,6 +141,10 @@ end
 
 -- Send in yaw
 creatures.send_in_yaw = function(self, speed, yaw)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.send_in_yaw' method (use 'self:send_in_yaw')")
+	self:send_in_yaw(speed, dir, include_y)
+end
+creatures.entity_meta.send_in_yaw = function(self, speed, yaw)
 	local dir
 	if yaw then
 		dir = creatures.yaw_to_dir(yaw)
@@ -133,7 +152,12 @@ creatures.send_in_yaw = function(self, speed, yaw)
 		dir = self.dir
 	end
 	
-	creatures.send_in_dir(self, speed, dir)
+	self:mob_go_dir(self, speed, dir)
+end
+
+-- Randomize dir
+creatures.entity_meta.mob_random_dir = function(self, dir)
+	self:mob_set_dir(random_dir())
 end
 
 -- Register 'on_register_mob'

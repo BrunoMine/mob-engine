@@ -25,13 +25,12 @@ be misrepresented as being the original software.
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
-	if not def.sounds.random then return end
-	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timers
 		self.timers.rdm_sound = math.random(5, 15)
+		
 	end)
 	
 	-- 'on_step' callback
@@ -43,12 +42,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 		if self.timers.rdm_sound <= 0 then
 			
 			-- Action factor
-			if creatures.action_factor(self) == false then
+			if self:mob_actfac_bool(0.2) == false then
 				-- Cancel and restart loop
 				self.timers.rdm_sound = math.random(5, 15)
 				return 
 			end
-			
 			
 			-- Current mode
 			if self.mode == "" then 
@@ -67,7 +65,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 			-- Play sound
 			minetest.sound_play(sound.name, {
-				pos = self.object:getpos(), 
+				pos = self.object:get_pos(), 
 				gain = sound.gain or 1, 
 				max_hear_distance = sound.distance or 30
 			})

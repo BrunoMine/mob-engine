@@ -64,11 +64,11 @@ creatures.register_mob("sheep:sheep", {
 		can_swim = true,
 		can_burn = true,
 		can_panic = true,
-		has_falldamage = true,
+		has_falldamage = false, --true,
 		has_kockback = true,
 	},
 	
-	hunger = {
+	--[[hunger = {
 		days_interval = 5,
 		water = true,
 		water_nodes = {"sheep:drinking_fountain", "group:water"},
@@ -87,7 +87,7 @@ creatures.register_mob("sheep:sheep", {
 				"sheep:sheep_feeder_11"
 			}
 		},
-	},
+	},]]
 	
 	randomize = {
 		values = {
@@ -144,7 +144,7 @@ creatures.register_mob("sheep:sheep", {
 			items = {["farming:wheat"]=true}, 
 			search_timer = 4
 		},
-		--[[eat = {	
+		eat = {	
 			chance = 0.25,
 			duration = 4,
 			eat_time = 2,
@@ -157,7 +157,7 @@ creatures.register_mob("sheep:sheep", {
 				["default:grass_5"] = {remove=true}, 
 				["default:dirt_with_grass"] = {replace="default:dirt"}, 
 			}
-		},]]
+		},
 	},
 	
 	model = {

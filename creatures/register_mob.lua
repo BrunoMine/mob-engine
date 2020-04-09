@@ -48,11 +48,10 @@ local function entity_table(mob_name, def)
 	-- Register call custom 'on_step'
 	if def.on_step then creatures.register_on_step(mob_name, def.on_step) end
 	
-	
 	-- Get staticdata
 	ent_def.get_staticdata = function(self) 
 		-- Registered callbacks
-		return creatures.get_staticdata(mob_name, self) 
+		return self:mob_get_staticdata() 
 	end
 	
 	-- On activate
@@ -68,7 +67,7 @@ local function entity_table(mob_name, def)
 		self.object:set_armor_groups({fleshy = 100, immortal = 1})
 		
 		-- Registered callbacks
-		return creatures.on_activate(mob_name, self, staticdata)
+		return self:mob_on_activate(staticdata)
 	end
 	
 	-- On Punch
@@ -86,7 +85,7 @@ local function entity_table(mob_name, def)
 	-- On Step
 	ent_def.on_step = function(self, dtime)
 		-- Registered callbacks
-		return creatures.on_step(mob_name, self, dtime)
+		return self:mob_on_step(dtime)
 	end
 
 	return ent_def
@@ -118,8 +117,20 @@ function creatures.register_mob(mob_name, mob_def) -- returns true if sucessfull
 		f(mob_name, mob_def)
 	end
 	
+	local entity_meta = {}
+	
+	-- Engine callbacks
+	for i,f in pairs(creatures.entity_meta) do
+		entity_meta[i] = f
+	end
+	
+	-- Registered callbacks
+	entity_meta.mob_on_step_tb = creatures.registered_mobs[mob_name].on_step_table or {}
+	entity_meta.mob_get_staticdata_tb = creatures.registered_mobs[mob_name].get_staticdata_table or {}
+	entity_meta.mob_on_activate_tb = creatures.registered_mobs[mob_name].on_activate_table or {}
+	
 	-- Register Entity
-	core.register_entity(mob_name, creatures.registered_mobs[mob_name].ent_def)
+	core.register_entity(mob_name, setmetatable(creatures.registered_mobs[mob_name].ent_def, {__index = entity_meta}))
 	
 	return true
 end

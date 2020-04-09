@@ -24,32 +24,40 @@ be misrepresented as being the original software.
 -- Modpath
 local modpath = core.get_modpath("creatures")
 
+
 -- Update animation
 creatures.mode_animation_update = function(self)
-	local obj = self.object
-	
-	creatures.set_animation(self, self.mode)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.mode_animation_update' method (use 'self:mob_mode_set_anim')")
+	self:mob_mode_set_anim()
 end
+creatures.entity_meta.mob_mode_set_anim = function(self)
+	self:mob_set_anim(self.mode)
+end
+local mode_animation_update = creatures.mode_animation_update
+
 
 -- Update velocity
 creatures.mode_velocity_update = function(self)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.mode_velocity_update' method (use 'self:mob_mode_set_velocity')")
+	self:mob_mode_set_velocity()
+end
+creatures.entity_meta.mob_mode_set_velocity = function(self)
 	local obj = self.object
 	local dir = self.dir
 	local mode = self.mode
-	local def = creatures.get_def(self)
-	if not def or not def.modes[mode] then return end
-	local modes = def.modes
-	local speed = def.modes[mode].moving_speed or 0
+	if not self.mob_modes[mode] then return end
+	local speed = self.mob_modes[mode].moving_speed or 0
 	
-	local v = obj:getvelocity()
+	local v = obj:get_velocity()
 	
 	if not dir.y then
 		dir.y = v.y/speed
 	end
 	
 	local new_v = {x = dir.x * speed, y = v.y , z = dir.z * speed}
-	obj:setvelocity(new_v)
+	obj:set_velocity(new_v)
 end
+
 
 -- Get mode def
 creatures.mode_def = function(self, mode)
@@ -57,14 +65,20 @@ creatures.mode_def = function(self, mode)
 end
 
 
+-- Default MOB mode on_step
+creatures.entity_meta.mob_mode_on_step = function() end
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Save settings for modes
 	creatures.registered_mobs[mob_name].modes = def.modes
 	
+	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		self.mob_modes = def.modes
 		
 		self.mode = "idle"
 		self.last_mode = "idle"
@@ -77,8 +91,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.mdt = {}
 		
 		-- Update mode settings
-		creatures.mode_velocity_update(self)
-		creatures.mode_animation_update(self)
+		self:mob_mode_set_velocity()
+		self:mob_mode_set_anim()
 	end)
 	
 	-- 'on_step' callback for modes control
@@ -89,7 +103,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		-- Select a mode
 		if self.modetimer <= 0 then
-			self.modetimer = math.random(5)
+			self.modetimer = math.random(3, 5)
 			
 			local def = creatures.get_def(self)
 			
@@ -103,7 +117,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 			
 			-- Get a random mode
-			
 			local new_mode = creatures.get_random_index(modes) or "idle"
 			
 			if new_mode == "panic" 
@@ -119,7 +132,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Check action factor
-			if new_mode ~= "idle" and creatures.action_factor(self) == false then
+			if new_mode ~= "idle" and self:mob_actfac_bool(2) == false then
 				new_mode = "idle"
 			end
 			
@@ -133,10 +146,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		end
 		
 		-- Execute mode step
-		if creatures.registered_modes[self.mode] and creatures.registered_modes[self.mode].on_step then
-			
-			creatures.registered_modes[self.mode].on_step(self, dtime)
-		end
+		self:mob_mode_on_step(dtime)
 	end)
 	
 	-- Register 'get_staticdata'
@@ -156,10 +166,8 @@ creatures.start_mode = function(self, mode)
 	-- Debug tool
 	--minetest.chat_send_all("Starting mode: "..mode)
 	
-	local mob_def = creatures.mob_def(self)
-	
 	-- Check mode
-	if not mob_def.modes[mode] then
+	if not self.mob_modes[mode] then
 		creatures.throw_error("Mode "..dump(mode).." no registered in mob "..dump(self.mob_name))
 		mode = "idle"
 	end
@@ -169,9 +177,13 @@ creatures.start_mode = function(self, mode)
 	
 	-- Update mode settings
 	self.mode = mode
-	self.modetimer = mob_def.modes[mode].duration or 5
+	self.mode_def = self.mob_modes[mode]
+	self.modetimer = self.mob_modes[mode].duration or 5
 	self.mode_vars = {}
 	self.mdt = {}
+	
+	-- Update mode on_step
+	self.mob_mode_on_step = creatures.registered_modes[mode].on_step or function() end
 	
 	if creatures.registered_modes[mode] and creatures.registered_modes[mode].start then
 		creatures.registered_modes[mode].start(self)
@@ -181,7 +193,9 @@ end
 -- Register a mode
 creatures.registered_modes = {}
 creatures.register_mode = function(modename, def)
+	
 	creatures.registered_modes[modename] = def
+	
 	return true
 end
 

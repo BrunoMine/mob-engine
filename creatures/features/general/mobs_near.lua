@@ -21,44 +21,52 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
-		-- Timer
-		self.timers.mobs_near = math.random(0.1, 5)
+		self.mobs_near = self.mobs_near or 0
 		
-		self.mobs_near = 0
+		self.mobs_near_timer = math.random(15, 35)
 		
+	end)
+	
+	-- Register 'get_staticdata'
+	creatures.register_get_staticdata(mob_name, function(self)
+		return {
+			mobs_near = self.mobs_near,
+			mobs_near_timer = self.mobs_near_timer,
+		}
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		self.timers.mobs_near = self.timers.mobs_near - dtime
+		self.mobs_near_timer = self.mobs_near_timer - dtime
 			
-		if self.timers.mobs_near <= 0 then
-			self.timers.mobs_near = 5
+		if self.mobs_near_timer <= 0 then
 			
-			self.mobs_near = #creatures.find_target(self.object:get_pos(), 4, {
+			local mobs = creatures.find_target(self.object:get_pos(), 25, {
 				search_type = "all", 
 				xray = true,
 			})
 			
-			self.mobs_near = self.mobs_near - 1
+			self.mobs_near = #mobs
 			
-			-- Choose a time for update
-			if self.mobs_near < 8 then
-				self.timers.mobs_near = math.random(4, 6)
-			elseif self.mobs_near < 15 then
-				self.timers.mobs_near = math.random(7, 9)
-			elseif self.mobs_near < 20 then
-				self.timers.mobs_near = math.random(9, 11)
-			else
-				self.timers.mobs_near = math.random(19, 21)
+			-- update near mobs
+			for _,obj in ipairs(mobs) do
+				
+				local s = obj:get_luaentity()
+				if s then
+					s.mobs_near = #mobs
+					s.mobs_near_timer = math.random(15, 25)
+				end
 			end
+			
+			self.mobs_near_timer = math.random(15, 25)
 			
 		end
 		

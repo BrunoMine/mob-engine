@@ -69,7 +69,7 @@ creatures.register_mode("panic", {
 		self.mdt.yaw = math.random(0, 1)
 		
 		-- Random dir
-		creatures.set_dir(self, creatures.get_random_dir())
+		self:mob_random_dir()
 		
 		self.mode_vars.moving_speed = mode_def.moving_speed
 		
@@ -86,9 +86,9 @@ creatures.register_mode("panic", {
 		if self.mdt.yaw <= 0 then
 			self.mdt.yaw = math.random(1, 2)
 			
-			creatures.set_dir(self, creatures.get_random_dir())
+			self:mob_set_dir(creatures.get_random_dir())
 			
-			creatures.send_in_dir(self, self.mode_vars.moving_speed, self.dir, self.can_fly)
+			self:mob_go_dir(self.mode_vars.moving_speed, self.dir, self.can_fly)
 		end
 	end,
 })

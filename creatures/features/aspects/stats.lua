@@ -28,4 +28,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Entity definitions
 	def.ent_def.stats = def.stats
 	
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		-- Meta data
+		self.mob_stats = def.stats
+		
+	end)
+	
 end)

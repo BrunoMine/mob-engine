@@ -38,7 +38,7 @@ end)
 -- On finish path
 local on_finish_path = function(self)
 	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,z=0})
+	self:mob_go_dir(0, {x=0,z=0})
 	-- Stop walk animation
 	creatures.set_animation(self, "idle")
 end
@@ -50,50 +50,41 @@ creatures.register_mode("walk_around", {
 	-- On start
 	start = function(self)
 		
-		local mode_def = creatures.mode_def(self)
-		
 		self.mdt.walk_around = 0 
-			
-		local mob_def = creatures.mob_def(self)
 		
-		local me = self.object
-		local current_pos = me:getpos()
+		local current_pos = self.object:get_pos()
 		current_pos.y = current_pos.y + 0.5
 		
-		-- [PROBLEM!] Causes performance issues above 100 MOBs
-		
-		local nodes = creatures.get_under_walkable_nodes_in_area(
-			{ -- min pos
-				x = current_pos.x - 1,
-				y = current_pos.y - math.floor(mob_def.stats.can_jump),
-				z = current_pos.z - 1
-			}, 
-			{ -- max pos
-				x = current_pos.x + 1,
-				y = current_pos.y + math.floor(mob_def.stats.can_jump),
-				z = current_pos.z + 1
-			}
-		)
-		
-		if table.maxn(nodes) > 1 then
-			-- Walk 1 node in any direction
-			local pos = creatures.get_random_from_table(nodes)
-			local new_dir = creatures.get_dir_p1top2(current_pos, pos)
-			
-			if new_dir then
-				creatures.set_dir(self, new_dir)
-				
-				self.walk_around_time = 1/mode_def.moving_speed
-				
-				-- Send
-				creatures.send_in_dir(self, mode_def.moving_speed)
-				creatures.set_animation(self, "walk")
-				return
-			end
+		if self:mob_actfac_bool(1.5) == false then
+			creatures.start_mode(self, "idle")
+			return 
 		end
 		
-		-- Finish mode
-		creatures.start_mode(self, "idle")
+		-- [PROBLEM!] Causes performance issues above 100 MOBs
+		local nodes = creatures.get_under_walkable_nodes_in_area(
+			vector.subtract(current_pos, 1), 
+			vector.add(current_pos, 1)
+		)
+		
+		if table.maxn(nodes) <= 1 then
+			-- Finish mode
+			creatures.start_mode(self, "idle")
+		end
+		
+		-- Walk 1 node in any direction
+		local pos = creatures.get_random_from_table(nodes)
+		local new_dir = creatures.get_dir_p1top2(current_pos, pos)
+		
+		if new_dir then
+			self:mob_set_dir(new_dir)
+			
+			self.walk_around_time = 1/self.mode_def.moving_speed
+			
+			-- Send
+			self:mob_go_dir(self.mode_def.moving_speed)
+			self:mob_set_anim("walk")
+			return
+		end
 	end,
 	
 	-- On step

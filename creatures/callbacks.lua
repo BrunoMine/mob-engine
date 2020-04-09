@@ -24,6 +24,7 @@ be misrepresented as being the original software.
 
 -- Register 'on_step'
 creatures.register_on_step = function(mob_name, func)
+	
 	-- Check 'on_step'
 	if creatures.registered_mobs[mob_name].on_step_table == nil then
 		creatures.registered_mobs[mob_name].on_step_table = {}
@@ -33,26 +34,13 @@ creatures.register_on_step = function(mob_name, func)
 end
 
 -- Execute 'on_step'
-creatures.on_step = function(mob_name, self, dtime)
-	
-	-- first get the relevant specs; exit if we don't know anything (1-3ms)
-	local def = core.registered_entities[self.mob_name]
-	if not def then
-		throw_error("Can't load creature-definition")
-		return
-	end
-	
-	-- Check 'on_step'
-	if creatures.registered_mobs[mob_name].on_step_table == nil then
-		creatures.registered_mobs[mob_name].on_step_table = {}
-	end
+creatures.entity_meta.mob_on_step = function(self, dtime)
 	
 	-- Round dtime
 	local rdtime = math.floor(dtime * 100) / 100 
 	
-	
 	-- Run registered 'on_step'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_step_table) do
+	for _,f in ipairs(self.mob_on_step_tb) do
 		local r = f(self, rdtime)
 		if r == true then
 			return r
@@ -130,22 +118,17 @@ creatures.register_get_staticdata = function(mob_name, func)
 end
 
 -- Execute 'get_staticdata'
-creatures.get_staticdata = function(mob_name, self)
+creatures.entity_meta.mob_get_staticdata = function(self)
 	
 	if self.activated == true then
-		creatures.on_deactivate(mob_name, self)
+		creatures.on_deactivate(self.mob_name, self)
 	end
 	self.activated = true
-	
-	-- Check 'get_staticdata'
-	if creatures.registered_mobs[mob_name].get_staticdata_table == nil then
-		creatures.registered_mobs[mob_name].get_staticdata_table = {}
-	end
 	
 	-- Run registered 'get_staticdata'
 	local data = {}
 	
-	for _,f in ipairs(creatures.registered_mobs[mob_name].get_staticdata_table) do
+	for _,f in ipairs(self.mob_get_staticdata_tb) do
 		local other_data = f(self)
 		
 		-- Merge results
@@ -171,8 +154,7 @@ creatures.register_on_activate = function(mob_name, func)
 end
 
 -- Execute 'on_activate'
-creatures.on_activate = function(mob_name, self, staticdata)
-	
+creatures.entity_meta.mob_on_activate = function(self, staticdata)
 	
 	-- Restore Staticdata for entity
 	if staticdata then
@@ -184,13 +166,8 @@ creatures.on_activate = function(mob_name, self, staticdata)
 		end
 	end
 	
-	-- Check 'on_activate'
-	if creatures.registered_mobs[mob_name].on_activate_table == nil then
-		creatures.registered_mobs[mob_name].on_activate_table = {}
-	end
-	
 	-- Run registered 'on_activate'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_activate_table) do
+	for _,f in ipairs(self.mob_on_activate_tb) do
 		local r = f(self, staticdata)
 		if r == true then
 			return r

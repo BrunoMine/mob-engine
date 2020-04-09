@@ -44,6 +44,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
+		self.mob_animations = def.model.animations
 		self.animation = self.animation or ""
 	end)
 	
@@ -57,11 +58,15 @@ end)
 
 -- Update animation
 creatures.set_animation = function(self, anim_name)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.set_animation' method (use 'self:mob_set_anim')")
+	self:mob_set_anim(anim_name)
+end
+creatures.entity_meta.mob_set_anim = function(self, anim_name)
 	
 	local obj = self.object
 	
 	-- Animation definitions
-	local def = creatures.get_def(self).model.animations[anim_name]
+	local def = self.mob_animations[anim_name]
 	
 	-- Check animation
 	if not def then return end

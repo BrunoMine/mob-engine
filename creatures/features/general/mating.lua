@@ -69,7 +69,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		self.mating_last_day = self.mating_last_day or minetest.get_day_count()
 		
-		self.timers.mating = 0
+		self.timers.mating = math.random(5, creatures.action_factor_time(self, 20))
 		
 	end)
 	
@@ -77,10 +77,10 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.mating = self.timers.mating + dtime
+		self.timers.mating = self.timers.mating - dtime
 		
-		if self.timers.mating >= 25 then
-			self.timers.mating = 0
+		if self.timers.mating <= 0 then
+			self.timers.mating = creatures.action_factor_time(self, 20)
 			
 			local me = self.object
 			local my_pos = me:get_pos()

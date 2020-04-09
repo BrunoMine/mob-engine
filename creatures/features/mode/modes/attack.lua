@@ -28,15 +28,15 @@ local follow_time = 0.5
 -- On finish path
 local on_finish_path = function(self)
 	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
-	creatures.set_animation(self, "idle")
+	self:mob_go_dir(0, {x=0,y=0,z=0}, self.can_fly)
+	self:mob_set_anim("idle")
 end
 
 -- On interrupt path
 local on_interrupt_path = function(self)
 	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
-	creatures.set_animation(self, "idle")
+	self:mob_go_dir(0, {x=0,y=0,z=0}, self.can_fly)
+	self:mob_set_anim("idle")
 end
 
 -- Check step
@@ -80,7 +80,7 @@ local rotate_to_target = function(self, current_pos, target_pos)
 			The object is rotated -90 degrees in this attack mode only. 
 			Third parameter fix this temporarily.
 		]]
-		creatures.set_dir(self, new_dir, 90)
+		self:mob_set_dir(new_dir, 90)
 	end
 end
 
@@ -169,13 +169,21 @@ creatures.register_mode("attack", {
 		if self.mdt.punch <= 0 then
 			self.mdt.punch = get_time_to_punch(self)
 			
+			-- Check target
+			if not self.target or not self.target:get_pos() then
+				self.target = nil
+				self.path.status = false
+				creatures.start_mode(self, "idle")
+				return
+			end
+			
 			if get_target_dist(self) < self.mode_vars.combat.attack_radius
 				and creatures.mob_sight(self, self.target, {physical_access=true}) == true -- Check line of sight
 			then
 				
 				-- Stop movement
 				self.path.status = false
-				creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
+				self:mob_go_dir(0, {x=0,y=0,z=0}, self.can_fly)
 				
 				-- Adjust animation
 				if self.animation ~= "attack" then
@@ -203,6 +211,14 @@ creatures.register_mode("attack", {
 		-- AI for attack
 		if self.mdt.ai < 0 then
 			self.mdt.ai = 2
+			
+			-- Check target
+			if not self.target or not self.target:get_pos() then
+				self.target = nil
+				self.path.status = false
+				creatures.start_mode(self, "idle")
+				return
+			end
 			
 			local current_pos = get_current_pos(self)
 			local target_pos = self.target:get_pos()
@@ -242,7 +258,7 @@ creatures.register_mode("attack", {
 			
 				-- Fly to target
 				rotate_to_target(self, current_pos, target_pos)
-				creatures.send_in_dir(self, self.mode_vars.moving_speed, self.dir, self.can_fly)
+				self:mob_go_dir(self.mode_vars.moving_speed, self.dir, self.can_fly)
 				return
 			
 			end
@@ -256,7 +272,7 @@ creatures.register_mode("attack", {
 				and creatures.mob_sight(self, self.target, {physical_access=true}) == true
 			then
 				
-				creatures.send_in_dir(self, self.mode_vars.moving_speed, self.dir)
+				self:mob_go_dir(self.mode_vars.moving_speed, self.dir)
 				rotate_to_target(self, current_pos, target_pos)
 				if self.animation ~= "attack" then
 					creatures.set_animation(self, "attack")
@@ -299,7 +315,7 @@ creatures.register_mode("attack", {
 			--
 			
 			-- Stand rotated to target
-			creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, self.can_fly)
+			self:mob_go_dir(0, {x=0,y=0,z=0}, self.can_fly)
 			rotate_to_target(self, current_pos, target_pos)
 			if self.animation ~= "idle" then
 				creatures.set_animation(self, "idle")

@@ -26,6 +26,8 @@ local changeHP = creatures.change_hp
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
+	if def.stats.can_burn ~= true then return end
+	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		

@@ -48,12 +48,12 @@ creatures.register_mode("fly", {
 			local new_dir = creatures.get_dir_p1top2(current_pos, pos, true)
 			
 			if new_dir then
-				creatures.set_dir(self, new_dir)
+				self:mob_set_dir(new_dir)
 				
 				self.fly_time = 1/mode_def.moving_speed
 				
 				-- Send
-				creatures.send_in_dir(self, mode_def.moving_speed, self.dir, true)
+				self:mob_go_dir(mode_def.moving_speed, self.dir, true)
 				creatures.set_animation(self, "fly")
 			end
 		end
@@ -69,7 +69,7 @@ creatures.register_mode("fly", {
 		
 		if self.mdt.fly > self.fly_time then
 			-- Stop movement
-			creatures.send_in_dir(self, 0, {x=0,y=0,z=0}, true)
+			self:mob_go_dir(0, {x=0,y=0,z=0}, true)
 			-- Stop fly animation
 			creatures.set_animation(self, "idle")
 		end

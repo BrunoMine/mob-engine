@@ -32,44 +32,48 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.can_swim = def.stats.can_swim
 		
 		-- Timers
-		self.timers.swim = 0
+		self.timers.swim = math.random(0.1, creatures.action_factor_time(self, 0.4))
 		self.timers.drown = 0
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		-- Remove gravity when in water
-		if self.in_water then
-			
-			self.physic.gravity = false
-			-- Update physic
-			creatures.update_physic(self)
-			-- Update acceleration in water
-			me:setacceleration({x = 0, y = -1, z = 0})
-			-- Reduce fall speed
-			local vel = me:getvelocity()
-			if vel.y < 0 then
-				vel.y = vel.y * 0.1
-				me:setvelocity(vel)
-			end
-		else
-			-- Update physic
-			creatures.reset_physic(self)
-			creatures.update_physic(self)
-		end
 		
-		self.timers.swim = self.timers.swim + dtime
+		self.timers.swim = self.timers.swim - dtime
 		
 		-- Check swim
-		if self.timers.swim > 0.4 then
+		if self.timers.swim <= 0 then
+			self.timers.swim = creatures.action_factor_time(self, 0.4)
+			
+			
+			-- Remove gravity when in water
+			if self.in_water then
+				
+				self.physic.gravity = false
+				-- Update physic
+				creatures.update_physic(self)
+				-- Update acceleration in water
+				me:setacceleration({x = 0, y = -1, z = 0})
+				-- Reduce fall speed
+				local vel = me:getvelocity()
+				if vel.y < 0 then
+					vel.y = vel.y * 0.1
+					me:setvelocity(vel)
+				end
+			else
+				-- Update physic
+				creatures.reset_physic(self)
+				creatures.update_physic(self)
+			end
+			
 			
 			local me = self.object
 			local current_pos = me:get_pos()
 			
 			-- MOB definition
 			local mob_def = creatures.mob_def(self)
-			self.timers.swim = 0
+			
 			
 			-- Check if in water
 			if self.last_node and self.last_node.name == "default:water_source" then
