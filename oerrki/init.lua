@@ -43,7 +43,7 @@ local def = {
 	modes = {
 		idle = {chance = 0.59, duration = 3, update_yaw = 8},
 		walk = {chance = 0.3, duration = 5.5, moving_speed = 1.5, search_radius = 5},
-		walk_long = {chance = 0.11, duration = 8, moving_speed = 1.3, update_yaw = 5},
+		--walk_long = {chance = 0.11, duration = 8, moving_speed = 1.3, update_yaw = 5}, not registered mode
 
 		-- special modes
 		attack = {chance = 0, moving_speed = 2.9, duration = 20},

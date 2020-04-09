@@ -132,7 +132,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Check action factor
-			if new_mode ~= "idle" and self:mob_actfac_bool(2) == false then
+			if new_mode ~= "idle" then
 				new_mode = "idle"
 			end
 			

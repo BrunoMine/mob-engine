@@ -55,18 +55,21 @@ creatures.register_on_register_mob(function(mob_name, def)
 			})
 			
 			self.mobs_near = #mobs
-			
+			local i = 0
 			-- update near mobs
 			for _,obj in ipairs(mobs) do
 				
 				local s = obj:get_luaentity()
 				if s then
+					i = i + 1
 					s.mobs_near = #mobs
-					s.mobs_near_timer = math.random(15, 25)
+					s.mobs_near_timer = math.random(15, 35)
 				end
 			end
 			
-			self.mobs_near_timer = math.random(15, 25)
+			self.mobs_near = 100
+			
+			self.mobs_near_timer = math.random(15, 35)
 			
 		end
 		

@@ -102,7 +102,7 @@ creatures.entity_meta.mob_set_yaw = function(self, yaw, rotate)
 end
 
 -- Set dir
-creatures.set_dir = function(self, yaw, rotate)
+creatures.set_dir = function(self, dir, rotate)
 	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.set_dir' method (use 'self:mob_set_dir')")
 	self:mob_set_dir(dir, rotate)
 end

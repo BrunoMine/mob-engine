@@ -29,6 +29,11 @@ creatures.register_mode("eat", {
 	-- On start
 	start = function(self)
 		
+		if self:mob_actfac_bool(7) == false then
+			creatures.start_mode(self, "idle")
+			return 
+		end
+		
 		-- Localize some things
 		local mode_def = creatures.mode_def(self)
 		local me = self.object

@@ -45,6 +45,17 @@ creatures.register_mode("walk", {
 			local current_pos = self.object:getpos()
 			current_pos.y = current_pos.y + 0.5
 			
+			if self:mob_actfac_bool(7) == false then
+				creatures.start_mode(self, "idle")
+				return 
+			end
+			
+			-- [PROBLEM!] Causes performance issues above 100 MOBs
+			local nodes = creatures.get_under_walkable_nodes_in_area(
+				vector.subtract(current_pos, 1), 
+				vector.add(current_pos, 1)
+			)
+			
 			local search_radius = def_mode.search_radius
 			local nodes = creatures.get_under_walkable_nodes_in_area(
 				{ -- min pos

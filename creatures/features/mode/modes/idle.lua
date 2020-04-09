@@ -38,7 +38,7 @@ creatures.register_idle_mode = function(mode_name, def)
 	-- On start
 	mode_def.start = function(self)
 		
-		if self:mob_actfac_bool(1) == true then
+		if self:mob_actfac_bool(2.5) == true then
 			self:mob_random_dir()
 		end
 		
