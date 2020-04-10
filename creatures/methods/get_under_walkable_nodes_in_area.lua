@@ -22,7 +22,7 @@ be misrepresented as being the original software.
 ]]
 
 -- Methods
-local get_under = creatures.get_under_walkable_height
+local get_under_height = creatures.get_under_walkable_height
 local insert = table.insert
 
 -- Get under walkable nodes in area
@@ -33,7 +33,7 @@ creatures.get_under_walkable_nodes_in_area = function(minp, maxp)
 	local x, z = minp.x, minp.z
 	while x <= maxp.x do
 		while z <= maxp.z do
-			local h = get_under({x=x, z=z}, minp.y, maxp.y)
+			local h = get_under_height({x=x, z=z}, minp.y, maxp.y)
 			i = i + 1
 			if h then
 				insert(f, {x=x, y=h, z=z})

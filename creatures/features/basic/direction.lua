@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 direction.lua
@@ -167,7 +167,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Update direction
-		self.dir = creatures.yaw_to_dir(self.object:getyaw())
+		self.dir = creatures.yaw_to_dir(self.object:get_yaw())
 		
 	end)
 	

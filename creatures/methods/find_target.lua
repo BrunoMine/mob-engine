@@ -22,6 +22,11 @@ be misrepresented as being the original software.
 ]]
 
 
+-- Methods
+local get_objects = minetest.get_objects_inside_radius
+local insert = table.insert
+local mob_sight = creatures.mob_sight
+
 -- Find Target
 creatures.find_target = function(pos, radius, search_def)
 	
@@ -41,9 +46,9 @@ creatures.find_target = function(pos, radius, search_def)
 	-- Player near
 	local player_near = false
 	local mobs = {}
-	for  _,obj in ipairs(core.get_objects_inside_radius(pos, radius)) do
+	for  _,obj in ipairs(get_objects(pos, radius)) do
 		if io[tostring(obj)] ~= true then
-			if xray or creatures.mob_sight(pos, obj, {ignore_obj=ignore_obj}) == true then
+			if xray or mob_sight(pos, obj, {ignore_obj=ignore_obj}) == true then
 				local is_player = obj:is_player()
 				if is_player then
 					player_near = true
@@ -57,27 +62,27 @@ creatures.find_target = function(pos, radius, search_def)
 
 				if search_type == "all" then
 					if not isItem and not ignore then
-						table.insert(mobs, obj)
+						insert(mobs, obj)
 					end
 					
 				elseif search_type == "hostile" then
 					if not ignore and (entity and entity.hostile == true) or is_player then
-					table.insert(mobs, obj)
+					insert(mobs, obj)
 					end
 					
 				elseif search_type == "nonhostile" then
 					if entity and not entity.hostile and not isItem and not ignore then
-						table.insert(mobs, obj)
+						insert(mobs, obj)
 					end
 					
 				elseif search_type == "player" then
 					if is_player then
-						table.insert(mobs, obj)
+						insert(mobs, obj)
 					end
 					
 				elseif search_type == "mate" then
 					if not isItem and (entity and entity.mob_name == mob_name) then
-					table.insert(mobs, obj)
+					insert(mobs, obj)
 					end
 				end
 			end

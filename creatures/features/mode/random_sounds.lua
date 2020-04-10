@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 random_sounds.lua
@@ -21,6 +21,9 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local sound_play = minetest.sound_play
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
@@ -56,7 +59,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Random sound
-			local sound = (minetest.registered_entities[self.mob_name].sounds.random or {})[self.mode]
+			local sound = (self.mob_sounds.random or {})[self.mode]
 			if not sound then 
 				-- Cancel and restart loop
 				self.timers.rdm_sound = math.random(5, 15)
@@ -64,7 +67,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Play sound
-			minetest.sound_play(sound.name, {
+			sound_play(sound.name, {
 				pos = self.object:get_pos(), 
 				gain = sound.gain or 1, 
 				max_hear_distance = sound.distance or 30

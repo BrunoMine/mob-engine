@@ -64,7 +64,7 @@ creatures.register_mode("walk_around", {
 		local current_pos = self.object:get_pos()
 		current_pos.y = current_pos.y + 0.5
 		
-		if self:mob_actfac_bool(2) == false then
+		if self:mob_actfac_bool(1) == false then
 			start_mode(self, "idle")
 			return 
 		end

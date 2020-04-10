@@ -22,6 +22,14 @@ be misrepresented as being the original software.
 ]]
 
 
+-- Methods
+local get_node = minetest.get_node
+local get_item_group = minetest.get_item_group
+
+-- Global tables
+local registered_nodes = minetest.registered_nodes
+
+
 -- Get random index
 creatures.get_random_index = function(tb)
 	local index_table = {}
@@ -63,21 +71,22 @@ end
 -- Velocity add
 creatures.velocity_add = function(self, v_add)
 	local obj = self.object
-	local v = obj:getvelocity()
+	local v = obj:get_velocity()
 	
 	local new_v = vector.add(v, v_add)
 	
-	obj:setvelocity(new_v)
+	obj:set_velocity(new_v)
 end
 
 creatures.get_far_node = function(pos)
-	local node = minetest.get_node(pos)
+	local node = get_node(pos)
 	if node.name == "ignore" then
 		minetest.get_voxel_manip():read_from_map(pos, pos)
-		node = minetest.get_node(pos)
+		node = get_node(pos)
 	end
 	return node
 end
+local get_far_node = creatures.get_far_node
 
 -- Copy a table
 creatures.copy_tb = function(tb)
@@ -118,18 +127,18 @@ end
 
 -- Check free pos
 creatures.check_free_pos = function(pos)
-	local node = creatures.get_far_node(pos)
+	local node = get_far_node(pos)
 	if node.name == "air" then return true end
-	local def = minetest.registered_nodes[node.name]
+	local def = registered_nodes[node.name]
 	if def ~= nil and def.walkable == false then return true end
 	return false
 end
 
 -- Check if a node is wall/fence
 creatures.is_wall = function(pos)
-	local name = minetest.get_node(pos).name
-	if minetest.get_item_group(name, "wall") == 1
-		or minetest.get_item_group(name, "fence") == 1
+	local name = get_node(pos).name
+	if get_item_group(name, "wall") == 1
+		or get_item_group(name, "fence") == 1
 	then
 		return true
 	end

@@ -21,6 +21,9 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local find_target = creatures.find_target
+
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
@@ -49,7 +52,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 		if self.mobs_near_timer <= 0 then
 			
-			local mobs = creatures.find_target(self.object:get_pos(), 25, {
+			local mobs = find_target(self.object:get_pos(), 25, {
 				search_type = "all", 
 				xray = true,
 			})

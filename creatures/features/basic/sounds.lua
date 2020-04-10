@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 sounds.lua
@@ -27,5 +27,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Entity definitions
 	def.ent_def.sounds = def.sounds
+	
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		self.mob_sounds = def.sounds
+		
+	end)
 	
 end)

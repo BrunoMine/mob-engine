@@ -65,6 +65,7 @@ creatures.line_of_sight = function(pos1, pos2, def)
 	
 	return true
 end
+local line_of_sight = creatures.line_of_sight
 
 -- Check line of sight
 creatures.mob_sight = function(viewer, target, def)
