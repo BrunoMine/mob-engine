@@ -44,6 +44,15 @@ local on_finish_path = function(self)
 end
 
 
+-- Methods
+local get_nodes = creatures.get_under_walkable_nodes_in_area
+local p1top2 = creatures.get_dir_p1top2
+local random = creatures.get_random_from_table
+local start_mode = creatures.start_mode
+local minp = vector.subtract
+local maxp = vector.add
+local total = table.maxn
+
 -- Walk Around mode ("walk_around")
 creatures.register_mode("walk_around", {
 	
@@ -55,30 +64,31 @@ creatures.register_mode("walk_around", {
 		local current_pos = self.object:get_pos()
 		current_pos.y = current_pos.y + 0.5
 		
-		if self:mob_actfac_bool(7) == false then
-			creatures.start_mode(self, "idle")
+		if self:mob_actfac_bool(2) == false then
+			start_mode(self, "idle")
 			return 
 		end
 		
 		-- [PROBLEM!] Causes performance issues above 100 MOBs
-		local nodes = creatures.get_under_walkable_nodes_in_area(
-			vector.subtract(current_pos, 1), 
-			vector.add(current_pos, 1)
+		local nodes = get_nodes(
+			minp(current_pos, 1), 
+			maxp(current_pos, 1)
 		)
 		
-		if table.maxn(nodes) <= 1 then
+		if total(nodes) <= 1 then
 			-- Finish mode
-			creatures.start_mode(self, "idle")
+			start_mode(self, "idle")
 		end
 		
 		-- Walk 1 node in any direction
-		local pos = creatures.get_random_from_table(nodes)
-		local new_dir = creatures.get_dir_p1top2(current_pos, pos)
+		local pos = random(nodes)
+		local new_dir = p1top2(current_pos, pos)
 		
 		if new_dir then
+			
 			self:mob_set_dir(new_dir)
 			
-			self.walk_around_time = 1/self.mode_def.moving_speed
+			self.mdt.walk_around = 1/self.mode_def.moving_speed
 			
 			-- Send
 			self:mob_go_dir(self.mode_def.moving_speed)
@@ -90,16 +100,13 @@ creatures.register_mode("walk_around", {
 	-- On step
 	on_step = function(self, dtime)
 		
-		self.mdt.walk_around = self.mdt.walk_around + dtime
+		self.mdt.walk_around = self.mdt.walk_around - dtime
 		
-		if self.mdt.walk_around > self.walk_around_time then
+		if self.mdt.walk_around <= 0 then
 			self.mdt.walk_around = 0
 			
-			-- reset time
-			self.walk_around_time = 0
-			
 			-- Finish mode
-			creatures.start_mode(self, "idle")
+			start_mode(self, "idle")
 		end
 		
 	end,

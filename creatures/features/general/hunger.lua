@@ -74,7 +74,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.hunger_activated = false
 		
 		-- Timer
-		self.timers.hunger = math.random(8, creatures.action_factor_time(self, 10, 2))
+		self.timers.hunger = math.random(8, self:mob_actfac_time(10, 2))
 		
 	end)
 	
@@ -85,7 +85,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.timers.hunger = self.timers.hunger - dtime
 		
 		if self.timers.hunger <= 0 then
-			self.timers.hunger = math.random(8, creatures.action_factor_time(self, 10, 2))
+			self.timers.hunger = math.random(8, self:mob_actfac_time(10, 2))
 			
 			-- If wild then ignore hunger
 			if self.is_wild == true then

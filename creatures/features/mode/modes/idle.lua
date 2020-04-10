@@ -22,6 +22,9 @@ be misrepresented as being the original software.
 ]]
 
 
+-- Methods
+local start_mode = creatures.start_mode
+
 -- Registered idle modes
 creatures.registered_idle_modes = {}
 
@@ -66,13 +69,12 @@ creatures.register_idle_mode = function(mode_name, def)
 				
 				if self.mdt[mode_name] >= def.time then
 					-- Finish mode
-					creatures.start_mode(self, "idle")
+					start_mode(self, "idle")
 					return
 				end
 			end
 		end
 	end
-	
 	
 	-- Register mode
 	creatures.register_mode(mode_name, mode_def)

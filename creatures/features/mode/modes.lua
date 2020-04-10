@@ -25,6 +25,10 @@ be misrepresented as being the original software.
 local modpath = core.get_modpath("creatures")
 
 
+-- Methods
+local random = creatures.get_random_index
+local get_def = creatures.get_def
+
 -- Update animation
 creatures.mode_animation_update = function(self)
 	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.mode_animation_update' method (use 'self:mob_mode_set_anim')")
@@ -63,6 +67,38 @@ end
 creatures.mode_def = function(self, mode)
 	return creatures.registered_mobs[self.mob_name].modes[(mode or self.mode)]
 end
+
+
+-- Start a mode
+creatures.start_mode = function(self, mode)
+	
+	-- Debug tool
+	--minetest.chat_send_all("Starting mode: "..mode)
+	
+	-- Check mode
+	if not self.mob_modes[mode] then
+		creatures.throw_error("Mode "..dump(mode).." no registered in mob "..dump(self.mob_name))
+		mode = "idle"
+	end
+	
+	-- Update last mode
+	self.last_mode = self.mode
+	
+	-- Update mode settings
+	self.mode = mode
+	self.mode_def = self.mob_modes[mode]
+	self.modetimer = self.mob_modes[mode].duration or 5
+	self.mode_vars = {}
+	self.mdt = {}
+	
+	-- Update mode on_step
+	self.mob_mode_on_step = creatures.registered_modes[mode].on_step or function() end
+	
+	if creatures.registered_modes[mode] and creatures.registered_modes[mode].start then
+		creatures.registered_modes[mode].start(self)
+	end
+end
+local start_mode = creatures.start_mode
 
 
 -- Default MOB mode on_step
@@ -105,7 +141,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		if self.modetimer <= 0 then
 			self.modetimer = math.random(3, 5)
 			
-			local def = creatures.get_def(self)
+			local def = get_def(self)
 			
 			-- Localize some things
 			local modes = def.modes
@@ -117,7 +153,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 			
 			-- Get a random mode
-			local new_mode = creatures.get_random_index(modes) or "idle"
+			local new_mode = random(modes) or "idle"
 			
 			if new_mode == "panic" 
 				or new_mode == "swin" 
@@ -131,18 +167,13 @@ creatures.register_on_register_mob(function(mob_name, def)
 				new_mode = "idle"
 			end
 			
-			-- Check action factor
-			if new_mode ~= "idle" then
-				new_mode = "idle"
-			end
-			
 			current_mode = new_mode
 			
 			-- Update current_mode if changed when start
 			self.mode = current_mode
 			
 			-- Start
-			creatures.start_mode(self, current_mode)
+			start_mode(self, current_mode)
 		end
 		
 		-- Execute mode step
@@ -160,35 +191,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	end)
 end)
 
--- Start a mode
-creatures.start_mode = function(self, mode)
-	
-	-- Debug tool
-	--minetest.chat_send_all("Starting mode: "..mode)
-	
-	-- Check mode
-	if not self.mob_modes[mode] then
-		creatures.throw_error("Mode "..dump(mode).." no registered in mob "..dump(self.mob_name))
-		mode = "idle"
-	end
-	
-	-- Update last mode
-	self.last_mode = self.mode
-	
-	-- Update mode settings
-	self.mode = mode
-	self.mode_def = self.mob_modes[mode]
-	self.modetimer = self.mob_modes[mode].duration or 5
-	self.mode_vars = {}
-	self.mdt = {}
-	
-	-- Update mode on_step
-	self.mob_mode_on_step = creatures.registered_modes[mode].on_step or function() end
-	
-	if creatures.registered_modes[mode] and creatures.registered_modes[mode].start then
-		creatures.registered_modes[mode].start(self)
-	end
-end
+
 
 -- Register a mode
 creatures.registered_modes = {}

@@ -21,22 +21,27 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local free_pos = creatures.check_free_pos
+local is_wall = creatures.is_wall
+
 -- Get under walkable height
 creatures.get_under_walkable_height = function(pos, minh, maxh)
 	
 	local h = maxh
 	
 	-- Check first node
-	if creatures.check_free_pos({x=pos.x,y=h,z=pos.z}) == false then
+	if free_pos({x=pos.x,y=h,z=pos.z}) == false then
 		return
 	end
 	
 	h = h - 1
 	
 	while h >= (minh-1) do
-		if creatures.check_free_pos({x=pos.x,y=h,z=pos.z}) == false then
+		if free_pos({x=pos.x,y=h,z=pos.z}) == false then
 			-- Check if is wall/fence
-			if creatures.is_wall({x=pos.x,y=h,z=pos.z}) == true then
+			if is_wall({x=pos.x,y=h,z=pos.z}) == true then
 				return h + 2
 			else
 				return h + 1

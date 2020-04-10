@@ -21,6 +21,11 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local p1top2 = creatures.get_dist_p1top2
+local find_target = creatures.find_target
+
 -- Finish path
 local finish_path = function(self)
 	-- Path status
@@ -72,13 +77,14 @@ creatures.find_path = function(self, target_pos, search_def)
 	end
 	
 end
+local find_path = creatures.find_path
 
 -- Find path
 creatures.new_path = function(self, target_pos, def)
 	local my_pos = self.object:getpos()
 	
 	local search_def = def.search_def or {}
-	self.path.way = creatures.find_path(
+	self.path.way = find_path(
 		self, 
 		target_pos, 
 		{ 
@@ -138,7 +144,7 @@ creatures.entity_meta.mob_path_step = function(self, dtime)
 		
 		-- Check path step
 		do
-			local dist = creatures.get_dist_p1top2(mypos, way[1])
+			local dist = p1top2(mypos, way[1])
 			
 			-- Arrived at the last point
 			if dist < 1.1 then
@@ -164,7 +170,7 @@ creatures.entity_meta.mob_path_step = function(self, dtime)
 		-- Move to next location path
 		
 		-- Check objects obstruction
-		local objects = creatures.find_target(way[1], 0.5, {
+		local objects = find_target(way[1], 0.5, {
 			xray = true,
 			search_type = "all",
 			ignore_obj = {self.object}		
@@ -182,7 +188,7 @@ creatures.entity_meta.mob_path_step = function(self, dtime)
 		self.path.time = 1/speed
 		
 		-- Rotate to next location path
-		local new_dir = creatures.get_dir_p1top2(mypos, way[1])
+		local new_dir = p1top2(mypos, way[1])
 		if new_dir then
 			self:mob_set_dir(new_dir)
 		end

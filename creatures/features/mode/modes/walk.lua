@@ -21,6 +21,18 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local start_mode = creatures.start_mode
+local get_under = creatures.get_under_walkable_nodes_in_area
+local int = math.floor
+local total = table.maxn
+local new_path = creatures.new_path
+local random = creatures.get_random_from_table
+local minp = vector.subtract
+local maxp = vector.add
+local get_def = creatures.get_def
+
 -- On finish path
 local on_finish_path = function(self)
 	-- Stop movement
@@ -35,76 +47,63 @@ creatures.register_mode("walk", {
 	-- On start
 	start = function(self)
 		
-		local def_mode = creatures.mode_def(self)
-		
 		-- If Search a node
-		if def_mode.search_radius then
+		if self.mode_def.search_radius then
 			
-			local mob_def = creatures.get_def(self)
-			
-			local current_pos = self.object:getpos()
-			current_pos.y = current_pos.y + 0.5
-			
-			if self:mob_actfac_bool(7) == false then
-				creatures.start_mode(self, "idle")
+			if self:mob_actfac_bool(300) == false then
+				start_mode(self, "idle")
 				return 
 			end
 			
-			-- [PROBLEM!] Causes performance issues above 100 MOBs
-			local nodes = creatures.get_under_walkable_nodes_in_area(
-				vector.subtract(current_pos, 1), 
-				vector.add(current_pos, 1)
-			)
+			local mode_def = self.mode_def
 			
-			local search_radius = def_mode.search_radius
-			local nodes = creatures.get_under_walkable_nodes_in_area(
+			local mob_def = get_def(self)
+			
+			local current_pos = self.object:get_pos()
+			current_pos.y = current_pos.y + 0.5
+			
+			-- [PROBLEM!] Causes performance issues above 100 MOBs
+			
+			local search_radius = mode_def.search_radius
+			local nodes = get_under(
 				{ -- min pos
 					x = current_pos.x - search_radius,
-					y = current_pos.y - math.floor(mob_def.stats.can_jump),
+					y = current_pos.y - int(mob_def.stats.can_jump),
 					z = current_pos.z - search_radius,
 				}, 
 				{ -- max pos
 					x = current_pos.x + search_radius,
-					y = current_pos.y + math.floor(mob_def.stats.can_jump),
+					y = current_pos.y + int(mob_def.stats.can_jump),
 					z = current_pos.z + search_radius,
 				}
 			)
 			
-			-- Try find path
-			local n = table.maxn(nodes)
-			if n > 3 then n = 3 end
-			while n > 0 do
-				
-				local p
-				p, nodes = creatures.get_random_from_table(nodes, true)
-				
-				if creatures.new_path(
-					self, 
-					{x=p.x, y=p.y, z=p.z}, 
-					{
-						speed = def_mode.moving_speed,
-						on_finish = on_finish_path,
-						on_interrupt = on_finish_path,
-						search_def = {
-							max_jump = math.floor(mob_def.stats.can_jump),
-							search_radius = def_mode.search_radius,
-							time_to_find = 0.08,
-						}
+			-- Try find a path
+			local p = random(nodes, true)
+			
+			if new_path(
+				self, 
+				p, 
+				{
+					speed = mode_def.moving_speed,
+					on_finish = on_finish_path,
+					on_interrupt = on_finish_path,
+					search_def = {
+						max_jump = int(mob_def.stats.can_jump),
+						search_radius = mode_def.search_radius,
+						time_to_find = 0.08,
 					}
-				) == true then
-					
-					-- Start walk animation
-					self:mob_mode_set_anim()
-					break
-				end
+				}
+			) == true then
 				
-				n = n - 1
+				-- Start walk animation
+				self:mob_mode_set_anim()
 			end
 			
 			-- Check if there is no path
 			if self.path.status == false then
 				-- Finish mode
-				creatures.start_mode(self, "idle")
+				start_mode(self, "idle")
 			end
 		
 		-- Random dir
@@ -113,7 +112,7 @@ creatures.register_mode("walk", {
 			self:mob_random_dir()
 			
 			-- Start movement
-			self:mob_go_dir(def_mode.moving_speed)
+			self:mob_go_dir(mode_def.moving_speed)
 			
 			-- Update animation
 			self:mob_mode_set_anim()

@@ -53,17 +53,15 @@ end
 creatures.entity_meta.mob_actfac_time = function(self, n_time, post_factor)
 	post_factor = post_factor or 1
 	
-	local time = n_time
+	local factor = 1
 	
-	if self.mobs_near < 4 then
+	if self.mobs_near > 3 then
 		if self.mobs_near < 20 then
-			time = self.mobs_near/3
+			factor = self.mobs_near/3
 		else
-			time = 5
+			factor = 5
 		end
-		
-		time = time * post_factor
 	end
 	
-	return time
+	return (n_time * factor * post_factor)
 end
