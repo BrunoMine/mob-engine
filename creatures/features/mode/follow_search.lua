@@ -21,7 +21,12 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local random = math.random
 local hasMoved = creatures.compare_pos
+local find_target = creatures.find_target
+local start_mode = creatures.start_mode
+local get_vision_pos = creatures.get_vision_pos
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
@@ -32,7 +37,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.follow_search = math.random(0, def.modes.follow.search_timer or 4)
+		self.timers.follow_search = random(1.01, (self:mob_actfac_time(def.modes.follow.search_timer)+1.01))
 		
 	end)
 	
@@ -42,15 +47,15 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.timers.follow_search = self.timers.follow_search - dtime
 		
 		if self.timers.follow_search <= 0 then
-			self.timers.follow_search = def.modes.follow.search_timer or 4
+			self.timers.follow_search = self:mob_actfac_time(def.modes.follow.search_timer)
 			
 			-- Current mode
 			if self.mode ~= "idle" then return end
 			
 			-- Action factor
-			if creatures.action_factor(self, 1.2) == false then return end
+			if self:mob_actfac_bool(1.2) == false then return end
 			
-			local current_pos = self.object:getpos()
+			local current_pos = self.object:get_pos()
 			current_pos.y = current_pos.y + 0.5
 			
 			-- Search a target
@@ -60,7 +65,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			then
 					
 				-- if a target was found
-				for _,target in ipairs(creatures.find_target(creatures.get_vision_pos(self), (def.modes.follow.radius or 5), {
+				for _,target in ipairs(find_target(get_vision_pos(self), (def.modes.follow.radius or 5), {
 					search_type = "player",
 					ignore_obj = {self.object}
 				})) do
@@ -70,7 +75,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 					local name = target:get_wielded_item():get_name()
 					if name and def.modes.follow.items[name] == true then
 						self.target = target
-						creatures.start_mode(self, "follow")
+						start_mode(self, "follow")
 					end
 				end
 			end

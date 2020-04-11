@@ -22,6 +22,9 @@ be misrepresented as being the original software.
 ]]
 
 
+-- Methods
+local get_random_dir = creatures.get_random_dir
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
@@ -63,19 +66,17 @@ creatures.register_mode("panic", {
 	-- On start
 	start = function(self)
 		
-		local mode_def = creatures.mode_def(self)
-		
 		-- Reset timer
-		self.mdt.yaw = math.random(0, 1)
+		self.mdt.yaw = math.random(0.01, 1.01)
 		
 		-- Random dir
 		self:mob_random_dir()
 		
-		self.mode_vars.moving_speed = mode_def.moving_speed
+		self.mode_vars.moving_speed = self.mode_def.moving_speed
 		
 		-- Update mode settings
-		creatures.mode_velocity_update(self)
-		creatures.mode_animation_update(self)
+		self:mob_mode_set_velocity()
+		self:mob_mode_set_anim()
 	end,
 	
 	-- On step
@@ -84,9 +85,9 @@ creatures.register_mode("panic", {
 		self.mdt.yaw = self.mdt.yaw - dtime
 		
 		if self.mdt.yaw <= 0 then
-			self.mdt.yaw = math.random(1, 2)
+			self.mdt.yaw = math.random(1.01, 2.01)
 			
-			self:mob_set_dir(creatures.get_random_dir())
+			self:mob_random_dir()
 			
 			self:mob_go_dir(self.mode_vars.moving_speed, self.dir, self.can_fly)
 		end

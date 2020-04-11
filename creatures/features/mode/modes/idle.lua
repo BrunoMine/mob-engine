@@ -31,11 +31,8 @@ creatures.registered_idle_modes = {}
 -- Register idle mode
 creatures.register_idle_mode = function(mode_name, def)
 	
-	def = def or {}
+	creatures.registered_idle_modes[mode_name] = def or {}
 	
-	creatures.registered_idle_modes[mode_name] = def
-	
-	-- Mode def
 	local mode_def = {}
 	
 	-- On start
@@ -55,24 +52,6 @@ creatures.register_idle_mode = function(mode_name, def)
 			
 			-- Stop movement
 			self:mob_go_dir(0)
-		end
-	end
-	
-	if def.time then
-	
-		-- On step
-		mode_def.on_step = function(self, dtime)
-			
-			self.mdt[mode_name] = (self.mdt[mode_name] or 0) + dtime
-			
-			if self.mdt[mode_name] >= def.time then
-				
-				if self.mdt[mode_name] >= def.time then
-					-- Finish mode
-					start_mode(self, "idle")
-					return
-				end
-			end
 		end
 	end
 	

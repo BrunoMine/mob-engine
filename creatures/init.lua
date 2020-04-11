@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 init.lua
@@ -50,12 +50,13 @@ dofile(modpath .."/register_mob.lua")
 
 dofile(modpath .."/methods/mod_storage.lua")
 dofile(modpath .."/methods/drop_items.lua")
+dofile(modpath .."/methods/mob_sight.lua")
 dofile(modpath .."/methods/find_target.lua")
 dofile(modpath .."/methods/kill_mob.lua")
 dofile(modpath .."/methods/spawn_particles.lua")
 dofile(modpath .."/methods/get_under_walkable_height.lua")
 dofile(modpath .."/methods/get_under_walkable_nodes_in_area.lua")
-dofile(modpath .."/methods/mob_sight.lua")
+
 
 -- Engine Features
 
@@ -83,29 +84,29 @@ dofile(modpath .."/features/general/cleaning_cycles.lua")
 dofile(modpath .."/features/general/remove.lua")
 dofile(modpath .."/features/general/death_effects.lua")
 dofile(modpath .."/features/general/footstep_effects.lua")
---dofile(modpath .."/features/general/fallen.lua")
+dofile(modpath .."/features/general/fallen.lua")
 dofile(modpath .."/features/general/lifetime.lua")
---dofile(modpath .."/features/general/swim.lua")
+dofile(modpath .."/features/general/swim.lua")
 dofile(modpath .."/features/general/burn.lua")
 dofile(modpath .."/features/general/on_hitted.lua")
 dofile(modpath .."/features/general/tame.lua")
 dofile(modpath .."/features/general/knockback.lua")
 dofile(modpath .."/features/general/path_finder.lua")
 dofile(modpath .."/features/general/path.lua")
---dofile(modpath .."/features/general/hit_bottom.lua")
+dofile(modpath .."/features/general/hit_bottom.lua")
 dofile(modpath .."/features/general/mob_node.lua")
 dofile(modpath .."/features/general/feeder.lua")
 dofile(modpath .."/features/general/hunger.lua")
 dofile(modpath .."/features/general/child.lua")
---dofile(modpath .."/features/general/mating.lua")
+dofile(modpath .."/features/general/mating.lua")
 dofile(modpath .."/features/general/mob_item_tool.lua")
 dofile(modpath .."/features/general/randomize.lua")
 dofile(modpath .."/features/general/spawn_env.lua")
 
 -- Mode
 dofile(modpath .."/features/mode/modes.lua")
---dofile(modpath .."/features/mode/enemy_search.lua")
---dofile(modpath .."/features/mode/follow_search.lua")
+dofile(modpath .."/features/mode/enemy_search.lua")
+dofile(modpath .."/features/mode/follow_search.lua")
 dofile(modpath .."/features/mode/random_sounds.lua")
 
 -- Spawn

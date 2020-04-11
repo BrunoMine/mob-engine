@@ -22,6 +22,16 @@ be misrepresented as being the original software.
 ]]
 
 
+-- Methods
+local registered_nodes = minetest.registered_nodes
+local set_node = minetest.set_node
+local remove_node = minetest.remove_node
+local add_item = minetest.add_item
+local sound_play = minetest.sound_play
+local get_node = minetest.get_node_or_nil
+local start_mode = creatures.start_mode
+local copy = table.copy
+local random = math.random
 
 -- Eat mode ("eat")
 creatures.register_mode("eat", {
@@ -29,15 +39,13 @@ creatures.register_mode("eat", {
 	-- On start
 	start = function(self)
 		
-		if self:mob_actfac_bool(7) == false then
-			creatures.start_mode(self, "idle")
+		if self:mob_actfac_bool(0.3) == false then
+			start_mode(self, "idle")
 			return 
 		end
 		
 		-- Localize some things
-		local mode_def = creatures.mode_def(self)
-		local me = self.object
-		local current_pos = me:getpos()
+		local current_pos = self.object:get_pos()
 		current_pos.y = current_pos.y + 0.5
 		
 		-- Check eat node
@@ -45,28 +53,28 @@ creatures.register_mode("eat", {
 			
 			-- Sub Node
 			local p = {x = current_pos.x, y = current_pos.y - 1, z = current_pos.z}
-			local sn = core.get_node_or_nil(p)
+			local sn = get_node(p)
 			
 			local eat_node -- eaten node
 			
-			if mode_def.nodes[self.last_node.name] then
+			if self.mode_def.nodes[self.last_node.name] then
 				eat_node = current_pos
-			elseif mode_def.nodes[sn.name] then
+			elseif self.mode_def.nodes[sn.name] then
 				eat_node = p
 			end
 
 			if not eat_node then
 				-- Finish mode
-				creatures.start_mode(self, "idle")
+				start_mode(self, "idle")
 				return
 			end
 			
-			self.eat_node = table.copy(eat_node)
+			self.eat_node = copy(eat_node)
 		end
 		
 		-- Prepare to eat
-		self.mdt.eat = math.random(0, mode_def.eat_time)
-		creatures.set_animation(self, "eat")
+		self.mdt.eat = random(0, self.mode_def.eat_time)
+		self:mob_set_anim("eat")
 		
 	end,
 	
@@ -76,7 +84,7 @@ creatures.register_mode("eat", {
 		-- Check eat node
 		if self.eat_node == nil then
 			-- Finish mode
-			creatures.start_mode(self, "idle")
+			start_mode(self, "idle")
 			return
 		end
 		
@@ -84,36 +92,35 @@ creatures.register_mode("eat", {
 		
 		if self.mdt.eat <= 0 then
 			
-			local mode_def = creatures.mode_def(self)
-			local n = core.get_node_or_nil(self.eat_node)
+			local n = get_node(self.eat_node)
 			local nnn = n.name
-			local action_def = mode_def.nodes[nnn]
-			local node_def = core.registered_nodes[n.name]
+			local action_def = self.mode_def.nodes[nnn]
+			local node_def = registered_nodes[n.name]
 			
 			-- Check node
 			if not action_def then
 				-- Finish mode
-				creatures.start_mode(self, "idle")
+				start_mode(self, "idle")
 				return
 			end
 			
 			-- Node modify
 			if action_def.replace then
-				core.set_node(self.eat_node, {name = action_def.replace})
+				set_node(self.eat_node, {name = action_def.replace})
 			elseif action_def.remove == true then
-				core.remove_node(self.eat_node)
+				remove_node(self.eat_node)
 			end
 			
 			-- Sounds
-			local sound = action_def.sound or mode_def.sound
+			local sound = action_def.sound or self.mode_def.sound
 			if sound then 
-				core.sound_play(sound, {pos = self.eat_node, max_hear_distance = 5, gain = 1})
+				sound_play(sound, {pos = self.eat_node, max_hear_distance = 5, gain = 1})
 			end
 			
 			-- Drop
 			local drop = node_def.drop
 			if drop then
-				core.add_item(self.eat_node, drop)
+				add_item(self.eat_node, drop)
 			end
 			
 			self.eat_node = nil

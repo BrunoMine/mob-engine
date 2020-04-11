@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 mating.lua
@@ -21,22 +21,31 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local find_target = creatures.find_target
+local check_mob_in_pos = creatures.check_mob_in_pos
+local check_mob_node = creatures.check_mob_node
+local random = math.random
+local total = table.maxn
+local get_day_count = minetest.get_day_count
+
+
 -- Check if is fertile
 local is_fertile = function(self)
 	local def = creatures.mob_def(self)
 	
 	-- Check fertile
-	if (not def.mating) or self.mating_last_day + def.mating.interval > minetest.get_day_count()  then return false end
+	if (not def.mating) or self.mating_last_day + def.mating.interval > get_day_count()  then return false end
 	
 	-- Check spawn for child
 	-- Spawn type : "mob_node"
 	if def.mating.spawn_type == "mob_node" then
 		-- Has a mob node
-		if creatures.check_mob_node(self) == false then
+		if check_mob_node(self) == false then
 			return false
 		end
 		-- Spawn pos is empty
-		if creatures.check_mob_in_pos(self, self.mob_node.pos) ~= true then
+		if check_mob_in_pos(self, self.mob_node.pos) ~= true then
 			return false
 		end
 	end
@@ -69,7 +78,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		self.mating_last_day = self.mating_last_day or minetest.get_day_count()
 		
-		self.timers.mating = math.random(5, creatures.action_factor_time(self, 20))
+		self.timers.mating = random(5.01, (self:mob_actfac_time(15)+0.01))
 		
 	end)
 	
@@ -80,10 +89,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.timers.mating = self.timers.mating - dtime
 		
 		if self.timers.mating <= 0 then
-			self.timers.mating = creatures.action_factor_time(self, 20)
-			
-			local me = self.object
-			local my_pos = me:get_pos()
+			self.timers.mating = self:mob_actfac_time(15)
 			
 			-- Check if interval is elapsed
 			if is_fertile(self) == false then 
@@ -91,7 +97,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Search another MOB to mating
-			local mobs = creatures.find_target(self.object:get_pos(), 6, 
+			local mobs = find_target(self.current_pos, 6, 
 				{
 					xray = false, 
 					no_count = false, 
@@ -110,7 +116,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 			if table.maxn(fertile_mobs) >= 2 then
 				-- Random number of childs for spawn
-				local c = math.ceil((table.maxn(fertile_mobs) * (def.mating.birth_multiplier or 0.5)))
+				local c = math.ceil((total(fertile_mobs) * (def.mating.birth_multiplier or 0.5)))
 				
 				while c > 0 do
 					-- Spawn

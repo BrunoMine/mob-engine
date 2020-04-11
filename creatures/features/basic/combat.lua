@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 combat.lua
@@ -24,6 +24,11 @@ be misrepresented as being the original software.
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
+	
+	def.combat = def.combat or {}
+	
+	-- Check search_timer
+	def.combat.search_timer = def.combat.search_timer or 2
 	
 	-- Entity definitions
 	def.ent_def.combat = def.combat

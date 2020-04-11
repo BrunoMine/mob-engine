@@ -21,7 +21,18 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local sound_play = minetest.sound_play
+local get_node = minetest.get_node
+local get_mob_def = creatures.mob_def
+local reset_physic = creatures.reset_physic
+local update_physic = creatures.update_physic
+local spawn_particles = creatures.spawn_particles
 local changeHP = creatures.change_hp
+local max_breath = creatures.max_breath
+local velocity_add = creatures.velocity_add
+local copy_tb = creatures.copy_tb
+
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
@@ -32,7 +43,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.can_swim = def.stats.can_swim
 		
 		-- Timers
-		self.timers.swim = math.random(0.1, creatures.action_factor_time(self, 0.4))
+		self.timers.swim = math.random(0.1, self:mob_actfac_time(0.4))
 		self.timers.drown = 0
 	end)
 	
@@ -44,27 +55,29 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		-- Check swim
 		if self.timers.swim <= 0 then
-			self.timers.swim = creatures.action_factor_time(self, 0.4)
+			self.timers.swim = self:mob_actfac_time(0.4)
 			
+			local me = self.object
 			
 			-- Remove gravity when in water
 			if self.in_water then
 				
+				
 				self.physic.gravity = false
 				-- Update physic
-				creatures.update_physic(self)
+				update_physic(self)
 				-- Update acceleration in water
-				me:setacceleration({x = 0, y = -1, z = 0})
+				me:set_acceleration({x = 0, y = -1, z = 0})
 				-- Reduce fall speed
-				local vel = me:getvelocity()
+				local vel = me:get_velocity()
 				if vel.y < 0 then
 					vel.y = vel.y * 0.1
-					me:setvelocity(vel)
+					me:set_velocity(vel)
 				end
 			else
 				-- Update physic
-				creatures.reset_physic(self)
-				creatures.update_physic(self)
+				reset_physic(self)
+				update_physic(self)
 			end
 			
 			
@@ -72,8 +85,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			local current_pos = me:get_pos()
 			
 			-- MOB definition
-			local mob_def = creatures.mob_def(self)
-			
+			local mob_def = get_mob_def(self)
 			
 			-- Check if in water
 			if self.last_node and self.last_node.name == "default:water_source" then
@@ -84,14 +96,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 			
 			
 			-- Check breath pos
-			local breath_pos = creatures.copy_tb(current_pos)
+			local breath_pos = copy_tb(current_pos)
 			breath_pos.y = breath_pos.y + mob_def.model.vision_height or 0
 			if mob_def.model.vision_height > 0.4 then
 				breath_pos.y = breath_pos.y - 0.4
 			else
 				breath_pos.y = breath_pos.y - mob_def.model.vision_height
 			end
-			if minetest.get_node(breath_pos).name == "default:water_source" then
+			if get_node(breath_pos).name == "default:water_source" then
 				
 				-- Reduce breath
 				self.breath = self.breath - 1
@@ -100,28 +112,28 @@ creatures.register_on_register_mob(function(mob_name, def)
 				end
 				
 				-- Swin
-				local vel = me:getvelocity()
+				local vel = me:get_velocity()
 				if vel.y < -0.7 then
-					creatures.velocity_add(self, {x = 0, y = 1.1, z = 0})
+					velocity_add(self, {x = 0, y = 1.1, z = 0})
 				elseif vel.y >= -0.7 and vel.y < 0.3 then
-					creatures.velocity_add(self, {x = 0, y = 0.9, z = 0})
+					velocity_add(self, {x = 0, y = 0.9, z = 0})
 				elseif vel.y >= 0.3 and vel.y < 1 then
-					creatures.velocity_add(self, {x = 0, y = 0.4, z = 0})
+					velocity_add(self, {x = 0, y = 0.4, z = 0})
 				end
 				
 				-- play swimming sounds
 				if def.sounds and def.sounds.swim then
 					local swim_snd = def.sounds.swim
-					core.sound_play(swim_snd.name, {pos = current_pos, gain = swim_snd.gain or 1, max_hear_distance = swim_snd.distance or 10})
+					sound_play(swim_snd.name, {pos = current_pos, gain = swim_snd.gain or 1, max_hear_distance = swim_snd.distance or 10})
 				end
-				creatures.spawn_particles(current_pos, vel, "bubble.png")
+				spawn_particles(current_pos, vel, "bubble.png")
 			
 			-- Out of water
 			else
 				
 				-- Reestore breath
 				self.breath = self.breath + 3
-				local max_breath = creatures.max_breath(self)
+				local max_breath = max_breath(self)
 				if self.breath > max_breath then
 					self.breath = max_breath
 				end

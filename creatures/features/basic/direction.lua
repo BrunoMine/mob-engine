@@ -156,7 +156,7 @@ creatures.entity_meta.send_in_yaw = function(self, speed, yaw)
 end
 
 -- Randomize dir
-creatures.entity_meta.mob_random_dir = function(self, dir)
+creatures.entity_meta.mob_random_dir = function(self)
 	self:mob_set_dir(random_dir())
 end
 

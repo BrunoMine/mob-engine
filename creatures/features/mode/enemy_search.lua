@@ -21,6 +21,11 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local random = math.random
+local start_mode = creatures.start_mode
+local find_target = creatures.find_target
+local get_vision_pos = creatures.get_vision_pos
 
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
@@ -31,7 +36,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.enemy_search = math.random(0, (def.combat.search_timer or 2))
+		self.timers.enemy_search = random(1.01, (self:mob_actfac_time(def.combat.search_timer)+1.01))
 		
 	end)
 	
@@ -43,13 +48,13 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		-- if elapsed timer
 		if self.timers.enemy_search <= 0 then
-			self.timers.enemy_search = def.combat.search_timer or 2
+			self.timers.enemy_search = self:mob_actfac_time(def.combat.search_timer)
 			
 			-- Current mode
 			if self.mode ~= "idle" then return end
 			
 			-- Action factor
-			if creatures.action_factor(self, 1.2) == false then return end
+			if self:mob_actfac_bool(1.2) == false then return end
 			
 			-- Search a target (1-2ms)
 			if 
@@ -65,7 +70,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				current_pos.y = current_pos.y + 0.5
 				
 				-- targets list
-				local targets = creatures.find_target(creatures.get_vision_pos(self), def.combat.search_radius, {
+				local targets = find_target(get_vision_pos(self), def.combat.search_radius, {
 					search_type = def.combat.search_type, 
 					mob_name = def.combat.search_name, 
 					xray = def.combat.search_xray,
@@ -74,7 +79,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				
 				-- choose a random target
 				if #targets > 1 then
-					self.target = targets[math.random(1, #targets)]
+					self.target = targets[random(1, #targets)]
 				elseif #targets == 1 then
 					self.target = targets[1]
 				end
@@ -83,7 +88,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				if self.target then
 					
 					-- change mode
-					creatures.start_mode(self, "attack")
+					start_mode(self, "attack")
 				end
 			end
 		end

@@ -68,7 +68,7 @@ creatures.register_mob("sheep:sheep", {
 		has_kockback = true,
 	},
 	
-	--[[hunger = {
+	hunger = {
 		days_interval = 5,
 		water = true,
 		water_nodes = {"sheep:drinking_fountain", "group:water"},
@@ -87,7 +87,7 @@ creatures.register_mob("sheep:sheep", {
 				"sheep:sheep_feeder_11"
 			}
 		},
-	},]]
+	},
 	
 	randomize = {
 		values = {
@@ -125,7 +125,6 @@ creatures.register_mob("sheep:sheep", {
 	modes = {
 		idle = {chance = 0.40, duration = 10, random_yaw = 4},
 		walk = {
-			--chance = 0.15, 
 			duration = 20, 
 			moving_speed = 1.3,
 			search_radius = 5

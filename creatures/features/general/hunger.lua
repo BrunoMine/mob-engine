@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 hunger.lua
@@ -21,11 +21,22 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Methods
+local get_day_count = minetest.get_day_count
+local set_feeder_level = creatures.set_feeder_level
+local find_nodes_in_area = minetest.find_nodes_in_area
+local find_path = creatures.find_path
+local set_feeder_level = creatures.set_feeder_level
+local remove_node = minetest.remove_node
+local kill_mob = creatures.kill_mob
+
+-- Global tables
+registered_feeder_nodes = creatures.registered_feeder_nodes
 
 -- Check path
 exists_path = function(self, target_pos, def)
 	
-	if creatures.find_path(
+	if find_path(
 		self, 
 		target_pos, 
 		{ 
@@ -46,7 +57,7 @@ local eat_nodes_near = function(self, nodes, def)
 	
 	local pos = self.object:get_pos()
 	
-	for _,target_pos in ipairs(minetest.find_nodes_in_area(
+	for _,target_pos in ipairs(find_nodes_in_area(
 		{x=pos.x-8, y=pos.y-2, z=pos.z-8}, 
 		{x=pos.x+8, y=pos.y+2, z=pos.z+8}, 
 		nodes
@@ -70,72 +81,62 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		self.satiated = self.satiated or true
-		self.last_satiated_day = self.last_satiated_day or minetest.get_day_count()
+		self.last_satiated_day = self.last_satiated_day or get_day_count()
 		self.hunger_activated = false
 		
 		-- Timer
-		self.timers.hunger = math.random(8, self:mob_actfac_time(10, 2))
+		self.timers.hunger = math.random(8, self:mob_actfac_time(10))
 		
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		
 		self.timers.hunger = self.timers.hunger - dtime
 		
-		if self.timers.hunger <= 0 then
-			self.timers.hunger = math.random(8, self:mob_actfac_time(10, 2))
-			
-			-- If wild then ignore hunger
-			if self.is_wild == true then
-				return
-			end
-			
-			local mob_def = creatures.mob_def(self)
-			
-			if not mob_def.hunger then return end
+		if self.is_wild ~= true and self.timers.hunger <= 0 then
+			self.timers.hunger = self:mob_actfac_time(10, 2)
 			
 			-- Update day for eat
-			local days = minetest.get_day_count() - self.last_satiated_day
+			local days = get_day_count() - self.last_satiated_day
 			
 			local thirsty = false
 			local hungry = false
 			
-			while (days >= mob_def.hunger.days_interval) do
+			while (days >= def.hunger.days_interval) do
 				-- If need water
-				if mob_def.hunger.water then
-					local eat, node_pos = eat_nodes_near(self, mob_def.hunger.water_nodes or {"group:water"}, def)
+				if def.hunger.water then
+					local eat, node_pos = eat_nodes_near(self, def.hunger.water_nodes or {"group:water"}, def)
 					if eat == false then
 						thirsty = true
 					end
 				end
 				
 				-- If need food
-				if mob_def.hunger.food then
-					local eat, node_pos = eat_nodes_near(self, mob_def.hunger.food.nodes, def)
+				if def.hunger.food then
+					local eat, node_pos = eat_nodes_near(self, def.hunger.food.nodes, def)
 					if eat == false then
 						hungry = true
 					end
 					-- Check feeder
 					if node_pos then 
-						if creatures.registered_feeder_nodes[minetest.get_node(node_pos).name] then
-							creatures.set_feeder_level(node_pos, -1)
+						if registered_feeder_nodes[minetest.get_node(node_pos).name] then
+							set_feeder_level(node_pos, -1)
 						else
-							minetest.remove_node(node_pos)
+							remove_node(node_pos)
 						end
 					end
 				end
 				
 				if hungry == false and thirsty == false then
-					days = days - mob_def.hunger.days_interval
+					days = days - def.hunger.days_interval
 				else
 					break
 				end
 			end
 			
 			-- Update satiated status
-			if days > mob_def.hunger.days_interval then
+			if days > def.hunger.days_interval then
 				self.satiated = false
 			else
 				self.satiated = true
@@ -146,17 +147,17 @@ creatures.register_on_register_mob(function(mob_name, def)
 				if self.hunger_activated == false then
 					self.object:remove()
 				else
-					creatures.kill_mob(self, "creatures:hungry")
+					kill_mob(self, "creatures:hungry")
 				end
 			elseif thirsty == true then
 				if self.hunger_activated == false then
 					self.object:remove()
 				else
-					creatures.kill_mob(self, "creatures:thirsty")
+					kill_mob(self, "creatures:thirsty")
 				end
 			end
 			
-			self.last_satiated_day = minetest.get_day_count() - days
+			self.last_satiated_day = get_day_count() - days
 			self.hunger_activated = true
 		end
 	end)

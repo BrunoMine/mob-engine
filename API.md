@@ -99,6 +99,7 @@ These values are reserved for the engine resources operation.
 * `luaentity:mob_set_dir(dir, [rotate])`: Set a rotation in dir for the MOB
   * `rotate` is used to include an additional rotation in degrees
 * `luaentity:mob_set_yaw(yaw, [rotate])`: Set a rotation in yaw for the MOB
+* `luaentity:mob_random_dir()`: Set a random rotation for the MOB
 * `luaentity:mob_go_dir(speed, [dir], [include_y])`: Start MOB moviment in a dir
   * if `include_y` is true then start moviment in y direction
   * if `dir` is nil uses `luaentity.dir` direction
@@ -112,7 +113,8 @@ These values are reserved for the engine resources operation.
 * `luaentity:mob_on_step(dtime)`: Run default on_step callback
 * `luaentity:mob_on_activate(staticdata)`: Run default on_activate callback
 * `luaentity:mob_get_staticdata()`: Run default get_staticdata callback
-
+* `luaentity:mob_actfac_bool(post_factor)`: Calcule action factor chance
+* `luaentity:mob_actfac_time(time, post_factor)`: Calcule action factor for a timer
 
 
 Registering a mob

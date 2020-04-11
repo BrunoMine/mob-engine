@@ -121,7 +121,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.mode_vars = {}
 		
 		-- Timers
-		self.modetimer = math.random(1, 5)
+		self.modetimer = math.random(1.01, 5.01)
 		
 		-- Timers for modes
 		self.mdt = {}

@@ -34,7 +34,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		local current_pos = self.object:get_pos()
 		
-		local next_time = math.random(0.01, creatures.action_factor_time(self, 0.2, 2))
+		local next_time = math.random(0.01, self:mob_actfac_time(0.2, 2))
 		
 		-- Set fall settings
 		self.fall = {}
@@ -56,7 +56,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		if self.timers.fall <= 0 then
 			
-			local next_time = creatures.action_factor_time(self, 0.2, 2)
+			local next_time = self:mob_actfac_time(0.2, 2)
 			
 			local current_pos = self.object:get_pos()
 			

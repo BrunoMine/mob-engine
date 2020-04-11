@@ -64,12 +64,11 @@ creatures.register_mode("walk_around", {
 		local current_pos = self.object:get_pos()
 		current_pos.y = current_pos.y + 0.5
 		
-		if self:mob_actfac_bool(1) == false then
+		if self:mob_actfac_bool(0.8) == false then
 			start_mode(self, "idle")
 			return 
 		end
 		
-		-- [PROBLEM!] Causes performance issues above 100 MOBs
 		local nodes = get_nodes(
 			minp(current_pos, 1), 
 			maxp(current_pos, 1)

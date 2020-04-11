@@ -21,6 +21,12 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local get_collisionbox = creatures.get_collisionbox
+local get_mob_def = creatures.mob_def
+local find_target = creatures.find_target
+
 -- Default collision box
 local default_collisionbox = {
 	-0.45, -0.01, -0.45,
@@ -54,8 +60,8 @@ local check_collision = function(obj1, obj2)
 	local pos2 = obj2:get_pos()
 	
 	-- Collision Box
-	local box1 = creatures.get_collisionbox(obj1)
-	local box2 = creatures.get_collisionbox(obj2)
+	local box1 = get_collisionbox(obj1)
+	local box2 = get_collisionbox(obj2)
 	
 	-- Calcule real box positions
 	local b1 = {
@@ -91,7 +97,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
-		self.timers.hit_bottom = 0
+		self.timers.hit_bottom = math.random(1.51, (self:mob_actfac_time(3)+1.5))
 		
 	end)
 	
@@ -99,19 +105,19 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.hit_bottom = self.timers.hit_bottom + dtime
+		self.timers.hit_bottom = self.timers.hit_bottom - dtime
 		
-		if self.timers.hit_bottom >= check_hit_bottom_time then
-			self.timers.hit_bottom = 0
+		if self.timers.hit_bottom <= 0 then
+			self.timers.hit_bottom = self:mob_actfac_time(3, 3)
 			
-			local def = creatures.get_def(self)
+			local def = get_mob_def(self)
 			
 			local me = self.object
 			local current_pos = me:get_pos()
 			
 			-- Search objects in the bottom
 			for _,obj in ipairs(
-				creatures.find_target(
+				find_target(
 					{ -- pos
 						x = current_pos.x,
 						y = current_pos.y - max_h - 0.01,
@@ -144,7 +150,7 @@ creatures.check_player_hit_bottom = function(player, loop)
 	
 	-- Search objects in the bottom
 	for _,obj in ipairs(
-		creatures.find_target(
+		find_target(
 			{ -- pos
 				x = current_pos.x,
 				y = current_pos.y - max_h - 0.01,

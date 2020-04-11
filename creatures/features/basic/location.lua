@@ -31,8 +31,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.timers.pos = 0
 		
 		self.last_node = {name="ignore"}
-		self.current_node = {name="ignore"}
 		self.last_pos = self.object:get_pos()
+		self.current_node = {name="ignore"}
+		self.current_pos = self.object:get_pos()
 		
 		
 	end)
@@ -56,6 +57,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				self.last_node = self.current_node
 				self.last_light = minetest.get_node_light(self.last_pos)
 				
+				self.current_pos = self.object:get_pos()
 				self.current_node = core.get_node_or_nil(current_pos)
 			end
 			

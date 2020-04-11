@@ -30,7 +30,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timers
-		self.lifetimer = 0
+		self.lifetimer = self.lifetimer or def.stats.lifetime
 		
 	end)
 	
@@ -45,10 +45,10 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer updates
-		self.lifetimer = self.lifetimer + dtime
+		self.lifetimer = self.lifetimer - dtime
 		
 		-- check lifetime
-		if self.is_wild ~= true and self.lifetimer > def.stats.lifetime then
+		if self.is_wild ~= true and self.lifetimer <= 0 then
 			creatures.kill_mob(self, "lifetime_elapsed")
 		end
 	end)
