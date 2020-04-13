@@ -77,27 +77,26 @@ creatures.register_mob("chicken:chicken", {
 	
 	modes = {
 		-- Standard Modes
-		idle = {chance = 0.25, duration = 2, update_yaw = 3},
+		idle = {chance = 40, duration = 2, update_yaw = 3},
 		panic = {
 			duration = 6, 
 			moving_speed = 2.7
 		},
 		walk = {
-			chance = 0.2, 
 			duration = 20, 
 			moving_speed = 0.7,
 			search_radius = 3,
 		},
 		walk_around = {
-			chance = 0.2, 
+			chance = 20, 
 			duration = 20, 
 			moving_speed = 0.7
 		},
 		follow = {chance = 0, duration = 20, radius = 4, moving_speed = 1, items = {["farming:seed_wheat"]=true}, search_timer = 4},
 		-- Custom Modes
-		["chicken:dropegg"] = {chance = 0.801, duration = 8},
-		["chicken:idle2"] = {chance = 0.69, duration = 0.8, random_yaw = true},
-		["chicken:pick"] = {chance = 0.2, duration = 2},
+		["chicken:dropegg"] = {chance = 1, duration = 8},
+		["chicken:idle2"] = {chance = 19, duration = 0.8, random_yaw = true},
+		["chicken:pick"] = {chance = 20, duration = 2},
 	},
 
 

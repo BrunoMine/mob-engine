@@ -59,55 +59,82 @@ creatures.register_mode("walk_around", {
 	-- On start
 	start = function(self)
 		
-		self.mdt.walk_around = 0 
-		
 		local current_pos = self.object:get_pos()
-		current_pos.y = current_pos.y + 0.5
+		current_pos = vector.round(current_pos)
 		
 		if self:mob_actfac_bool(0.8) == false then
 			start_mode(self, "idle")
 			return 
 		end
 		
+		-- Get walkable nodes
 		local nodes = get_nodes(
 			minp(current_pos, 1), 
 			maxp(current_pos, 1)
 		)
 		
-		if total(nodes) <= 1 then
+		for i,p in ipairs(nodes) do
+			if p.x == current_pos.x and p.z == current_pos.z then
+				table.remove(nodes, i)
+				break
+			end
+		end
+		
+		local t = total(nodes)
+		
+		-- Check walkable nodes
+		if t <= 0 then
 			-- Finish mode
 			start_mode(self, "idle")
+			return
+		end
+		
+		local pos
+		
+		if t == 1 then
+			pos = nodes[1]
+		else
+			pos = random(nodes)
 		end
 		
 		-- Walk 1 node in any direction
-		local pos = random(nodes)
 		local new_dir = p1top2(current_pos, pos)
 		
-		if new_dir then
-			
-			self:mob_set_dir(new_dir)
-			
-			self.mdt.walk_around = 1/self.mode_def.moving_speed
-			
-			-- Send
-			self:mob_go_dir(self.mode_def.moving_speed)
-			self:mob_set_anim("walk")
+		-- Check new dir
+		if not new_dir then 
+			-- Finish mode
+			start_mode(self, "idle")
 			return
 		end
+		
+		self:mob_set_dir(new_dir)
+		
+		local walk_time = 1/self.mode_def.moving_speed
+		
+		-- Time to end mode
+		self.mdt.walk = walk_time
+		self.modetimer = walk_time + 0.2
+		
+		-- Send
+		self:mob_go_dir(self.mode_def.moving_speed)
+		self:mob_set_anim("walk")
+		
 	end,
 	
 	-- On step
 	on_step = function(self, dtime)
 		
-		self.mdt.walk_around = self.mdt.walk_around - dtime
+		self.mdt.walk = self.mdt.walk - dtime
 		
-		if self.mdt.walk_around <= 0 then
-			self.mdt.walk_around = 0
+		if self.mdt.walk <= 0 then
+			self.mdt.walk = 1
 			
-			-- Finish mode
-			start_mode(self, "idle")
+			-- Stop movement
+			self:mob_go_dir(0, {x=0,z=0})
+			-- Stop walk animation
+			creatures.set_animation(self, "idle")
+			
 		end
-		
 	end,
 	
 })

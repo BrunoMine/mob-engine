@@ -44,86 +44,80 @@ creatures.register_mode("eat", {
 			return 
 		end
 		
-		-- Localize some things
-		local current_pos = self.object:get_pos()
-		current_pos.y = current_pos.y + 0.5
-		
 		-- Check eat node
-		if not self.eat_node and self.last_node.name then
+		if not self.mode_vars.eat_node then
 			
-			-- Sub Node
-			local p = {x = current_pos.x, y = current_pos.y - 1, z = current_pos.z}
-			local sn = get_node(p)
+			-- Current Node
+			local c_pos = self.current_pos
+			local c_node = self.current_node
 			
-			local eat_node -- eaten node
+			-- Soil Node
+			local s_pos = {x = c_pos.x, y = c_pos.y - 1, z = c_pos.z}
+			local s_node = get_node(s_pos)
 			
-			if self.mode_def.nodes[self.last_node.name] then
-				eat_node = current_pos
-			elseif self.mode_def.nodes[sn.name] then
-				eat_node = p
+			local eat_pos, eat_node -- eaten node
+			
+			-- Choose a node
+			
+			-- Check current node
+			if self.mode_def.nodes[c_node.name] then
+				eat_pos = c_pos
+				eat_node = c_node
+			
+			-- Check soil node
+			elseif self.mode_def.nodes[s_node.name] then
+				eat_pos = s_pos
+				eat_node = s_node
+				
 			end
-
+			
+			-- Check eat node
 			if not eat_node then
 				-- Finish mode
 				start_mode(self, "idle")
 				return
 			end
 			
-			self.eat_node = copy(eat_node)
+			self.mode_vars.eat_pos = copy(eat_pos)
+			self.mode_vars.eat_node = copy(eat_node)
 		end
 		
-		-- Prepare to eat
-		self.mdt.eat = random(0, self.mode_def.eat_time)
+		-- Start animation to eat
 		self:mob_set_anim("eat")
 		
+		-- Timer to chance node
+		self.mdt.eat = self.mode_def.eat_time
 	end,
 	
 	-- On step
 	on_step = function(self, dtime)
 		
-		-- Check eat node
-		if self.eat_node == nil then
-			-- Finish mode
-			start_mode(self, "idle")
-			return
-		end
-		
 		self.mdt.eat = self.mdt.eat - dtime
 		
 		if self.mdt.eat <= 0 then
+			self.mdt.eat = 1000 -- Avoid repeat action
 			
-			local n = get_node(self.eat_node)
-			local nnn = n.name
-			local action_def = self.mode_def.nodes[nnn]
-			local node_def = registered_nodes[n.name]
+			local node = self.mode_vars.eat_node
+			local acts = self.mode_def.nodes[node.name]
+			local node_def = registered_nodes[node.name]
 			
-			-- Check node
-			if not action_def then
-				-- Finish mode
-				start_mode(self, "idle")
-				return
-			end
+			-- Actions
+			if acts.replace then -- Replace
+				set_node(self.mode_vars.eat_pos, {name = acts.replace})
 			
-			-- Node modify
-			if action_def.replace then
-				set_node(self.eat_node, {name = action_def.replace})
-			elseif action_def.remove == true then
-				remove_node(self.eat_node)
+			elseif acts.remove == true then -- Remove
+				remove_node(self.mode_vars.eat_pos)
 			end
 			
 			-- Sounds
-			local sound = action_def.sound or self.mode_def.sound
+			local sound = acts.sound or self.mode_def.sound
 			if sound then 
-				sound_play(sound, {pos = self.eat_node, max_hear_distance = 5, gain = 1})
+				sound_play(sound, {pos = self.current_pos, max_hear_distance = 5, gain = 1})
 			end
 			
-			-- Drop
-			local drop = node_def.drop
-			if drop then
-				add_item(self.eat_node, drop)
-			end
-			
-			self.eat_node = nil
+			-- Reset values
+			self.mode_vars.eat_pos = nil
+			self.mode_vars.eat_node = nil
 		end
 		
 	end,

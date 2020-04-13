@@ -123,20 +123,23 @@ creatures.register_mob("sheep:sheep", {
 	},
 	
 	modes = {
-		idle = {chance = 0.40, duration = 10, random_yaw = 4},
+		idle = {
+			chance = 50, 
+			duration = {min=5, max=10}, 
+			random_yaw = 4
+		},
 		walk = {
 			duration = 20, 
 			moving_speed = 1.3,
 			search_radius = 5
 		},
 		walk_around = {
-			chance = 0.30, 
+			chance = 30, 
 			duration = 20, 
 			moving_speed = 0.7
 		},
 		-- special modes
 		follow = {
-			chance = 0, 
 			duration = 20, 
 			radius = 4, 
 			moving_speed = 1, 
@@ -144,7 +147,7 @@ creatures.register_mob("sheep:sheep", {
 			search_timer = 4
 		},
 		eat = {	
-			chance = 0.15,
+			chance = 20,
 			duration = 4,
 			eat_time = 2,
 			sound = "creatures_eat_grass",

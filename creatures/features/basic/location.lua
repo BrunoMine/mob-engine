@@ -21,6 +21,12 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- Methods
+local get_node = minetest.get_node_or_nil
+local get_light = minetest.get_node_light
+local copy = table.copy
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
@@ -30,11 +36,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 		-- Timer
 		self.timers.pos = 0
 		
-		self.last_node = {name="ignore"}
 		self.last_pos = self.object:get_pos()
-		self.current_node = {name="ignore"}
-		self.current_pos = self.object:get_pos()
+		self.last_node = get_node(self.last_pos)
+		self.last_light = get_light(self.last_pos)
 		
+		self.current_pos = self.object:get_pos()
+		self.current_node = get_node(self.current_pos)
 		
 	end)
 	
@@ -53,12 +60,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 			if not vector.equals(current_pos, self.last_pos) then
 				
 				-- Update last locate
-				self.last_pos = current_pos
-				self.last_node = self.current_node
-				self.last_light = minetest.get_node_light(self.last_pos)
+				self.last_pos = copy(self.current_pos)
+				self.last_node = copy(self.current_node)
+				self.last_light = get_light(self.last_pos)
 				
 				self.current_pos = self.object:get_pos()
-				self.current_node = core.get_node_or_nil(current_pos)
+				self.current_node = get_node(self.current_pos)
 			end
 			
 		end

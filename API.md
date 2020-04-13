@@ -65,6 +65,7 @@ These values are reserved for the engine resources operation.
 * `mode_def`: current mode definitions
 * `last_mode`: last mode nome
 * `mob_modes`: MOB modes
+* `mode_chances`: Chances for MOB modes
 * `mode_vars`: mode variables
 * `fall`: falling feature
 * `last_pos`: last pos
@@ -257,7 +258,7 @@ Panic mode bahavior.
 In this mode the MOB execute eat animation on current location.
 
     {
-        chance = 0.25, 	--[[ Chance to occur, between 0.00 and 1.00 (!!NOTE: sum of all modes MUST be 1.0!!)
+        chance = 25, 	--[[ Chance percent to occur, between 0 and 1 (!!NOTE: sum of all modes MUST be 100!!)
                              if chance is 0 then mode is not chosen automatically ]]
         duration = 4, 	-- Mode time duration in seconds until the next mode is chosen (depending on chance)
         moving_speed = 1, -- Moving speed in blocks per second (flying/walking) <optional>
@@ -374,6 +375,11 @@ Methods are useful for different purposes of the engine.
   * Return a pos for between `min_y` and `max_y` or `nil`
 * `creatures.get_under_walkable_nodes_in_area(minp, maxp)`: Get under walkable node pos in area
   * Return a table with all found node pos
+* `creatures.get_random_with_chance(table_chances)`: Get random index with different chances
+  * `table_chances` indexed table with chance params, use `creatures.make_table_chance` to make it
+* `creatures.make_table_chance(table)`: Make table chance to sort a index
+  * Each `table` index need has `chance` sub-index with a value between 0 and 100 (if nil, chance 0 is used)
+  
 
 ### Commons
 Common methods when working with mob-engine
@@ -727,7 +733,7 @@ Definition tables
     {
         name = <name>,        -- sound name as string; see Minetest documentation
         gain = 1.0,           -- sound gain; see Minetest documentation
-        distance = <number>,  -- hear distance in blocks/nodes <optional>
+        distance = <duration>,-- hear distance in blocks/nodes (number or interval) <optional>
         time_min = <time>     -- minimum time in seconds between sounds (random only) <optional>
         time_max = <time>     -- maximum time in seconds between sounds (random only) <optional>
     }

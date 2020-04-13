@@ -87,7 +87,7 @@ creatures.start_mode = function(self, mode)
 	-- Update mode settings
 	self.mode = mode
 	self.mode_def = self.mob_modes[mode]
-	self.modetimer = self.mob_modes[mode].duration or 5
+	self.modetimer = creatures.get_number(self.mob_modes[mode].duration or 5)
 	self.mode_vars = {}
 	self.mdt = {}
 	
@@ -120,6 +120,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.last_mode = "idle"
 		self.mode_vars = {}
 		
+		self.mode_chances = creatures.make_table_chance(def.modes)
+		
 		-- Timers
 		self.modetimer = math.random(1.01, 5.01)
 		
@@ -147,33 +149,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 			local modes = def.modes
 			local current_mode = self.mode
 			
-			-- Current pos adjustment
-			local current_pos = self.object:get_pos()
-			current_pos.y = current_pos.y + 0.5
-			
-			
 			-- Get a random mode
-			local new_mode = random(modes) or "idle"
-			
-			if new_mode == "panic" 
-				or new_mode == "swin" 
-				or new_mode == "attack"
-			then
-				new_mode = "idle"
-			end
-			
-			-- Check "eat" mode
-			if new_mode == "eat" and self.in_water == true then
-				new_mode = "idle"
-			end
-			
-			current_mode = new_mode
+			local new_mode = creatures.get_random_with_chance(self.mode_chances) or "idle"
 			
 			-- Update current_mode if changed when start
-			self.mode = current_mode
+			self.mode = new_mode
 			
 			-- Start
-			start_mode(self, current_mode)
+			start_mode(self, new_mode)
 		end
 		
 		-- Execute mode step

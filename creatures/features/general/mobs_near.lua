@@ -70,8 +70,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 				end
 			end
 			
-			self.mobs_near = 100
-			
 			self.mobs_near_timer = math.random(15, 35)
 			
 		end

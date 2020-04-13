@@ -39,10 +39,10 @@ local def = {
 	},
 
 	modes = {
-		idle = {chance = 0.65, duration = 3, update_yaw = 6},
-		fly = {chance = 0.25, duration = 2.5, moving_speed = 2, max_height = 25, target_offset = 2.1},
+		idle = {chance = 75, duration = 3, update_yaw = 6},
+		fly = {chance = 25, duration = 2.5, moving_speed = 2, max_height = 25, target_offset = 2.1},
 		-- special modes
-		attack = {chance = 0, moving_speed = 2.6, duration = 20},
+		attack = {moving_speed = 2.6, duration = 20},
 	},
 
 	model = {

@@ -40,9 +40,9 @@ local def = {
 	},
 
 	modes = {
-		idle = {chance = 0.7, duration = 3, update_yaw = 6},
-		walk = {chance = 0.3, duration = 5.5, moving_speed = 1, search_radius = 5},
-		walk_around = {chance = 0.2, duration = 20, moving_speed = 1},
+		idle = {chance = 70, duration = 3, update_yaw = 6},
+		walk = {duration = 5.5, moving_speed = 1, search_radius = 5},
+		walk_around = {chance = 30, duration = 20, moving_speed = 1},
 		-- special modes
 		attack = {chance = 0, moving_speed = 2.5, duration = 20},
 	},

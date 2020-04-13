@@ -49,9 +49,43 @@ creatures.get_random_from_table = function(tb, remove_value)
 	return value, tb
 end
 
+-- Make chance table
+creatures.make_table_chance = function(tb)
+	local table_chance = {}
+	local total_percent = 0
+	for i,v in pairs(tb) do
+		table.insert(table_chance, {
+			index = i,
+			starts = total_percent + 1,
+			ends = total_percent + (v.chance or 0),
+		})
+		total_percent = total_percent + (v.chance or 0)
+	end
+	return table_chance
+end
+
+-- Get random index from table with chances
+creatures.get_random_with_chance = function(tb)
+	local choose = math.random(1, 100)
+	for _,v in ipairs(tb) do
+		if choose >= v.starts and choose <= v.ends then
+			return v.index
+		end
+	end
+end
+
 -- Error msg
 creatures.throw_error = function(msg)
 	core.log("error", "[Creatures]: " .. msg)
+end
+
+-- Get number
+creatures.get_number = function(number)
+	if type(number) == "number" then
+		return number
+	else
+		return math.random(number.min, number.max)
+	end
 end
 
 -- Get distance p1 to p2
