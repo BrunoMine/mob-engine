@@ -110,7 +110,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Save settings for modes
 	creatures.registered_mobs[mob_name].modes = def.modes
 	
-	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		

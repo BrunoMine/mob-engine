@@ -87,7 +87,7 @@ These values are reserved for the engine resources operation.
 * `mob_node`: table for mob node params
 * `walk_around_time`: time of walk around mode
 * `fly_time`: time limit of fly
-* `satiated`: boolean for if MOB is nourished
+* `hunger_activated`: boolean for if MOB hunger is checked
 * `last_satiated_day`: last satiated day
 * `is_child`: is true when MOB is a child
 * `randomized`: is true if is randomized
@@ -752,7 +752,8 @@ Definition tables
 
 ## MOB sight definition (`mob_sight`)
     {
-        ignore_obj = {obj1, ...},  -- is searching object; can be nil
+        ignore_obj = {obj1, ...},  -- is searching object; can be nil <optional>
+        ignore_all_obj = false,    -- if true then ignore all objects <optional>
     }
 
 

@@ -53,10 +53,10 @@ end
 
 -- Get position of MOB vision
 creatures.get_vision_pos = function(self, pos)
-	pos =  pos or self.object:get_pos()
+	pos = pos or self.object:get_pos()
 	return {
 		x = pos.x,
-		y = pos.y + self.vision_height or 0,
+		y = pos.y + (self.vision_height or 0),
 		z = pos.z,
 	}
 end

@@ -70,8 +70,12 @@ creatures.register_mob("sheep:sheep", {
 	
 	hunger = {
 		days_interval = 5,
-		water = true,
-		water_nodes = {"sheep:drinking_fountain", "group:water"},
+		water = {
+			nodes = {
+				"sheep:drinking_fountain", 
+				"group:water",
+			}
+		},
 		food = {
 			nodes = {
 				"sheep:sheep_feeder_1",
@@ -84,7 +88,8 @@ creatures.register_mob("sheep:sheep", {
 				"sheep:sheep_feeder_8",
 				"sheep:sheep_feeder_9",
 				"sheep:sheep_feeder_10",
-				"sheep:sheep_feeder_11"
+				"sheep:sheep_feeder_11",
+				"farming:straw",
 			}
 		},
 	},

@@ -21,13 +21,17 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-creatures.feeder = {}
+
+-- Global tables
+creatures.registered_feeder_nodes = {}
+local feeder_nodes = creatures.registered_feeder_nodes
+local registered_items = minetest.registered_items
 
 -- Update feeder
 local update_feeder_node = function(pos)
 	local nodename = minetest.get_node(pos).name
 	
-	local def = creatures.registered_feeder_nodes[nodename]
+	local def = feeder_nodes[nodename]
 	if not def.node_steps then return end
 	
 	local meta = minetest.get_meta(pos)
@@ -51,13 +55,14 @@ local update_feeder_node = function(pos)
 	minetest.swap_node(pos, node)
 end
 
+
 -- Set supply level
 creatures.set_feeder_level = function(pos, supply_or_itemstack)
 	supply_or_itemstack = supply_or_itemstack or 0
 	
 	-- Definitions
 	local nodename = minetest.get_node(pos).name
-	local def = creatures.registered_feeder_nodes[nodename]
+	local def = feeder_nodes[nodename]
 	
 	-- Node Meta
 	local meta = minetest.get_meta(pos)
@@ -101,27 +106,32 @@ creatures.set_feeder_level = function(pos, supply_or_itemstack)
 end
 
 -- Register node feeder
-creatures.registered_feeder_nodes = {}
 creatures.register_feeder_node = function(nodename, def, secondary)
-	creatures.registered_feeder_nodes[nodename] = {}
+	feeder_nodes[nodename] = {}
 	
-	creatures.registered_feeder_nodes[nodename].supply = def.supply
-	creatures.registered_feeder_nodes[nodename].max_food = def.max_food
-	creatures.registered_feeder_nodes[nodename].node_steps = def.node_steps
+	-- Feeder definitions
+	feeder_nodes[nodename].supply = def.supply
+	feeder_nodes[nodename].max_food = def.max_food
+	feeder_nodes[nodename].node_steps = def.node_steps
 	
-	local groups = creatures.copy_tb(minetest.registered_items[nodename].groups)
+	-- Old definitions to override
+	feeder_nodes[nodename].old_on_rightclick = creatures.copy_tb(registered_items[nodename].on_rightclick)
+	feeder_nodes[nodename].old_on_place = creatures.copy_tb(registered_items[nodename].on_place)
+	feeder_nodes[nodename].old_on_dig = creatures.copy_tb(registered_items[nodename].on_dig)
+	
+	-- Insert 'mob_feeder' group
+	local groups = creatures.copy_tb(registered_items[nodename].groups)
 	groups.mob_feeder = 1
 	
-	creatures.registered_feeder_nodes[nodename].old_on_rightclick = creatures.copy_tb(minetest.registered_items[nodename].on_rightclick)
-	creatures.registered_feeder_nodes[nodename].old_on_place = creatures.copy_tb(minetest.registered_items[nodename].on_place)
-	creatures.registered_feeder_nodes[nodename].old_on_dig = creatures.copy_tb(minetest.registered_items[nodename].on_dig)
+	-- Override node
 	minetest.override_item(nodename, {
 		stack_max = 1,
 		groups = groups,
 		
 		on_rightclick = function(pos, node, player, itemstack, pointed_thing)
 			
-			if itemstack and itemstack:get_name() and creatures.registered_feeder_nodes[nodename].supply[itemstack:get_name()] then
+			-- Supply
+			if itemstack and itemstack:get_name() and feeder_nodes[nodename].supply[itemstack:get_name()] then
 				
 				local s, take = creatures.set_feeder_level(pos, itemstack)
 				
@@ -133,8 +143,9 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 				
 			end
 			
-			if creatures.registered_feeder_nodes[nodename].old_on_rightclick then
-				return creatures.registered_feeder_nodes[nodename].old_on_rightclick(pos, node, player, itemstack, pointed_thing)
+			-- Execute registered 'on_rightclick'
+			if feeder_nodes[nodename].old_on_rightclick then
+				return feeder_nodes[nodename].old_on_rightclick(pos, node, player, itemstack, pointed_thing)
 			end
 			return itemstack
 		end,
@@ -143,7 +154,7 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 			
 			if not pointed_thing or not pointed_thing.above then return end
 			
-			-- Verifica se esta acessando outro node
+			-- Check if access another node
 			local under = pointed_thing.under
 			local node = minetest.get_node(under)
 			local defnode = minetest.registered_nodes[node.name]
@@ -153,27 +164,24 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 					pointed_thing) or itemstack
 			end
 			
+			local supply = itemstack:get_meta():get_float("food")
+			
 			local result
 			itemstack, result = minetest.item_place(itemstack, placer, pointed_thing)
-			if result ~= true then
+			if not result then
 				return itemstack
 			end
 			
-			if creatures.registered_feeder_nodes[nodename].old_on_place then
-				return creatures.registered_feeder_nodes[nodename].old_on_place(itemstack, placer, pointed_thing)
+			creatures.set_feeder_level(result, supply)
+			
+			-- Execute registered 'on_place'
+			if feeder_nodes[nodename].old_on_place then
+				return feeder_nodes[nodename].old_on_place(itemstack, placer, pointed_thing)
 			end
 			
-			return itemstack
-		end,
-		
-		after_place_node = function(pos, placer, itemstack, pointed_thing)
-			
-			local meta = itemstack:get_meta()
-			local supply = meta:get_float("food")
-			
-			creatures.set_feeder_level(pos, supply)
-			
 			itemstack:take_item()
+			
+			return itemstack
 		end,
 		
 		on_dig = function(pos, node, digger)
@@ -181,33 +189,35 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 			local inv = digger:get_inventory()
 			
 			local nodename = minetest.get_node(pos).name
-			local def = creatures.registered_feeder_nodes[nodename]
+			local def = feeder_nodes[nodename]
 			local food = meta:get_float("food")
 			local percent = math.ceil((food/def.max_food)*100)
 			
 			local itemstack = {name=nodename, count=1, meta={
 				["food"] = food,
-				["description"] = minetest.registered_items[nodename].description .. " ("..percent.."%)"
+				["description"] = registered_items[nodename].description .. " ("..percent.."%)"
 			}}
 			
 			if inv:room_for_item("main", itemstack) then
 						
-				-- Coloca no inventario
+				-- Add into inventory
 				inv:add_item("main", itemstack)
+				
 			else
-				-- Dropa no local
+				-- Drop 
 				minetest.add_item(pos, itemstack)
 			end
 			
 			minetest.remove_node(pos)
 			
-			if creatures.registered_feeder_nodes[nodename].old_on_dig then
-				return creatures.registered_feeder_nodes[nodename].old_on_dig(pos, node, digger)
+			-- Execute registered 'on_dig'
+			if feeder_nodes[nodename].old_on_dig then
+				return feeder_nodes[nodename].old_on_dig(pos, node, digger)
 			end
 		end,
 	})
 	
-	-- Secondary registration
+	-- Secondary registration to register node steps
 	if secondary ~= true then
 		-- Register feeder steps
 		for _,node_step in ipairs(def.node_steps or {}) do 

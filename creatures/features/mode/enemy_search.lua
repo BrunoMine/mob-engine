@@ -66,11 +66,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 				and self.mode ~= "panic" 
 			then 
 				
-				local current_pos = self.object:getpos()
+				local current_pos = self.object:get_pos()
 				current_pos.y = current_pos.y + 0.5
 				
 				-- targets list
-				local targets = find_target(get_vision_pos(self), def.combat.search_radius, {
+				local targets = find_target(creatures.get_vision_pos(self), def.combat.search_radius, {
 					search_type = def.combat.search_type, 
 					mob_name = def.combat.search_name, 
 					xray = def.combat.search_xray,

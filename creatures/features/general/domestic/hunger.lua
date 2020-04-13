@@ -26,7 +26,6 @@ local get_day_count = minetest.get_day_count
 local set_feeder_level = creatures.set_feeder_level
 local find_nodes_in_area = minetest.find_nodes_in_area
 local find_path = creatures.find_path
-local set_feeder_level = creatures.set_feeder_level
 local remove_node = minetest.remove_node
 local kill_mob = creatures.kill_mob
 
@@ -53,22 +52,21 @@ end
 
 
 -- Eat nodes near
-local eat_nodes_near = function(self, nodes, def)
+local eat_nodes_near = function(self, find_nodes)
 	
-	local pos = self.object:get_pos()
+	local pos = self.current_pos
 	
-	for _,target_pos in ipairs(find_nodes_in_area(
+	local nodes = find_nodes_in_area(
 		{x=pos.x-8, y=pos.y-2, z=pos.z-8}, 
 		{x=pos.x+8, y=pos.y+2, z=pos.z+8}, 
-		nodes
-	)) do
-		
-		if exists_path(self, target_pos, def) == true then
-			return true, target_pos
+		find_nodes
+	)
+	
+	for _,target_pos in ipairs(nodes) do
+		if creatures.mob_sight(self, target_pos, { ignore_all_obj=true, target_is_node=true }) == true then
+			return target_pos
 		end
 	end
-	
-	return false
 end
 
 
@@ -80,7 +78,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
-		self.satiated = self.satiated or true
 		self.last_satiated_day = self.last_satiated_day or get_day_count()
 		self.hunger_activated = false
 		
@@ -97,50 +94,76 @@ creatures.register_on_register_mob(function(mob_name, def)
 		if self.is_wild ~= true and self.timers.hunger <= 0 then
 			self.timers.hunger = self:mob_actfac_time(10, 2)
 			
-			-- Update day for eat
-			local days = get_day_count() - self.last_satiated_day
-			
 			local thirsty = false
 			local hungry = false
 			
-			while (days >= def.hunger.days_interval) do
-				-- If need water
-				if def.hunger.water then
-					local eat, node_pos = eat_nodes_near(self, def.hunger.water_nodes or {"group:water"}, def)
-					if eat == false then
-						thirsty = true
-					end
-				end
+			
+			-- If need water
+			if def.hunger.water then
 				
-				-- If need food
-				if def.hunger.food then
-					local eat, node_pos = eat_nodes_near(self, def.hunger.food.nodes, def)
-					if eat == false then
-						hungry = true
-					end
-					-- Check feeder
-					if node_pos then 
-						if registered_feeder_nodes[minetest.get_node(node_pos).name] then
-							set_feeder_level(node_pos, -1)
-						else
-							remove_node(node_pos)
-						end
-					end
-				end
+				thirsty = true
 				
-				if hungry == false and thirsty == false then
-					days = days - def.hunger.days_interval
-				else
-					break
+				-- Search water
+				local water_pos = eat_nodes_near(self, def.hunger.water.nodes)
+				if water_pos then
+					thirsty = false
 				end
 			end
 			
-			-- Update satiated status
-			if days > def.hunger.days_interval then
-				self.satiated = false
-			else
-				self.satiated = true
+			
+			-- If need food
+			if def.hunger.food then
+				
+				-- Days interval
+				local days_interval = def.hunger.days_interval
+				
+				-- Days to saciate
+				local days = get_day_count() - self.last_satiated_day
+				
+				-- Check if hungry
+				if days >= def.hunger.days_interval then
+					hungry = true
+				end
+				
+				-- Food node
+				local food_pos = eat_nodes_near(self, def.hunger.food.nodes)
+				
+				while hungry == true and food_pos do
+				
+					-- Is feeder node
+					if registered_feeder_nodes[minetest.get_node(food_pos).name] then
+						
+						-- Food units to eat
+						local food_to_eat = math.floor(days/days_interval)
+						
+						set_feeder_level(food_pos, (food_to_eat * -1))
+						
+						-- Update days
+						days = days - (food_to_eat * days_interval)
+						
+					-- Is food node
+					else
+						
+						remove_node(food_pos)
+						
+						-- Update days
+						days = days - days_interval
+					end
+					
+					-- Try find food or feeder node
+					food_pos = eat_nodes_near(self, def.hunger.food.nodes)
+					
+					-- Update hungry status
+					if days < days_interval then
+						hungry = false
+					end
+				end
+				
+				-- Update last saciated day
+				self.last_satiated_day = get_day_count() - days
+				
 			end
+			
 			
 			-- Check if kill MOB
 			if hungry == true then
@@ -149,6 +172,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				else
 					kill_mob(self, "creatures:hungry")
 				end
+			
 			elseif thirsty == true then
 				if self.hunger_activated == false then
 					self.object:remove()
@@ -157,7 +181,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 				end
 			end
 			
-			self.last_satiated_day = get_day_count() - days
 			self.hunger_activated = true
 		end
 	end)
@@ -165,7 +188,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 	-- Register 'get_staticdata'
 	creatures.register_get_staticdata(mob_name, function(self)
 		return {
-			satiated = self.satiated,
 			last_satiated_day = self.last_satiated_day,
 		}
 	end)

@@ -33,13 +33,14 @@ creatures.line_of_sight = function(pos1, pos2, def)
 		end
 	end
 	
-	local raycast = minetest.raycast(pos1, pos2, true, false)
+	local raycast = minetest.raycast(pos1, pos2, not def.ignore_all_obj, false)
 	
 	local n = raycast:next()
 	while n do
 		
 		-- Objects
-		if n.type == "object" 
+		if def.ignore_all_obj == false
+			and n.type == "object" 
 			-- Ignored objects
 			and not ignore_obj[tostring(n.ref)] 
 		then
@@ -47,6 +48,12 @@ creatures.line_of_sight = function(pos1, pos2, def)
 		
 		-- Nodes
 		elseif n.type == "node" then
+			
+			-- Check if is target
+			if def.target_is_node == true and vector.equals(vector.round(n.under), vector.round(pos2)) == true then
+				return true
+			end
+			
 			if def.physical_access == true then return false end
 			
 			local nn = minetest.get_node(n.under).name
@@ -71,6 +78,8 @@ local line_of_sight = creatures.line_of_sight
 creatures.mob_sight = function(viewer, target, def)
 	def = def or {}
 	def.ignore_obj = def.ignore_obj or {}
+	
+	def.ignore_all_obj = def.ignore_all_obj or false
 	
 	local targets = {}
 	local target_obj, viewer_obj
@@ -116,6 +125,8 @@ creatures.mob_sight = function(viewer, target, def)
 	-- Check all targets
 	for _,target_pos in ipairs(targets) do
 		if creatures.line_of_sight(viewer_pos, target_pos, {
+			ignore_all_obj = def.ignore_all_obj,
+			target_is_node = def.target_is_node,
 			ignore_obj = def.ignore_obj,
 			stepsize = def.stepsize or 0.5,
 			physical_access = def.physical_access,

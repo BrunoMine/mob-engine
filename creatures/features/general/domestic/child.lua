@@ -101,6 +101,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 		end
 	end)
 	
+	-- Register 'on_grow'
+	creatures.register_on_grow(def.child.name, function(self, new_self) 
+		new_self.randomized_value = self.randomized_value
+		creatures.set_random_values(new_self)
+		-- Adjust texture
+		self.object:set_properties({textures = self.randomized_value.textures})
+	end)
+	
 end)
 
 -- Register 'on_grow'
