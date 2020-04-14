@@ -23,7 +23,7 @@ be misrepresented as being the original software.
 
 -- Methods
 local get_day_count = minetest.get_day_count
-local set_feeder_level = creatures.set_feeder_level
+local set_feeder_level = creatures.feeder.modify_level
 local find_nodes_in_area = minetest.find_nodes_in_area
 local find_path = creatures.find_path
 local remove_node = minetest.remove_node

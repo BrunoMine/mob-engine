@@ -24,6 +24,11 @@ be misrepresented as being the original software.
 
 -- Global tables
 creatures.registered_feeder_nodes = {}
+
+-- API feature table
+creatures.feeder = {}
+
+-- Indexed tables
 local feeder_nodes = creatures.registered_feeder_nodes
 local registered_items = minetest.registered_items
 
@@ -37,6 +42,9 @@ local update_feeder_node = function(pos)
 	local meta = minetest.get_meta(pos)
 	local food = meta:get_float("food") or 0
 	
+	-- Set infotext
+	local percent = math.ceil((food/def.max_food)*100)
+	meta:set_string("infotext", "Food: "..percent.."% ("..food..")")
 	
 	local selected_node_step = def.node_steps[1]
 	
@@ -57,53 +65,85 @@ end
 
 
 -- Set supply level
-creatures.set_feeder_level = function(pos, supply_or_itemstack)
-	supply_or_itemstack = supply_or_itemstack or 0
+creatures.feeder.set_level = function(pos, food)
 	
-	-- Definitions
-	local nodename = minetest.get_node(pos).name
-	local def = feeder_nodes[nodename]
+	-- Node Meta
+	local meta = minetest.get_meta(pos)
+	
+	meta:set_float("food", food)
+	
+	-- Update node
+	update_feeder_node(pos)
+end
+
+
+-- Modify food level
+creatures.feeder.modify_level = function(pos, modify)
+	
+	-- Feeder definitions
+	local def = feeder_nodes[minetest.get_node(pos).name]
+	
+	-- Node Meta
+	local meta = minetest.get_meta(pos)
+	local food = meta:get_float("food")
+	
+	food = food + modify
+	
+	if food < 0 then food = 0 end
+	
+	meta:set_float("food", food)
+	
+	-- Update node
+	update_feeder_node(pos)
+end
+
+
+-- Supply feeder with item
+creatures.feeder.supply_item = function(pos, itemstack)
+	
+	-- Feeder definitions
+	local feeder_def = feeder_nodes[minetest.get_node(pos).name]
+	
+	-- Item definitions
+	local item_name, item_count
+	
+	-- Serialized format 
+	if type(itemstack) == "string" then
+		local t = string.split(itemstack, " ")
+		item_name = t[1]
+		item_count = tonumber(t[2] or 1)
+	
+	-- Table format
+	else
+		item_name = itemstack.name or itemstack:get_name()
+		item_count = itemstack.count or itemstack:get_count()
+	end
+	
+	-- Supply
+	local supply_def = feeder_def.supply[item_name]
 	
 	-- Node Meta
 	local meta = minetest.get_meta(pos)
 	local food = meta:get_float("food") or 0
-	local old_food = food + 0
 	
-	local supply = supply_or_itemstack
 	local take = 0
 	
-	if type(supply_or_itemstack) ~= "number" then 
-		
-		local item_supply_def = def.supply[supply_or_itemstack:get_name()]
-		
-		local count = supply_or_itemstack:get_count()
-		take = item_supply_def.count or 1
-		
-		if count < take then
-			take = count
-		end
-		
-		-- supply number
-		supply = def.supply[supply_or_itemstack:get_name()].food or 1
-		supply = supply * take
+	-- Check how many items can be used
+	while ((food + supply_def.food) <= feeder_def.max_food) and item_count > 0 do
+		food = food + supply_def.food
+		item_count = item_count - 1
+		take = take + 1
 	end
 	
-	-- Save new food number at node
-	food = food + supply
-	if food > def.max_food then
-		food = def.max_food
-	elseif food < 0 then
-		food = 0
-	end
+	-- Save new food level at node
 	meta:set_float("food", food)
 	
-	-- Rename infotext
-	local percent = math.ceil((food/def.max_food)*100)
-	meta:set_string("infotext", "Food: "..percent.."% ("..food..")")
+	-- Update node
 	update_feeder_node(pos)
 	
-	return (old_food - food), take
+	return take
 end
+
 
 -- Register node feeder
 creatures.register_feeder_node = function(nodename, def, secondary)
@@ -133,9 +173,9 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 			-- Supply
 			if itemstack and itemstack:get_name() and feeder_nodes[nodename].supply[itemstack:get_name()] then
 				
-				local s, take = creatures.set_feeder_level(pos, itemstack)
+				local take = creatures.feeder.supply_item(pos, itemstack)
 				
-				if s ~= 0 then
+				if take > 0 then
 				
 					itemstack:take_item(take)
 					
@@ -172,7 +212,7 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 				return itemstack
 			end
 			
-			creatures.set_feeder_level(result, supply)
+			creatures.feeder.modify_level(result, supply)
 			
 			-- Execute registered 'on_place'
 			if feeder_nodes[nodename].old_on_place then

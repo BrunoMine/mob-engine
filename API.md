@@ -344,10 +344,16 @@ Feeder nodes are used to accumulate food for nearby MOBs.
 
 #### Methods
 * `creatures.register_feeder_node(node_name, {feeder node definition}, [secondary])`: Register feeder node
+  * `secondary` to execute this method like secondary mode (for internal use) 
+* `creatures.feeder.set_level(pos, food)`: Set a food level
+  * `food` is a number of food level to be set
+* `creatures.feeder.modify_level(pos, modify)`: Modify food level
+  * `modify` is a number to modify food level
+* `creatures.feeder.supply_item(pos, itemstack)`: Supply a feeder with a itemstack
+  * `itemstack` can be table or serialized format
 * `creatures.set_feeder_level(pos, supply_or_item)`: Set feeder level
   * `supply_or_item` can be a itemname for resupply feeder or a number to change feeder level
-  * Returns the number of how many levels have changed
-  * `secondary` to execute this method like secondary mode (for internal use) 
+  * Returns the number of how many items has used
 
 Methods
 -------
