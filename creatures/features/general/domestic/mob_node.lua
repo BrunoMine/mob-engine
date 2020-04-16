@@ -21,6 +21,10 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Indexed methods
+local check_mob_in_pos = creatures.check_mob_in_pos
+local check_mob_node = creatures.check_mob_node
+
 local hash_tb = {}
 
 -- Check mob_node at pos
@@ -194,6 +198,41 @@ local check_cleaning_cycle = function(pos)
 		load_mob(pos)
 	end
 end
+
+-- Register 'on_register_mob'
+creatures.register_on_register_mob(function(mob_name, def)
+	
+	if not def.mating then return end
+	
+	-- Register 'is_fertile'
+	creatures.register_is_fertile(mob_name, function(self)
+		
+		-- Check spawn for child
+		if def.mating.spawn_type == "mob_node" then
+		
+			-- Has a mob node
+			if check_mob_node(self) == false then
+				return false
+			end
+			
+			-- Spawn pos is empty
+			if check_mob_in_pos(self, self.mob_node.pos) ~= true then
+				return false
+			end
+		end
+		
+		return true
+	end)
+
+	-- Spawn child
+	creatures.register_spawn_child(mob_name, function(self) 
+		-- Spawn at mob node
+		minetest.add_entity(self.mob_node.pos, def.mating.child_mob)
+	end)
+	
+end)
+
+
 
 
 -- Register mob node

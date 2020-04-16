@@ -109,6 +109,9 @@ function creatures.register_mob(mob_name, mob_def) -- returns true if sucessfull
 	-- Registered mobs
 	creatures.registered_mobs[mob_name] = mob_def
 	
+	-- Meta tables
+	creatures.registered_mobs[mob_name].meta_tables = {}
+	
 	-- Organize entity table
 	creatures.registered_mobs[mob_name].ent_def = entity_table(mob_name, mob_def)
 	
@@ -124,10 +127,11 @@ function creatures.register_mob(mob_name, mob_def) -- returns true if sucessfull
 		entity_meta[i] = f
 	end
 	
-	-- Registered callbacks
-	entity_meta.mob_on_step_tb = creatures.registered_mobs[mob_name].on_step_table or {}
-	entity_meta.mob_get_staticdata_tb = creatures.registered_mobs[mob_name].get_staticdata_table or {}
-	entity_meta.mob_on_activate_tb = creatures.registered_mobs[mob_name].on_activate_table or {}
+	-- Registered callbacks tables
+
+	for table_name,meta in pairs(creatures.registered_mobs[mob_name].meta_tables) do
+		entity_meta[meta.index] = meta.data
+	end
 	
 	-- Register Entity
 	core.register_entity(mob_name, setmetatable(creatures.registered_mobs[mob_name].ent_def, {__index = entity_meta}))

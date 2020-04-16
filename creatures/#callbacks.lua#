@@ -6,7 +6,7 @@ Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 callbacks.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
-event will the authors be held liable for any damages arising from the use of
+event will the authors ddbe held liable for any damages arising from the use of
 this software.
 
 Permission is granted to anyone to use this software for any purpose, including
@@ -28,10 +28,6 @@ creatures.register_on_step = function(mob_name, func)
 	-- Check 'on_step'
 	if creatures.registered_mobs[mob_name].on_step_table == nil then
 		creatures.registered_mobs[mob_name].on_step_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_on_step_tb",
-			data = creatures.registered_mobs[mob_name].on_step_table
-		})
 	end
 	
 	table.insert(creatures.registered_mobs[mob_name].on_step_table, func)
@@ -116,10 +112,6 @@ creatures.register_get_staticdata = function(mob_name, func)
 	-- Check 'get_staticdata'
 	if creatures.registered_mobs[mob_name].get_staticdata_table == nil then
 		creatures.registered_mobs[mob_name].get_staticdata_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_get_staticdata_tb",
-			data = creatures.registered_mobs[mob_name].get_staticdata_table
-		})
 	end
 	
 	table.insert(creatures.registered_mobs[mob_name].get_staticdata_table, func)
@@ -156,10 +148,6 @@ creatures.register_on_activate = function(mob_name, func)
 	-- Check 'on_activate'
 	if creatures.registered_mobs[mob_name].on_activate_table == nil then
 		creatures.registered_mobs[mob_name].on_activate_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_on_activate_tb",
-			data = creatures.registered_mobs[mob_name].on_activate_table
-		})
 	end
 	
 	table.insert(creatures.registered_mobs[mob_name].on_activate_table, func)

@@ -21,36 +21,79 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Methods
+-- Indexed methods
 local find_target = creatures.find_target
-local check_mob_in_pos = creatures.check_mob_in_pos
-local check_mob_node = creatures.check_mob_node
 local random = math.random
 local total = table.maxn
 local get_day_count = minetest.get_day_count
 
 
--- Check if is fertile
-local is_fertile = function(self)
+-- Register 'is_fertile'
+creatures.register_is_fertile = function(mob_name, func)
+	
+	-- Check 'is_fertile'
+	if creatures.registered_mobs[mob_name].is_fertile_table == nil then
+		creatures.registered_mobs[mob_name].is_fertile_table = {}
+		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
+			index = "mob_is_fertile_tb",
+			data = creatures.registered_mobs[mob_name].is_fertile_table
+		})
+	end
+	
+	table.insert(creatures.registered_mobs[mob_name].is_fertile_table, func)
+end
+
+-- Execute 'is_fertile'
+creatures.entity_meta.mob_is_fertile = function(self)
+	
 	local def = creatures.mob_def(self)
 	
 	-- Check fertile
-	if (not def.mating) or self.mating_last_day + def.mating.interval > get_day_count()  then return false end
+	if (not def.mating) or self.mating_last_day + def.mating.interval > get_day_count() then 
+		return false 
+	end
 	
-	-- Check spawn for child
-	-- Spawn type : "mob_node"
-	if def.mating.spawn_type == "mob_node" then
-		-- Has a mob node
-		if check_mob_node(self) == false then
-			return false
-		end
-		-- Spawn pos is empty
-		if check_mob_in_pos(self, self.mob_node.pos) ~= true then
+	-- Run registered 'is_fertile'
+	for _,f in ipairs(self.mob_is_fertile_tb or {}) do
+		local r = f(self)
+		if r == false then
 			return false
 		end
 	end
 	
 	return true
+	
+end
+
+
+-- Register 'spawn_child'
+creatures.register_spawn_child = function(mob_name, func)
+	
+	-- Check 'spawn_child'
+	if creatures.registered_mobs[mob_name].spawn_child_table == nil then
+		creatures.registered_mobs[mob_name].spawn_child_table = {}
+		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
+			index = "mob_spawn_child_tb",
+			data = creatures.registered_mobs[mob_name].spawn_child_table
+		})
+	end
+	
+	table.insert(creatures.registered_mobs[mob_name].spawn_child_table, func)
+end
+
+-- Execute 'spawn_child'
+creatures.entity_meta.mob_spawn_child = function(self)
+	
+	-- Run registered 'spawn_child'
+	for _,f in ipairs(self.mob_spawn_child_tb or {}) do
+		local r = f(self)
+		if r == false then
+			return false
+		end
+	end
+	
+	return true
+	
 end
 
 
@@ -92,13 +135,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 			self.timers.mating = self:mob_actfac_time(15)
 			
 			-- Check if interval is elapsed
-			if is_fertile(self) == false then 
+			if self:mob_is_fertile() == false then 
 				return 
 			end
 			
 			-- Search another MOB to mating
-			local mobs = find_target(self.current_pos, 6, 
-				{
+			local mobs = find_target(self.current_pos, 6, {
 					xray = false, 
 					no_count = false, 
 					search_type = "mate", 
@@ -109,8 +151,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 			-- Check MOBs
 			local fertile_mobs = {}
 			for _,obj in ipairs(mobs) do
-				if is_fertile(obj:get_luaentity()) then
-					table.insert(fertile_mobs, obj:get_luaentity())
+				local ent = obj:get_luaentity()
+				if ent.mob_is_fertile and ent:mob_is_fertile() == true then
+					table.insert(fertile_mobs, ent)
 				end
 			end
 			
@@ -119,8 +162,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 				local c = math.ceil((total(fertile_mobs) * (def.mating.birth_multiplier or 0.5)))
 				
 				while c > 0 do
-					-- Spawn
-					minetest.add_entity(fertile_mobs[c].mob_node.pos, def.mating.child_mob)
+					-- Spawn child
+					self:mob_spawn_child()
 					c = c - 1
 				end
 				for _,entity in ipairs(fertile_mobs) do
