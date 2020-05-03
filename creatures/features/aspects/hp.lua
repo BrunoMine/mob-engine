@@ -72,7 +72,7 @@ local function onDamage(self, hp, reason)
 		on_hit(me) -- red flashing
 		if def.sounds and def.sounds.on_damage then
 			local dmg_snd = def.sounds.on_damage
-			core.sound_play(dmg_snd.name, {pos = me:getpos(), max_hear_distance = dmg_snd.distance or 5, gain = dmg_snd.gain or 1})
+			core.sound_play(dmg_snd.name, {pos = me:get_pos(), max_hear_distance = dmg_snd.distance or 5, gain = dmg_snd.gain or 1})
 		end
 	end
 end
@@ -84,7 +84,7 @@ creatures.change_hp = function(self, value, reason)
 	local hp = me:get_hp()
 	hp = hp + math.floor(value)
 	
-	local r, hp = creatures.on_change_hp(self.mob_name, self, hp)
+	local r, hp = self:mob_on_change_hp(hp)
 	
 	me:set_hp(hp)
 	if value < 0 then

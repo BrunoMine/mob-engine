@@ -22,291 +22,223 @@ be misrepresented as being the original software.
 ]]
 
 
--- Register 'on_step'
-creatures.register_on_step = function(mob_name, func)
+-- Create callbacks
+creatures.create_mob_callback = function(call_name, def)
 	
-	-- Check 'on_step'
-	if creatures.registered_mobs[mob_name].on_step_table == nil then
-		creatures.registered_mobs[mob_name].on_step_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_on_step_tb",
-			data = creatures.registered_mobs[mob_name].on_step_table
-		})
-	end
+	-- Registration
+	local register
+	if def.register_type == "custom" then
+		register = def.register
 	
-	table.insert(creatures.registered_mobs[mob_name].on_step_table, func)
-end
-
--- Execute 'on_step'
-creatures.entity_meta.mob_on_step = function(self, dtime)
+	-- Include call functions on 'registered_mobs'
+	elseif def.register_type == "mob_functions" then
+		register = function(mob_name, func)
 	
-	-- Round dtime
-	local rdtime = math.floor(dtime * 100) / 100 
-	
-	-- Run registered 'on_step'
-	for _,f in ipairs(self.mob_on_step_tb) do
-		local r = f(self, rdtime)
-		if r == true then
-			return r
+			-- Check callback table
+			if creatures.registered_mobs[mob_name][call_name.."_table"] == nil then
+				creatures.registered_mobs[mob_name][call_name.."_table"] = {}
+				
+				-- Mark index for MOB meta table
+				table.insert(creatures.registered_mobs[mob_name].meta_tables, {
+					index = "mob_"..call_name.."_tb",
+					data = creatures.registered_mobs[mob_name][call_name.."_table"]
+				})
+			end
+			
+			table.insert(creatures.registered_mobs[mob_name][call_name.."_table"], func)
 		end
 	end
 	
+	-- Execution
+	local executer
+	if def.executer_type == "custom" then
+		executer = def.executer
+	
+	-- Run registered checker for a true
+	elseif def.executer_type == "checker" then
+		executer = function(self, ...)
+			
+			for _,f in ipairs(self["mob_"..call_name.."_tb"] or {}) do
+				local r = f(self, ...)
+				if r == true then
+					return r
+				end
+			end
+			
+		end
+	end
+	
+	-- Create register function
+	creatures["register_"..call_name] = register
+	
+	-- Create executer function
+	
+	-- Create MOB callback on lua entity
+	if def.executer_is_mob_callback == true then
+		creatures.entity_meta["mob_"..call_name] = executer
+	
+	-- Create a simple executer function
+	else
+		creatures[call_name] = executer
+	end
 end
+
+
+-- Register 'on_step'
+creatures.create_mob_callback("on_step", {
+	register_type = "mob_functions",
+	
+	executer_type = "custom",
+	executer_is_mob_callback = true,
+	executer = function(self, dtime)
+		
+		-- Round dtime
+		local rdtime = math.floor(dtime * 100) / 100 
+		
+		-- Run registered 'on_step'
+		for _,f in ipairs(self.mob_on_step_tb or {}) do
+			local r = f(self, rdtime)
+			if r == true then
+				return r
+			end
+		end
+		
+	end,
+})
 
 
 -- Register 'on_punch'
-creatures.register_on_punch = function(mob_name, func)
-	-- Check 'on_punch'
-	if creatures.registered_mobs[mob_name].on_punch_table == nil then
-		creatures.registered_mobs[mob_name].on_punch_table = {}
-	end
+creatures.create_mob_callback("on_punch", {
+	register_type = "mob_functions",
 	
-	table.insert(creatures.registered_mobs[mob_name].on_punch_table, func)
-end
-
--- Execute 'on_punch'
-creatures.on_punch = function(mob_name, self, puncher, time_from_last_punch, tool_capabilities, dir)
-
-	-- Check 'on_punch'
-	if creatures.registered_mobs[mob_name].on_punch_table == nil then
-		creatures.registered_mobs[mob_name].on_punch_table = {}
-	end
-	
-	-- Run registered 'on_punch'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_punch_table) do
-		local r = f(self, puncher, time_from_last_punch, tool_capabilities, dir)
-		if r == true then
-			return r
-		end
-	end
-end
-
-
--- Register 'on_rightclick'
-creatures.register_on_rightclick = function(mob_name, func)
-	-- Check 'on_rightclick'
-	if creatures.registered_mobs[mob_name].on_rightclick_table == nil then
-		creatures.registered_mobs[mob_name].on_rightclick_table = {}
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].on_rightclick_table, func)
-end
-
--- Execute 'on_rightclick'
-creatures.on_rightclick = function(mob_name, self, clicker)
-
-	-- Check 'on_rightclick'
-	if creatures.registered_mobs[mob_name].on_rightclick_table == nil then
-		creatures.registered_mobs[mob_name].on_rightclick_table = {}
-	end
-	
-	-- Run registered 'on_rightclick'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_rightclick_table) do
-		local r = f(self, clicker)
-		if r == true then
-			return r
-		end
-	end
-end
-
-
--- Register 'get_staticdata'
-creatures.register_get_staticdata = function(mob_name, func)
-
-	-- Check 'get_staticdata'
-	if creatures.registered_mobs[mob_name].get_staticdata_table == nil then
-		creatures.registered_mobs[mob_name].get_staticdata_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_get_staticdata_tb",
-			data = creatures.registered_mobs[mob_name].get_staticdata_table
-		})
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].get_staticdata_table, func)
-end
-
--- Execute 'get_staticdata'
-creatures.entity_meta.mob_get_staticdata = function(self)
-	
-	if self.activated == true then
-		creatures.on_deactivate(self.mob_name, self)
-	end
-	self.activated = true
-	
-	-- Run registered 'get_staticdata'
-	local data = {}
-	
-	for _,f in ipairs(self.mob_get_staticdata_tb) do
-		local other_data = f(self)
-		
-		-- Merge results
-		if other_data and type(other_data) == "table" then
-			for s,w in pairs(other_data) do
-				data[s] = w
-			end
-		end
-	end
-	
-	return minetest.serialize(data)
-end
-
-
--- Register 'on_activate'
-creatures.register_on_activate = function(mob_name, func)
-	-- Check 'on_activate'
-	if creatures.registered_mobs[mob_name].on_activate_table == nil then
-		creatures.registered_mobs[mob_name].on_activate_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_on_activate_tb",
-			data = creatures.registered_mobs[mob_name].on_activate_table
-		})
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].on_activate_table, func)
-end
-
--- Execute 'on_activate'
-creatures.entity_meta.mob_on_activate = function(self, staticdata)
-	
-	-- Restore Staticdata for entity
-	if staticdata then
-		local tab = core.deserialize(staticdata)
-		if tab and type(tab) == "table" then
-			for s,w in pairs(tab) do
-				self[tostring(s)] = w
-			end
-		end
-	end
-	
-	-- Run registered 'on_activate'
-	for _,f in ipairs(self.mob_on_activate_tb) do
-		local r = f(self, staticdata)
-		if r == true then
-			return r
-		end
-	end
-end
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
 
 
 -- Register 'on_deactivate'
-creatures.register_on_deactivate = function(mob_name, func)
-	-- Check 'on_deactivate'
-	if creatures.registered_mobs[mob_name].on_deactivate_table == nil then
-		creatures.registered_mobs[mob_name].on_deactivate_table = {}
-	end
+creatures.create_mob_callback("on_deactivate", {
+	register_type = "mob_functions",
 	
-	table.insert(creatures.registered_mobs[mob_name].on_deactivate_table, func)
-end
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
 
--- Execute 'on_deactivate'
-creatures.on_deactivate = function(mob_name, self)
+
+-- Register 'on_die'
+creatures.create_mob_callback("on_die", {
+	register_type = "mob_functions",
 	
-	-- Check 'on_deactivate'
-	if creatures.registered_mobs[mob_name].on_deactivate_table == nil then
-		creatures.registered_mobs[mob_name].on_deactivate_table = {}
-	end
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
+
+
+-- Register 'on_rightclick'
+creatures.create_mob_callback("on_rightclick", {
+	register_type = "mob_functions",
 	
-	-- Run registered 'on_deactivate'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_deactivate_table) do
-		local r = f(self)
-		if r == true then
-			return r
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
+
+
+-- Register 'get_staticdata'
+creatures.create_mob_callback("get_staticdata", {
+	register_type = "mob_functions",
+	
+	executer_type = "custom",
+	executer_is_mob_callback = true,
+	executer = function(self, dtime)
+		
+		if self.activated == true then
+			self:mob_on_deactivate()
 		end
-	end
-end
+		self.activated = true
+		
+		-- Run registered 'get_staticdata'
+		local data = {}
+		
+		for _,f in ipairs(self.mob_get_staticdata_tb) do
+			local other_data = f(self)
+			
+			-- Merge results
+			if other_data and type(other_data) == "table" then
+				for s,w in pairs(other_data) do
+					data[s] = w
+				end
+			end
+		end
+		
+		return minetest.serialize(data)
+		
+	end,
+})
+
+
+-- Register 'on_activate'
+creatures.create_mob_callback("on_activate", {
+	register_type = "mob_functions",
+	
+	executer_type = "custom",
+	executer_is_mob_callback = true,
+	executer = function(self, staticdata)
+		
+		-- Restore Staticdata for entity
+		if staticdata then
+			local tab = core.deserialize(staticdata)
+			if tab and type(tab) == "table" then
+				for s,w in pairs(tab) do
+					self[tostring(s)] = w
+				end
+			end
+		end
+		
+		-- Run registered 'on_activate'
+		for _,f in ipairs(self.mob_on_activate_tb or {}) do
+			local r = f(self, staticdata)
+			if r == true then
+				return r
+			end
+		end
+		
+	end,
+})
+
+
+-- Register 'on_change_hp'
+creatures.create_mob_callback("on_change_hp", {
+	register_type = "mob_functions",
+	
+	executer_type = "custom",
+	executer_is_mob_callback = true,
+	executer = function(self, hp)
+		
+		-- Run registered 'on_change_hp'
+		for _,f in ipairs(self.mob_on_change_hp_tb or {}) do
+			local r, new_hp = f(self, hp)
+			if new_hp then
+				hp = new_hp
+			end
+			if r == true then
+				return r, hp
+			end
+		end
+		
+		return true, hp
+		
+	end,
+})
 
 
 -- Register 'on_clear_objects'
-creatures.register_on_clear_objects = function(mob_name, func)
-	-- Check 'on_activate'
-	if creatures.registered_mobs[mob_name].on_clear_objects_table == nil then
-		creatures.registered_mobs[mob_name].on_clear_objects_table = {}
-	end
+creatures.create_mob_callback("on_clear_objects", {
+	register_type = "mob_functions",
 	
-	table.insert(creatures.registered_mobs[mob_name].on_clear_objects_table, func)
-end
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
 
-
--- Execute 'on_die_mob'
-creatures.on_die_mob = function(mob_name, self, reason)
-	
-	-- Check 'on_die_mob'
-	if creatures.registered_mobs[mob_name].on_die_mob_table == nil then
-		creatures.registered_mobs[mob_name].on_die_mob_table = {}
-	end
-	
-	-- Run registered 'on_die_mob'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_die_mob_table) do
-		local r = f(self, reason)
-		if r == true then
-			return r
-		end
-	end
-end
-
--- Register 'on_die_mob'
-creatures.register_on_die_mob = function(mob_name, func)
-	-- Check 'on_die_mob'
-	if creatures.registered_mobs[mob_name].on_die_mob_table == nil then
-		creatures.registered_mobs[mob_name].on_die_mob_table = {}
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].on_die_mob_table, func)
-end
-
-
--- Execute 'on_change_hp'
-creatures.on_change_hp = function(mob_name, self, hp)
-	
-	-- Check 'on_change_hp'
-	if creatures.registered_mobs[mob_name].on_change_hp_table == nil then
-		creatures.registered_mobs[mob_name].on_change_hp_table = {}
-	end
-	
-	-- Run registered 'on_change_hp'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_change_hp_table) do
-		local r, new_hp = f(self, hp)
-		if new_hp then
-			hp = new_hp
-		end
-		if r == true then
-			return r, hp
-		end
-	end
-	
-	return true, hp
-end
-
--- Register 'on_change_hp'
-creatures.register_on_change_hp = function(mob_name, func)
-	-- Check 'on_change_hp'
-	if creatures.registered_mobs[mob_name].on_change_hp_table == nil then
-		creatures.registered_mobs[mob_name].on_change_hp_table = {}
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].on_change_hp_table, func)
-end
-
-
--- Execute 'on_clear_objects'
-creatures.on_clear_objects = function(mob_name, self)
-	
-	-- Check mob_name
-	if not creatures.registered_mobs[mob_name] then
-		creatures.throw_error("'on_clear_objects' callback for MOB "..dump(mob_name).. " is nil")
-		return
-	end
-	
-	-- Check 'on_clear_objects'
-	if creatures.registered_mobs[mob_name].on_clear_objects_table == nil then
-		creatures.registered_mobs[mob_name].on_clear_objects_table = {}
-	end
-	
-	-- Run registered 'on_clear_objects'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_clear_objects_table) do
-		f(self)
-	end
-end
 
 -- Execute 'on_clear_objects'
 local old_clear = minetest.clear_objects
@@ -315,7 +247,7 @@ minetest.clear_objects = function(...)
 	-- Run registered 'on_clear_objects'
 	for obj_id,self in pairs(minetest.luaentities) do
 		if self.mob_name and creatures.registered_mobs[self.mob_name] then
-			creatures.on_clear_objects(self.mob_name, self)
+			self:mob_on_clear_objects()
 		end
 	end
 	

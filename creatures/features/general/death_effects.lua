@@ -26,7 +26,7 @@ be misrepresented as being the original software.
 creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Register 'on_die_mob'
-	creatures.register_on_die_mob(mob_name, function(self, reason)
+	creatures.register_on_die(mob_name, function(self, reason)
 		
 		local mob_def = creatures.mob_def(self)
 		

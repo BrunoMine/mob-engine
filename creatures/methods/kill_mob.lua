@@ -41,7 +41,7 @@ creatures.kill_mob = function(self, reason)
 		end
 	end
 	
-	creatures.on_die_mob(self.mob_name, self, reason)
+	self:mob_on_die(reason)
 	
 	return true
 end

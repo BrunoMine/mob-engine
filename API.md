@@ -95,6 +95,15 @@ These values are reserved for the engine resources operation.
 * `is_died`: is true if MOB is died
 * `is_wild`: boolean for if MOB is wild
 * `mobs_near`: MOBs count near
+* `mob_get_staticdata_tb`: Registered callbacks
+* `mob_on_step_tb`: Registered callbacks
+* `mob_on_punch_tb`: Registered callbacks
+* `mob_on_deactivate_tb`: Registered callbacks
+* `mob_on_die_tb`: Registered callbacks
+* `mob_on_rightclick_tb`: Registered callbacks
+* `mob_on_activate_tb`: Registered callbacks
+* `mob_on_change_hp_tb`: Registered callbacks
+* `mob_on_clear_objects_tb`: Registered callbacks
 
 #### Luaentity methods
 * `luaentity:mob_set_dir(dir, [rotate])`: Set a rotation in dir for the MOB
@@ -137,6 +146,7 @@ The callbacks allow to systematize the operation of the engine and registered MO
 For default, when a registered callback return (#1) `true` then prevent run next registered callbacks
 
 #### Methods
+* `creatures.create_mob_callback(callback_name, {callback definition})`
 * `creatures.register_on_register_mob(func)`: Register callback for when MOB is registered
   * `func` is a function `function(mob_name, mob_def) end`
 * `creatures.register_on_step(mob_name, func)`: Register callback for when run default on_step callback
@@ -160,19 +170,19 @@ For default, when a registered callback return (#1) `true` then prevent run next
   * `func` is a function `function(self) end`
 * `creatures.register_on_change_hp(mob_name, func)`: Register callback for when run minetest.on_change_hp
   * `func` is a function `function(self, hp) end`
-* `creatures.register_on_die_mob(mob_name, func)`: Register callback for when run minetest.on_die_mob
+* `creatures.register_on_die(mob_name, func)`: Register callback for when run minetest.on_die_mob
   * `func` is a function `function(self, reason) end`
-* `creatures.on_step(mob_name, self, dtime)`: Run default on_step callback
+* `luaentity:mob_on_step(dtime)`: Run default on_step callback
 * `creatures.on_punch(mob_name, self, puncher, time_from_last_punch, tool_capabilities, dir)`: Register callback for when run default on_punch callback
-* `creatures.on_rightclick(mob_name, self, clicker)`: Run default on_rightclick callback
+* `luaentity:mob_on_rightclick(clicker)`: Run default on_rightclick callback
 * `creatures.get_staticdata(mob_name, self)`: Run default get_staticdata callback
-* `creatures.on_activate(mob_name, self, staticdata)`: Run default on_activate callback
-* `creatures.on_deactivate(mob_name, self)`: Run on_deactivate callback
+* `luaentity:mob_on_activate(staticdata)`: Run default on_activate callback
+* `luaentity:mob_on_deactivate()`: Run on_deactivate callback
 * `creatures.on_clear_objects(mob_name, self)`: Run on_clear_objects callback
 * `creatures.on_hitted(self, puncher, time_from_last_punch, tool_capabilities, dir)`: Run on_hitted callback
-* `creatures.on_change_hp(self, hp)`: Run on_change_hp callback
+* `luaentity:mob_on_change_hp(hp)`: Run on_change_hp callback
   * Return (#1) `true` and (#2) HP changed
-* `creatures.on_die_mob(self, [reason])`: Run on_die_mob callback
+* `luaentity:mob_on_die([reason])`: Run on_die_mob callback
 
 ### Modes
 Modes are usefull for controlling MOB behaviors and they are the main feature of engine. 
@@ -786,15 +796,30 @@ Definition tables
         mob_name = "creatures:sheep",    -- MOB name
         search_mob = true,               -- search a MOB to the node
         on_set_mob_node = <function>,    --[[ callback for on set MOB node
-                                              <function> is 'function(pos, luaentity) end'
+                                              <function> is 'function(pos, luaentity) end']]
         on_reset_mob_node = <function>,  --[[ callback for on reset MOB node
-                                              <function> is 'function(pos) end'
+                                              <function> is 'function(pos) end']]
         on_save_mob = <function>,        --[[ callback for on save MOB
-                                              <function> is 'function(pos, luaentity) end'
+                                              <function> is 'function(pos, luaentity) end']]
         on_load_mob = <function>,        --[[ callback for on load MOB
-                                              <function> is 'function(pos, luaentity) end'
+                                              <function> is 'function(pos, luaentity) end']]
     }
 
+
+### Callback definition (`create_mob_callback`)
+    {
+        register_type = register_type, 	--[[ Register type string
+                                             "mob_functions" for save registered functions on 'mob_<callback_name>_tb' into luaentity
+											                 and on '<callback_name>_table' into creatures.registered_mobs from MOB
+                                             "custom" to use a custom register function]]
+        register = func, 				-- Custom function for registration (eg. ´function(mob_name, func) end´)
+		
+		executer_is_mob_callback = true,-- if true then make a executer like 'mob_<call_name>' <optional> (default is false)
+        executer_type = executer_type, 	--[[ Register type string
+                                             "checker" run each registered callback until return true
+                                             "custom" to use a custom execution function]]
+        executer = func, 				-- Custom function for execution (eg. ´function(...) end´)
+    }
 
 ### Idle mode definition(`register_idle_mode`)
     {

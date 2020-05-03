@@ -57,6 +57,11 @@ local function entity_table(mob_name, def)
 	-- On activate
 	ent_def.on_activate = function(self, staticdata)		
 		
+		-- Load registered callbacks tables
+		for table_name,meta in pairs(creatures.registered_mobs[mob_name].meta_tables) do
+			self[meta.index] = meta.data
+		end
+		
 		-- MOB name
 		self.mob_name = mob_name
 		
@@ -73,13 +78,13 @@ local function entity_table(mob_name, def)
 	-- On Punch
 	ent_def.on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
 		-- Registered callbacks
-		return creatures.on_punch(mob_name, self, puncher, time_from_last_punch, tool_capabilities, dir)
+		return self:mob_on_punch(puncher, time_from_last_punch, tool_capabilities, dir)
 	end
 	
 	-- On Rightclick
 	ent_def.on_rightclick = function(self, clicker)
 		-- Registered callbacks
-		return creatures.on_rightclick(mob_name, self, clicker)
+		return self:mob_on_rightclick(clicker)
 	end
 	
 	-- On Step
@@ -125,12 +130,6 @@ function creatures.register_mob(mob_name, mob_def) -- returns true if sucessfull
 	-- Engine callbacks
 	for i,f in pairs(creatures.entity_meta) do
 		entity_meta[i] = f
-	end
-	
-	-- Registered callbacks tables
-
-	for table_name,meta in pairs(creatures.registered_mobs[mob_name].meta_tables) do
-		entity_meta[meta.index] = meta.data
 	end
 	
 	-- Register Entity

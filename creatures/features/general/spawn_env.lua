@@ -206,8 +206,8 @@ end
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
-	-- Register 'on_die_mob' callback
-	creatures.register_on_die_mob(mob_name, function(self, reason)
+	-- Register 'on_die' callback
+	creatures.register_on_die(mob_name, function(self, reason)
 		if self.spawn_env ~= nil then
 			clear_env_node(self)
 		end
