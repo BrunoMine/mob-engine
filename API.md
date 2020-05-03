@@ -104,6 +104,8 @@ These values are reserved for the engine resources operation.
 * `mob_on_activate_tb`: Registered callbacks
 * `mob_on_change_hp_tb`: Registered callbacks
 * `mob_on_clear_objects_tb`: Registered callbacks
+* `mob_on_grow_tb`: Registered callbacks
+* `mob_is_fertile_tb`: Registered callbacks
 
 #### Luaentity methods
 * `luaentity:mob_set_dir(dir, [rotate])`: Set a rotation in dir for the MOB
@@ -183,6 +185,20 @@ For default, when a registered callback return (#1) `true` then prevent run next
 * `luaentity:mob_on_change_hp(hp)`: Run on_change_hp callback
   * Return (#1) `true` and (#2) HP changed
 * `luaentity:mob_on_die([reason])`: Run on_die_mob callback
+
+
+### Domestication
+Some functionality is made for domesticated MOB contexts
+
+#### Methods
+* `creatures.register_is_fertile(mob_name, func)`: Register function for check if MOB is fertile
+  * `func` is a function `function(self) end`
+* `luaentity:mob_is_fertile()`: Check if mob is fertile
+* `creatures.register_mob_spawn(mob_name, func)`: Register function spawn MOB child
+  * `func` is a function `function(self) end`
+* `luaentity:mob_spawn_child()`: Spawn child of a MOB
+
+
 
 ### Modes
 Modes are usefull for controlling MOB behaviors and they are the main feature of engine. 

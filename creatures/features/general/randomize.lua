@@ -36,12 +36,12 @@ creatures.set_random_values = function(self, forced)
 		end
 	end
 	
-	-- Random texture
+	-- Set texture
 	if self.randomized_value.textures then
 		self.object:set_properties({textures = self.randomized_value.textures})
 	end
 	
-	-- Random tags
+	-- Set tags
 	if self.randomized_value.tags then
 		for index,v in pairs(self.randomized_value.tags) do
 			self[index] = v

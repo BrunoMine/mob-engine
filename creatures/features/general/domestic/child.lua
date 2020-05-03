@@ -92,7 +92,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			new_self.is_child = true
 			
 			-- Run callback 'on_grow'
-			creatures.on_grow(self.mob_name, self, new_self)
+			creatures.on_grow(self, new_self)
 			
 			-- Remove old MOB
 			self.object:remove()
@@ -103,43 +103,34 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Register 'on_grow'
 	creatures.register_on_grow(def.child.name, function(self, new_self) 
+	
+		-- Keep randomized values
 		new_self.randomized_value = self.randomized_value
 		creatures.set_random_values(new_self)
-		-- Adjust texture
-		self.object:set_properties({textures = self.randomized_value.textures})
+		
 	end)
+	
+	-- Register custom 'on_grow'
+	if def.child.on_grow then creatures.register_on_grow(def.child.name, def.child.on_grow) end
 	
 end)
 
+
 -- Register 'on_grow'
-creatures.register_on_grow = function(mob_name, func)
-	-- Check 'on_grow'
-	if creatures.registered_mobs[mob_name].on_grow_table == nil then
-		creatures.registered_mobs[mob_name].on_grow_table = {}
-	end
+creatures.create_mob_callback("on_grow", {
+	register_type = "mob_functions",
 	
-	table.insert(creatures.registered_mobs[mob_name].on_grow_table, func)
-end
-
--- Execute 'on_grow'
-creatures.on_grow = function(mob_name, self, new_self)
-
-	-- Check 'on_grow'
-	if creatures.registered_mobs[mob_name].on_grow_table == nil then
-		creatures.registered_mobs[mob_name].on_grow_table = {}
-	end
-	
-	-- Run registered 'on_grow'
-	for _,f in ipairs(creatures.registered_mobs[mob_name].on_grow_table) do
-		local r = f(self, new_self)
-		if r == true then
-			return r
+	executer_type = "custom",
+	executer = function(self, new_self)
+		
+		-- Run registered 'on_grow'
+		for _,f in ipairs(self.mob_on_grow_tb or {}) do
+			local r = f(self, new_self)
+			if r == true then
+				return r
+			end
 		end
-	end
-	
-	local def = creatures.mob_def(new_self)
-	if def.child.on_grow then
-		def.child.on_grow(self, new_self)
-	end
-	
-end
+		
+	end,
+})
+

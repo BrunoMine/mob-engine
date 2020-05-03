@@ -29,72 +29,41 @@ local get_day_count = minetest.get_day_count
 
 
 -- Register 'is_fertile'
-creatures.register_is_fertile = function(mob_name, func)
+creatures.create_mob_callback("is_fertile", {
+	register_type = "mob_functions",
 	
-	-- Check 'is_fertile'
-	if creatures.registered_mobs[mob_name].is_fertile_table == nil then
-		creatures.registered_mobs[mob_name].is_fertile_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_is_fertile_tb",
-			data = creatures.registered_mobs[mob_name].is_fertile_table
-		})
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].is_fertile_table, func)
-end
-
--- Execute 'is_fertile'
-creatures.entity_meta.mob_is_fertile = function(self)
-	
-	local def = creatures.mob_def(self)
-	
-	-- Check fertile
-	if (not def.mating) or self.mating_last_day + def.mating.interval > get_day_count() then 
-		return false 
-	end
-	
-	-- Run registered 'is_fertile'
-	for _,f in ipairs(self.mob_is_fertile_tb or {}) do
-		local r = f(self)
-		if r == false then
-			return false
+	executer_type = "custom",
+	executer_is_mob_callback = true,
+	executer = function(self)
+		
+		local def = creatures.mob_def(self)
+		
+		-- Check fertile
+		if (not def.mating) or self.mating_last_day + def.mating.interval > get_day_count() then 
+			return false 
 		end
-	end
-	
-	return true
-	
-end
+		
+		-- Run registered 'is_fertile'
+		for _,f in ipairs(self.mob_is_fertile_tb or {}) do
+			local r = f(self)
+			if r == false then
+				return false
+			end
+		end
+		
+		return true
+		
+	end,
+})
 
 
 -- Register 'spawn_child'
-creatures.register_spawn_child = function(mob_name, func)
+creatures.create_mob_callback("spawn_child", {
+	register_type = "mob_functions",
 	
-	-- Check 'spawn_child'
-	if creatures.registered_mobs[mob_name].spawn_child_table == nil then
-		creatures.registered_mobs[mob_name].spawn_child_table = {}
-		table.insert(creatures.registered_mobs[mob_name].meta_tables, {
-			index = "mob_spawn_child_tb",
-			data = creatures.registered_mobs[mob_name].spawn_child_table
-		})
-	end
-	
-	table.insert(creatures.registered_mobs[mob_name].spawn_child_table, func)
-end
-
--- Execute 'spawn_child'
-creatures.entity_meta.mob_spawn_child = function(self)
-	
-	-- Run registered 'spawn_child'
-	for _,f in ipairs(self.mob_spawn_child_tb or {}) do
-		local r = f(self)
-		if r == false then
-			return false
-		end
-	end
-	
-	return true
-	
-end
+	executer_type = "checker",
+	executer_is_mob_callback = true,
+})
 
 
 -- Register 'on_register_mob'
