@@ -24,6 +24,9 @@ be misrepresented as being the original software.
 -- Registered Mobs
 creatures.registered_mobs = {}
 
+-- MOB presets
+creatures.registered_presets.mob = {}
+
 -- Get MOB definitions
 creatures.mob_def = function(self)
 	return creatures.registered_mobs[self.mob_name]
@@ -32,6 +35,15 @@ creatures.get_def = creatures.mob_def
 
 -- Organize a entity table for registration
 local function entity_table(mob_name, def)
+	
+	def.stats = def.stats or {}
+	
+	-- Load MOB preset
+	def = creatures.apply_preset(
+		def, 
+		def.mob_preset, 
+		creatures.registered_presets.mob
+	)
 	
 	local ent_def = {}
 	

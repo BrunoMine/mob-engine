@@ -139,7 +139,7 @@ function creatures.register_spawner(spawner_def)
 	makeSpawnerEntity(spawner_def.mob_name, spawner_def.model)
 
 	core.register_node(":" .. spawner_def.mob_name .. "_spawner", {
-		description = spawner_def.description or spawner_def.mob_name .. " spawner",
+		description = spawner_def.description or (spawner_def.mob_description or spawner_def.mob_name) .. " spawner",
 		paramtype = "light",
 		tiles = {"creatures_spawner.png"},
 		is_ground_content = true,
@@ -232,10 +232,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 	end
 	
 	-- Register Spawn
-	if def.spawning then
+	if def.spawning and def.spawning then
 	
 		local spawn_def = def.spawning
-		spawn_def.mob_name = def.name
+		spawn_def.mob_description = def.description
+		spawn_def.mob_name = mob_name
 		spawn_def.mob_size = def.model.collisionbox
 		
 		-- Register Spawner

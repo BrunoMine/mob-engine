@@ -39,6 +39,9 @@ dofile(modpath .."/params.lua")
 
 -- Engine core
 
+-- Presets
+dofile(modpath .."/presets.lua")
+
 -- MOB Callbacks
 dofile(modpath .."/callbacks.lua")
 
@@ -118,3 +121,6 @@ dofile(modpath .."/features/general/spawner_egg.lua")
 
 -- Common items
 dofile(modpath .."/items.lua")
+
+-- Default Presets
+dofile(modpath .."/default_presets.lua")

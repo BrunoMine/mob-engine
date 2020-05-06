@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 spawn_env.lua
@@ -20,6 +20,9 @@ product, an acknowledgment in the product documentation is required.
 be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
+
+-- MOB spawn ambience Presets
+creatures.registered_presets.mob_spawn_ambience = {}
 
 local registered_emergent_nodes = {}
 
@@ -90,7 +93,7 @@ creatures.register_spawn_env = function(label)
 			offset = 0,
 			scale = 0.0001,
 			spread = {x = 200, y = 200, z = 200},
-			seed = def.spawn_env_seed or 549,
+			seed = def.spawn_env_seed or creatures.make_number(def.mob_name),
 			octaves = 3,
 			persist = 0.6 * (def.spawn_env_chance or 1),
 			lacunarity = 1,
@@ -206,6 +209,15 @@ end
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
+	def.spawning = def.spawning or {}
+	
+	-- Load Spawning MOB preset
+	def.spawning = creatures.apply_preset(
+		def.spawning, 
+		def.spawn_preset, 
+		creatures.registered_presets.mob_spawn
+	)
+	
 	-- Register 'on_die' callback
 	creatures.register_on_die(mob_name, function(self, reason)
 		if self.spawn_env ~= nil then
@@ -234,3 +246,27 @@ creatures.register_on_register_mob(function(mob_name, def)
 	end)
 	
 end)
+
+-- Registered env node makers
+creatures.make_env_node = {}
+
+-- Make spawn env nodes
+creatures.make_spawn_ambience = function(def)
+	
+	-- Basic definitions
+	local spawn_def = table.copy(creatures.registered_presets.mob_spawn_ambience[def.preset or "default"])
+	
+	-- Spawn env node
+	if def.env_node then 
+		spawn_def = creatures.make_env_node[spawn_def.env_node.type](spawn_def, spawn_def.env_node)
+	end
+	
+	-- Apply overrided definitions
+	spawn_def = creatures.apply_preset(
+		spawn_def, 
+		nil, 
+		def.override
+	)
+	
+	return spawn_def
+end

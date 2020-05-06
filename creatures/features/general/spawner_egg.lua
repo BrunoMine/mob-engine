@@ -60,7 +60,7 @@ function creatures.register_egg(egg_def)
 	
 	-- Register CraftItem
 	core.register_craftitem(":" .. egg_def.mob_name .. "_spawn_egg", {
-		description = egg_def.description or egg_def.mob_name .. " spawn egg",
+		description = egg_def.description or (egg_def.mob_description or egg_def.mob_name) .. " spawn egg",
 		inventory_image = egg_def.texture or "creatures_spawn_egg.png",
 		liquids_pointable = false,
 		on_place = function(itemstack, placer, pointed_thing)
@@ -83,12 +83,12 @@ creatures.register_on_register_mob(function(mob_name, def)
 	if def.spawning then
 	
 		local spawn_def = def.spawning
-		spawn_def.mob_name = mob_name
 		spawn_def.mob_size = def.ent_def.collisionbox
 		
 		-- Register Spawn Egg
 		if spawn_def.spawn_egg then
 			local egg_def = def.spawning.spawn_egg
+			egg_def.mob_description = def.description
 			egg_def.mob_name = mob_name
 			egg_def.box = def.ent_def.collisionbox
 			creatures.register_egg(egg_def)

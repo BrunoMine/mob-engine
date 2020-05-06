@@ -198,3 +198,13 @@ creatures.in_range = function(range, value, cycle_limit)
 	return false
 end
 
+-- Make a number using a string
+creatures.make_number = function(str)
+	
+	local number = "0"
+	for n,_ in string.gmatch(str, ".") do
+		number = number .. tostring(tonumber(n, 36))
+	end
+	
+	return tonumber(number)
+end

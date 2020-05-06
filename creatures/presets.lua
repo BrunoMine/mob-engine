@@ -3,7 +3,7 @@
 Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-stats.lua
+presets.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -22,28 +22,31 @@ be misrepresented as being the original software.
 ]]
 
 
--- MOB stats presets
-creatures.registered_presets.mob_stats = {}
+-- Registered presets
+creatures.registered_presets = {}
 
--- Register 'on_register_mob'
-creatures.register_on_register_mob(function(mob_name, def)
+-- Apply presets
+creatures.apply_preset = function(def, preset_name, presets)
 	
-	-- Load MOB stats preset
-	creatures.apply_preset(
-		def.stats, 
-		def.stats.stats_preset, 
-		creatures.registered_presets.mob_stats
-	)
+	def = def or {}
 	
-	-- Entity definitions
-	def.ent_def.stats = def.stats
+	local preset_def = {}
 	
-	-- Register 'on_activate'
-	creatures.register_on_activate(mob_name, function(self, staticdata)
-		
-		-- Meta data
-		self.mob_stats = def.stats
-		
-	end)
+	if preset_name == nil then
+		if presets == nil then 
+			return def 
+		else
+			preset_def = presets
+		end
+	end
 	
-end)
+	for setting_name,setting in pairs(preset_def) do
+		if def[setting_name] == nil then
+			def[setting_name] = setting
+		end
+	end
+	
+	return def
+end
+
+

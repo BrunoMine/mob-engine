@@ -21,6 +21,10 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
+-- MOB Spawning presets
+creatures.registered_presets.mob_spawn = {}
+
 -- Check if 'height' is free from 'pos'
 local function checkSpace(pos, height)
 	for i = 0, height do
@@ -360,11 +364,25 @@ creatures.register_on_register_mob(function(mob_name, def)
 		return
 	end
 	
-	-- Register Spawn
-	if def.spawning and def.spawning.ambience then
+	-- Load MOB Spawning preset
+	def.spawning = creatures.apply_preset(
+		def.spawning, 
+		def.spawn_preset,
+		creatures.registered_presets.mob_spawn
+	)
+
+	-- Register Spawn Ambience
+	if def.spawning.ambience then
 		
 		if def.spawning.ambience[1] then
 			for i,spawn_def in ipairs(def.spawning.ambience) do
+				
+				-- Load MOB Spawn ambience preset
+				spawn_def = creatures.apply_preset(
+					spawn_def, 
+					spawn_def.mob_spawn_ambience,
+					creatures.registered_presets.mob_spawn_ambience
+				)
 				
 				local label = mob_name .. ":" .. i
 				spawn_def.mob_name = mob_name

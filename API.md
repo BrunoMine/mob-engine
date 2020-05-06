@@ -199,6 +199,17 @@ Some functionality is made for domesticated MOB contexts
 * `luaentity:mob_spawn_child()`: Spawn child of a MOB
 
 
+### Presets
+Presets can be used for simplify MOB creation
+
+#### Methods
+* `creatures.apply_preset([def], [preset_name], presets_or_preset)`: Apply preset definitions
+  * `def` is current definitions table to be merged
+  * `preset_name` from presets_or_preset table (if nil then `presets_or_preset` is a preset)
+  * Returns merged definitions table or nil if failure
+* `creatures.make_spawn_ambience({spawn ambience maker definition})`: Make a complete MOB spawn ambience definitions
+  * Return a complete MOB spawn ambience definitions
+
 
 ### Modes
 Modes are usefull for controlling MOB behaviors and they are the main feature of engine. 
@@ -452,7 +463,12 @@ Definition tables
 ### MOB definition (`register_mob`)
 
     {
-        
+		description = "Cool MOB", -- MOB description <optional>
+		
+		mob_preset = "preset_name", 		-- MOB Preset <optional>
+		spawn_preset = "preset_name", 	-- MOB Spawn Preset <optional>
+		mob_stats = "preset_name", 	-- MOB Stats Preset <optional>
+		
         stats = {
             hp = 5, 			-- 1 HP = "1/2 player heart"
             breath = 5,			-- 1 = "1/2 player bubble"
@@ -488,7 +504,7 @@ Definition tables
             ["modname:item"] = { 	-- Item tool (not necessarily tool type)
                 on_use = func, 		--[[ Callback to when tool is used <optional>
                                              ^ function(self, clicker, itemstack) end
-                                             ^ Return (#1) true or false to add wear and (#2) modified itemstack
+                                             ^ Return (#1) true or false to add wear and (#2) modified itemstack]]
                 wear = 100, 		-- Wear add after use (need be a item tool type) <optional>
                 disabled_in_child = false, -- If this item tool can not be used on child MOBs <optional> (default is false)
             }
@@ -575,8 +591,8 @@ Definition tables
             search_type = "player", 	-- what enemy is being searched (see types at creatures.findTarget())
         }
         
-        spawning = {                  --[[ Defines spawning in world <optional>
-        
+        spawning = {                  -- Defines spawning in world <optional>
+			
             ambience = { -- Ambience spawn definitions
                 {ambience spawn definition}, -- Case 1 or generic case
                 {ambience spawn definition}, -- Case 2
@@ -638,6 +654,8 @@ Definition tables
     {
         -- General definitions
         
+		mob_spawn_ambience = "preset_name", -- MOB Spawn Ambience preset <optional>
+		
         spawn_type = "spawn_type", 	--[[ Spawn type
                                              ^ "environment" for spawn environment 
                                              ^ "generated" for spawn on generated map
@@ -836,6 +854,21 @@ Definition tables
                                              "custom" to use a custom execution function]]
         executer = func, 				-- Custom function for execution (eg. ´function(...) end´)
     }
+
+
+### MOB Spawn Ambience Maker definition (`make_spawn_ambience`)
+    {
+        preset = "default", -- MOB Spawn Ambience Preset
+		
+        env_node = { 		-- Definitions to make a Env node
+            type = "dirt", 						-- Env node style preset
+            nodename = "itemstring", 			-- Nodename (non-registered) to be used on env node
+            emergent_nodename = "itemstring", 	-- Nodename (non-registered) to be used on emergent node
+        },
+		
+        override = {override}, -- Definitions to be overridden into MOB Spawn Ambience
+    }
+
 
 ### Idle mode definition(`register_idle_mode`)
     {

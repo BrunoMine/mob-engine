@@ -45,28 +45,21 @@ local function shear(self, drop_count, sound)
 	end
 end
 
--- Dirt for spawn env
-minetest.register_node("sheep:dirt_spawn_env", {
-	description = "Dirt",
-	tiles = {"default_dirt.png"},
-	groups = {crumbly = 3, soil = 1, not_in_creative_inventory = 1},
-	sounds = default.node_sound_dirt_defaults(),
-	drop = "default:dirt",
-})
+
 
 -- white, grey, brown, black (see wool colors as reference)
 local colors = {"white", "grey", "brown", "black"}
 
 creatures.register_mob("sheep:sheep", {
-	stats = {
-		hp = 8,
-		can_jump = 1,
-		can_swim = true,
-		can_burn = true,
-		can_panic = true,
-		has_falldamage = false, --true,
-		has_kockback = true,
-	},
+	
+	-- MOB description
+	description = "Sheep",
+	
+	-- MOB preset
+	mob_preset = "animal",
+	
+	-- Spawn preset
+	spawn_preset = "default",
 	
 	hunger = {
 		days_interval = 5,
@@ -225,79 +218,33 @@ creatures.register_mob("sheep:sheep", {
 	},
 	
 	spawning = {
-		
+	
 		ambience = {
 			
-			{
-				spawn_type = "environment",
-				
-				max_number = 6,
-				spawn_zone_width = 100,
-				number = {min = 2, max = 3},
-				time_range = {min = 5100, max = 18300},
-				light = {min = 10, max = 15},
-				height_limit = {min = 0, max = 150},
-				
-				-- Spawn environment
-				spawn_env_chance = sheep.spawn_env_chance,
-				spawn_env_seed = 2359,
-				spawn_env_biomes = {
-					-- Grassland
-					"grassland", 
-					"grassland_ocean",
-					"floatland_grassland",
-					"snowy_grassland",
-					"snowy_grassland_ocean",
-					-- Coniferous forest
-					"deciduous_forest",
-					"deciduous_forest_ocean",
-					-- Tundra
-					"tundra_highland",
-					"tundra",
-					-- Taiga
-					"taiga",
-					"taiga_ocean",
-					-- Ice
-					"icesheet",
-					"icesheet_ocean",
+			-- [1] 'Default' Spawn env node with dirt
+			creatures.make_spawn_ambience({
+				preset = "default",
+				env_node = {
+					type = "dirt",
+					nodename = "sheep:dirt_spawn_env",
+					emergent_nodename = "sheep:emergent_spawn_env",
 				},
-				spawn_env_nodes = {
-					emergent = "sheep:emergent_spawn_env",
-					spawn_on = {
-						"default:dirt_with_grass", 
-						"default:dirt_with_snow", "default:snowblock", "default:snow",
-					},
-					place_on = {
-						"default:dirt_with_grass", 
-						"default:dirt_with_snow", "default:snowblock", "default:snow",
-					},
-					set_on = {"sheep:dirt_spawn_env"},
-					build = {
-						place = {
-							nodename = "sheep:dirt_spawn_env",
-							nodes = {
-								"default:dirt_with_grass", 
-								"default:dirt_with_snow", "default:snowblock", "default:snow",
-							},
-							y_diff = -2,
-						},
-					},
+				override = {
+					spawn_env_chance = sheep.spawn_env_chance,
+					spawn_env_seed = 2359,
 				},
-			},
+			}),
+			
 		},
 		
-		spawn_egg = {
-			description = "Sheep Spawn-Egg",
-			texture = "egg_sheep.png",
-		},
-
+		spawn_egg = { texture = "egg_sheep.png" },
+		
 		spawner = {
-			description = "Sheep Spawner",
 			range = 8,
 			player_range = 20,
 			number = 6,
 			dummy_scale = {x=1.7, y=1.7},
-		}
+		},
 	},
 
 	get_staticdata = function(self)

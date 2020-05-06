@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 mob_node.lua
@@ -23,9 +23,9 @@ be misrepresented as being the original software.
 
 -- Indexed methods
 local check_mob_in_pos = creatures.check_mob_in_pos
-local check_mob_node = creatures.check_mob_node
-
 local hash_tb = {}
+
+creatures.registered_mob_nodes = {}
 
 -- Check mob_node at pos
 local check_node = function(pos)
@@ -233,10 +233,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 end)
 
 
-
-
 -- Register mob node
-creatures.registered_mob_nodes = {}
 creatures.register_mob_node = function(mob_node, def)
 	
 	local mob_name = def.mob_name
