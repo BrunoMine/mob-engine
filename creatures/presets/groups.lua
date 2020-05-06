@@ -1,9 +1,8 @@
 --[[
 = Creatures MOB-Engine (cme) =
 Copyright (C) 2020 Mob API Developers and Contributors
-Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
-stats.lua
+groups.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -21,29 +20,8 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+-- Node Groups
+creatures.node_groups = {}
 
--- MOB stats presets
-creatures.registered_presets.mob_stats = {}
-
--- Register 'on_register_mob'
-creatures.register_on_register_mob(function(mob_name, def)
-	
-	-- Load MOB stats preset
-	creatures.apply_preset(
-		def.stats, 
-		def.stats_preset, 
-		creatures.registered_presets.mob_stats
-	)
-	
-	-- Entity definitions
-	def.ent_def.stats = def.stats
-	
-	-- Register 'on_activate'
-	creatures.register_on_activate(mob_name, function(self, staticdata)
-		
-		-- Meta data
-		self.mob_stats = def.stats
-		
-	end)
-	
-end)
+-- Grass Biomes
+creatures.biome_groups = {}

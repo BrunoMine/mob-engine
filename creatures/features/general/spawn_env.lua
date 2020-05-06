@@ -258,7 +258,7 @@ creatures.make_spawn_ambience = function(def)
 	
 	-- Spawn env node
 	if def.env_node then 
-		spawn_def = creatures.make_env_node[spawn_def.env_node.type](spawn_def, spawn_def.env_node)
+		spawn_def = creatures.make_env_node[def.env_node.type](spawn_def, def.env_node)
 	end
 	
 	-- Apply overrided definitions

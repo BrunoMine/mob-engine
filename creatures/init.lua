@@ -122,5 +122,7 @@ dofile(modpath .."/features/general/spawner_egg.lua")
 -- Common items
 dofile(modpath .."/items.lua")
 
--- Default Presets
-dofile(modpath .."/default_presets.lua")
+-- MOB-Engine Presets
+dofile(modpath .."/presets/default.lua")
+dofile(modpath .."/presets/env_nodes.lua")
+dofile(modpath .."/presets/groups.lua")

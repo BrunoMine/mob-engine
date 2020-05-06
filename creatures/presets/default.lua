@@ -1,9 +1,8 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
-Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
+Copyright (C) 2020 Mob API Developers and Contributors
 
-presets.lua
+default.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -23,13 +22,13 @@ be misrepresented as being the original software.
 
 
 -- Animal MOB preset
-creatures.registered_presets.mob["animal"] = {
-	mob_stats = "animal",
+creatures.registered_presets.mob["default"] = {
+	stats_preset = "default",
 }
 
 -- "Animal" MOB stats preset
-creatures.registered_presets.mob_stats["animal"] = {
-	hp = 8,
+creatures.registered_presets.mob_stats["default"] = {
+	hp = 12,
 	can_jump = 1,
 	can_swim = true,
 	can_burn = true,
@@ -51,13 +50,13 @@ creatures.registered_presets.mob_spawn["default"] = {
 }
 
 -- MOB Spawn Ambience
-creatures.registered_presets.mob_spawn_ambience["default"] = {
+creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	
 	spawn_type = "environment",
 	
-	max_number = 6,
+	max_number = 4,
 	spawn_zone_width = 100,
-	number = {min = 2, max = 3},
+	number = {min = 1, max = 3},
 	time_range = {min = 5100, max = 18300},
 	light = {min = 10, max = 15},
 	height_limit = {min = 0, max = 150},
@@ -86,41 +85,3 @@ creatures.registered_presets.mob_spawn_ambience["default"] = {
 	}
 	
 }
-
--- Make env node
-creatures.make_env_node["dirt"] = function(spawn_def, env_node)
-	
-	-- Dirt for spawn env
-	minetest.register_node(env_node.nodename, {
-		description = "Dirt",
-		tiles = {"default_dirt.png"},
-		groups = {crumbly = 3, soil = 1, not_in_creative_inventory = 1},
-		sounds = default.node_sound_dirt_defaults(),
-		drop = "default:dirt",
-	})
-	
-	spawn_def.spawn_env_nodes = {
-		emergent = env_node.emergent_nodename,
-		spawn_on = {
-			"default:dirt_with_grass", 
-			"default:dirt_with_snow", "default:snowblock", "default:snow",
-		},
-		place_on = {
-			"default:dirt_with_grass", 
-			"default:dirt_with_snow", "default:snowblock", "default:snow",
-		},
-		set_on = {env_node.nodename},
-		build = {
-			place = {
-				nodename = env_node.nodename,
-				nodes = {
-					"default:dirt_with_grass", 
-					"default:dirt_with_snow", "default:snowblock", "default:snow",
-				},
-				y_diff = -2,
-			},
-		},
-	}
-	
-	return spawn_def
-end
