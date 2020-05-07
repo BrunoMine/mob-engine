@@ -49,7 +49,7 @@ creatures.entity_meta.mob_mode_set_velocity = function(self)
 	local obj = self.object
 	local dir = self.dir
 	local mode = self.mode
-	if not self.mob_modes[mode] then return end
+	if not self.mob_modes[mode] or not obj:get_velocity() then return end
 	local speed = self.mob_modes[mode].moving_speed or 0
 	
 	local v = obj:get_velocity()

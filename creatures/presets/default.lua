@@ -63,25 +63,10 @@ creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	
 	-- Spawn environment
 	spawn_env_chance = 2,
-	spawn_env_biomes = {
-		-- Grassland
-		"grassland", 
-		"grassland_ocean",
-		"floatland_grassland",
-		"snowy_grassland",
-		"snowy_grassland_ocean",
-		-- Coniferous forest
-		"deciduous_forest",
-		"deciduous_forest_ocean",
-		-- Tundra
-		"tundra_highland",
-		"tundra",
-		-- Taiga
-		"taiga",
-		"taiga_ocean",
-		-- Ice
-		"icesheet",
-		"icesheet_ocean",
-	}
+	spawn_env_biomes = creatures.merge_groups({
+		creatures.biome_groups.humid_grass,
+		creatures.biome_groups.dry_grass,
+		creatures.biome_groups.snowy
+	})
 	
 }

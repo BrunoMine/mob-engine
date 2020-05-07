@@ -203,7 +203,7 @@ Some functionality is made for domesticated MOB contexts
 Presets can be used for simplify MOB creation
 
 #### Methods
-* `creatures.apply_preset([def], [preset_name], presets_or_preset)`: Apply preset definitions
+* `creatures.apply_preset([def], [preset_name], presets_or_preset, [only_with_name])`: Apply preset definitions
   * `def` is current definitions table to be merged
   * `preset_name` from presets_or_preset table (if nil then `presets_or_preset` is a preset)
   * Returns merged definitions table or nil if failure

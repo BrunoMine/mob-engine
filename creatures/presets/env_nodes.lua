@@ -20,6 +20,10 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+local humid_nodes = creatures.merge_groups({
+	creatures.node_groups.humid_grass,
+	creatures.node_groups.snowy
+})
 
 -- "Dirt" Env Node
 creatures.make_env_node["dirt"] = function(spawn_def, env_node)
@@ -35,22 +39,13 @@ creatures.make_env_node["dirt"] = function(spawn_def, env_node)
 	
 	spawn_def.spawn_env_nodes = {
 		emergent = env_node.emergent_nodename,
-		spawn_on = {
-			"default:dirt_with_grass", 
-			"default:dirt_with_snow", "default:snowblock", "default:snow",
-		},
-		place_on = {
-			"default:dirt_with_grass", 
-			"default:dirt_with_snow", "default:snowblock", "default:snow",
-		},
+		spawn_on = env_node.spawn_on or humid_nodes,
+		place_on = env_node.place_on or humid_nodes,
 		set_on = {env_node.nodename},
 		build = {
 			place = {
 				nodename = env_node.nodename,
-				nodes = {
-					"default:dirt_with_grass", 
-					"default:dirt_with_snow", "default:snowblock", "default:snow",
-				},
+				nodes = env_node.nodes or humid_nodes,
 				y_diff = -2,
 			},
 		},

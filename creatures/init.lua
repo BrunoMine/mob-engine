@@ -123,6 +123,7 @@ dofile(modpath .."/features/general/spawner_egg.lua")
 dofile(modpath .."/items.lua")
 
 -- MOB-Engine Presets
+dofile(modpath .."/presets/groups.lua")
 dofile(modpath .."/presets/default.lua")
 dofile(modpath .."/presets/env_nodes.lua")
-dofile(modpath .."/presets/groups.lua")
+

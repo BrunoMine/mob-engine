@@ -209,13 +209,12 @@ end
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
-	def.spawning = def.spawning or {}
-	
 	-- Load Spawning MOB preset
 	def.spawning = creatures.apply_preset(
 		def.spawning, 
 		def.spawn_preset, 
-		creatures.registered_presets.mob_spawn
+		creatures.registered_presets.mob_spawn,
+		true
 	)
 	
 	-- Register 'on_die' callback

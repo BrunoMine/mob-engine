@@ -1,6 +1,6 @@
 --[[
 = Sheep for Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 sheep.lua
@@ -44,7 +44,6 @@ local function shear(self, drop_count, sound)
 		creatures.drop_items(pos, {{"wool:" .. self.wool_color, drop_count}})
 	end
 end
-
 
 
 -- white, grey, brown, black (see wool colors as reference)
@@ -223,15 +222,23 @@ creatures.register_mob("sheep:sheep", {
 			
 			-- [1] 'Default' Spawn env node with dirt
 			creatures.make_spawn_ambience({
-				preset = "default",
+				preset = "default_env",
 				env_node = {
 					type = "dirt",
 					nodename = "sheep:dirt_spawn_env",
 					emergent_nodename = "sheep:emergent_spawn_env",
+					spawn_on = creatures.merge_groups({
+						creatures.node_groups.humid_grass,
+						creatures.node_groups.snowy
+					}),
 				},
 				override = {
 					spawn_env_chance = sheep.spawn_env_chance,
 					spawn_env_seed = 2359,
+					spawn_env_biomes = creatures.merge_groups({
+						creatures.biome_groups.humid_grass,
+						creatures.biome_groups.snowy
+					}),
 				},
 			}),
 			

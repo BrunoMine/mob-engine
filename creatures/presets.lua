@@ -26,11 +26,13 @@ be misrepresented as being the original software.
 creatures.registered_presets = {}
 
 -- Apply presets
-creatures.apply_preset = function(def, preset_name, presets)
+creatures.apply_preset = function(def, preset_name, presets, only_with_name)
 	
 	def = def or {}
 	
 	local preset_def = {}
+	
+	if preset_name == nil and only_with_name == true then return def end
 	
 	if preset_name == nil then
 		if presets == nil then 
