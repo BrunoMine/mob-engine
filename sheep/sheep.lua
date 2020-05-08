@@ -55,7 +55,7 @@ creatures.register_mob("sheep:sheep", {
 	description = "Sheep",
 	
 	-- MOB preset
-	mob_preset = "animal",
+	mob_preset = "default",
 	
 	-- Spawn preset
 	spawn_preset = "default",
@@ -190,7 +190,7 @@ creatures.register_mob("sheep:sheep", {
 		if self.has_wool then
 			table.insert(items, {"wool:" .. self.wool_color, {min = 1, max = 2}})
 		end
-		creatures.drop_items(self.object:getpos(), items)
+		creatures.drop_items(self.object:get_pos(), items)
 	end,
 	
 	child = {
@@ -223,28 +223,25 @@ creatures.register_mob("sheep:sheep", {
 			-- [1] 'Default' Spawn env node with dirt
 			creatures.make_spawn_ambience({
 				preset = "default_env",
-				env_node = {
+				nodes = {
 					type = "dirt",
-					nodename = "sheep:dirt_spawn_env",
-					emergent_nodename = "sheep:emergent_spawn_env",
-					spawn_on = creatures.merge_groups({
-						creatures.node_groups.humid_grass,
-						creatures.node_groups.snowy
-					}),
+					emergent = {
+						nodename = "sheep:emergent_spawn_env",
+						place_on = creatures.node_groups.surface_humid_dirt,
+					},
+					env_node = {
+						nodename = "sheep:dirt_spawn_env",
+					},
 				},
 				override = {
 					spawn_env_chance = sheep.spawn_env_chance,
-					spawn_env_seed = 2359,
-					spawn_env_biomes = creatures.merge_groups({
-						creatures.biome_groups.humid_grass,
-						creatures.biome_groups.snowy
-					}),
+					spawn_env_seed = 2359234129,
 				},
 			}),
 			
 		},
 		
-		spawn_egg = { texture = "egg_sheep.png" },
+		spawn_egg = { texture = "sheep_egg.png" },
 		
 		spawner = {
 			range = 8,

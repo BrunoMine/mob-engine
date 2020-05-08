@@ -29,17 +29,18 @@ creatures.register_idle_mode("chicken:idle2", {
 -- Pick
 creatures.register_idle_mode("chicken:pick")
 
--- Dirt for spawn env
-minetest.register_node("chicken:dirt_spawn_env", {
-	description = "Dirt",
-	tiles = {"default_dirt.png"},
-	groups = {crumbly = 3, soil = 1, not_in_creative_inventory = 1},
-	sounds = default.node_sound_dirt_defaults(),
-	drop = "default:dirt",
-})
 
 creatures.register_mob("chicken:chicken", {
-
+	
+	-- MOB description
+	description = "Chicken",
+	
+	-- MOB preset
+	mob_preset = "default",
+	
+	-- Spawn preset
+	spawn_preset = "default",
+	
 	-- general
 	stats = {
 		hp = 5,
@@ -148,50 +149,33 @@ creatures.register_mob("chicken:chicken", {
 	},
 
 	spawning = {
+		
 		ambience = {
-			{
-				spawn_type = "environment",
-				
-				max_number = 6,
-				number = {min = 2, max = 3},
-				light = {min = 8, max = 15},
-				height_limit = {min = 1, max = 150},
-				
-				-- Spawn environment
-				spawn_env_chance = chicken.spawn_env_chance,
-				spawn_env_seed = 7254,
-				spawn_env_biomes = {
-					-- Grassland
-					"grassland", 
-					"grassland_ocean",
-					"floatland_grassland",
-					"snowy_grassland",
-					"snowy_grassland_ocean",
-					-- Coniferous forest
-					"deciduous_forest",
-					"deciduous_forest_ocean",
-				},
-				spawn_env_nodes = {
-					emergent = "chicken:emergent_spawn_env",
-					spawn_on = {"default:dirt_with_grass"},
-					place_on = {"default:dirt_with_grass"},
-					set_on = {"chicken:dirt_spawn_env"},
-					neighbors = {"default:dirt_with_grass"},
-					build = {
-						place = {
-							nodename = "chicken:dirt_spawn_env",
-							nodes = {"default:dirt_with_grass"},
-							y_diff = -1,
-						},
+			
+			-- [1] 'Default' Spawn env node with dirt
+			creatures.make_spawn_ambience({
+				preset = "default_env",
+				nodes = {
+					type = "dirt",
+					emergent = {
+						nodename = "chicken:emergent_spawn_env",
+						place_on = creatures.node_groups.surface_humid_dirt,
+					},
+					env_node = {
+						nodename = "chicken:dirt_spawn_env",
 					},
 				},
-			},
+				override = {
+					max_number = 6,
+					number = {min = 2, max = 3},
+					spawn_env_chance = chicken.spawn_env_chance,
+					spawn_env_seed = 7254361944,
+				},
+			}),
+			
 		},
-		spawn_egg = {
-			description = "Chicken Spawn-Egg",
-		},
+		
 		spawner = {
-			description = "Chicken Spawner",
 			range = 8,
 			player_range = 20,
 			number = 8,

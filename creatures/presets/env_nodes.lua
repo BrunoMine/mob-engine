@@ -20,16 +20,21 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-local humid_nodes = creatures.merge_groups({
-	creatures.node_groups.humid_grass,
-	creatures.node_groups.snowy
+local surface_dirt = creatures.merge_groups({
+	creatures.node_groups.surface_humid_dirt,
+	creatures.node_groups.surface_dry_dirt
 })
 
 -- "Dirt" Env Node
-creatures.make_env_node["dirt"] = function(spawn_def, env_node)
+creatures.make_env_node["dirt"] = function(spawn_def, nodes)
+	
+	-- Adjust nodes
+	nodes = nodes or {}
+	nodes.emergent = nodes.emergent or {}
+	nodes.env_node = nodes.env_node or {}
 	
 	-- Dirt for spawn env
-	minetest.register_node(env_node.nodename, {
+	minetest.register_node(nodes.env_node.nodename, {
 		description = "Dirt",
 		tiles = {"default_dirt.png"},
 		groups = {crumbly = 3, soil = 1, not_in_creative_inventory = 1},
@@ -38,16 +43,18 @@ creatures.make_env_node["dirt"] = function(spawn_def, env_node)
 	})
 	
 	spawn_def.spawn_env_nodes = {
-		emergent = env_node.emergent_nodename,
-		spawn_on = env_node.spawn_on or humid_nodes,
-		place_on = env_node.place_on or humid_nodes,
-		set_on = {env_node.nodename},
-		build = {
-			place = {
-				nodename = env_node.nodename,
-				nodes = env_node.nodes or humid_nodes,
-				y_diff = -2,
-			},
+		
+		spawn_on = nodes.spawn_on or surface_dirt,
+		
+		emergent = {
+			nodename = nodes.emergent.nodename, 
+			place_on = nodes.emergent.place_on or surface_dirt,
+		},
+		
+		env_node = {
+			nodename = nodes.env_node.nodename,
+			place_on = nodes.env_node.place_on or surface_dirt,
+			y_diff = -2,
 		},
 	}
 	

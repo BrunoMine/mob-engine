@@ -370,7 +370,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		def.spawn_preset,
 		creatures.registered_presets.mob_spawn
 	)
-
+	
 	-- Register Spawn Ambience
 	if def.spawning.ambience then
 		

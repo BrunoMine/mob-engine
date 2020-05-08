@@ -23,14 +23,14 @@ be misrepresented as being the original software.
 -- Node Groups
 creatures.node_groups = {}
 
--- Nodes with humid grass
-creatures.node_groups.humid_grass = {
+-- Dirt Nodes from humid surface
+creatures.node_groups.surface_humid_dirt = {
 	"default:dirt_with_grass", 
 	"default:dirt_with_snow", 
 }
 
--- Nodes with dry grass
-creatures.node_groups.dry_grass = {
+-- Dirt Nodes from dry surface
+creatures.node_groups.surface_dry_dirt = {
 	"default:dirt_with_dry_grass", 
 	"default:dry_dirt_with_dry_grass", 
 }

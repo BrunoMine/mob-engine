@@ -243,6 +243,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		if spawn_def.spawner then
 			local spawner_def = def.spawning.spawner
 			spawner_def.mob_name = mob_name
+			spawner_def.mob_description = def.description
 			spawner_def.range = spawner_def.range or 4
 			spawner_def.number = spawner_def.number or 6
 			spawner_def.model = def.model

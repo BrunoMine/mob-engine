@@ -728,20 +728,22 @@ Definition tables
             -- Spawning
             spawn_on = {"itemstring",...}, 	-- on what nodes mob can spawn at spawn environment <optional>
             
-            -- Setting up environment
-            emergent = "itemstring", 		-- node name to register a emergent node to setup a spawn
-            build = { 				-- build some thing at spawn environment
-                place = { 				-- place a node by each MOB
-                    nodename = "itemstring", 	-- place this node
-                    nodes = {"itemstring",...}, -- searched nodes to place a new
-                    y_diff = 0, 		-- difference in y <optional>
-                },
+            -- Emergent node generating
+			-- It is only used when generating mapblock and is remove after to place env nodes near there
+            emergent = { 
+				nodename = "itemstring", 		-- Emergent node name (non-registered)
+				place_on = {"itemstring",...}, 	-- Emergent node is generated under this
+			},
+			
+			-- Environment node creating
+			--[[ This node must be camouflaged in the landscape (example underground) 
+			     to keep the respawn of MOBs removed by cleaning objects from the server. ]]
+            env_node = { 
+				nodename = "itemstring", 		-- Environment node name
+				neighbors = {"itemstring",...}, -- What node should be neighbors to environment node work <optional>
+				place_on = {"itemstring",...}, 	-- Emergent node is generated under or over this
+				y_diff = 0, 					-- Difference in y <optional>
             },
-            place_on = {"itemstring",...}, 	-- nodes at biome
-            
-            -- Nodes at spawn environment
-            set_on = {"itemstring",...}, 	-- nodes at environment to setup a spawn environment node
-            neighbors = {"itemstring",...}, 	-- what node should be neighbors to spawn environment node <optional>
             
         },
     }

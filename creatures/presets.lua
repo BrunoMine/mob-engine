@@ -40,6 +40,8 @@ creatures.apply_preset = function(def, preset_name, presets, only_with_name)
 		else
 			preset_def = presets
 		end
+	else
+		preset_def = presets[preset_name]
 	end
 	
 	for setting_name,setting in pairs(preset_def) do

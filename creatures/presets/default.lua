@@ -40,7 +40,9 @@ creatures.registered_presets.mob_stats["default"] = {
 -- "Default" MOB Spawn preset
 creatures.registered_presets.mob_spawn["default"] = {
 
-	spawn_egg = {},
+	spawn_egg = {
+		texture = "creatures_spawn_egg.png"
+	},
 	
 	spawner = {
 		range = 8,
