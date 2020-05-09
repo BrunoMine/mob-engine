@@ -21,13 +21,13 @@ be misrepresented as being the original software.
 ]]
 
 
--- Animal MOB preset
+-- 'Default' MOB preset
 creatures.registered_presets.mob["default"] = {
 	stats_preset = "default",
 	spawn_preset = "default",
 }
 
--- "Animal" MOB stats preset
+-- 'Default' MOB stats preset
 creatures.registered_presets.mob_stats["default"] = {
 	
 	hp = 12,
@@ -43,7 +43,7 @@ creatures.registered_presets.mob_stats["default"] = {
 	
 }
 
--- "Default" MOB Spawn preset
+-- 'Default' MOB Spawn preset
 creatures.registered_presets.mob_spawn["default"] = {
 
 	spawn_egg = {
@@ -52,12 +52,11 @@ creatures.registered_presets.mob_spawn["default"] = {
 	
 	spawner = {
 		range = 8,
-		avoid_player_range = 20,
 		number = 4,
 	},
 }
 
--- MOB Spawn Ambience
+-- 'Default Env' MOB Spawn Ambience
 creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	
 	spawn_type = "environment",
@@ -80,7 +79,7 @@ creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	
 }
 
--- MOB Spawn Ambience ABM Generated
+-- 'Surface ABM' MOB Spawn Ambience
 creatures.registered_presets.mob_spawn_ambience["surface_abm"] = {
 	
 	spawn_type = "abm",
@@ -100,7 +99,7 @@ creatures.registered_presets.mob_spawn_ambience["surface_abm"] = {
 	
 }
 
--- MOB Spawn Ambience Surface Generated
+-- 'Surface Gen' MOB Spawn Ambience
 creatures.registered_presets.mob_spawn_ambience["surface_gen"] = {
 	
 	spawn_type = "generated",
@@ -120,7 +119,7 @@ creatures.registered_presets.mob_spawn_ambience["surface_gen"] = {
 	
 }
 
--- MOB Spawn Ambience ABM Generated
+-- 'Cave ABM' MOB Spawn Ambience
 creatures.registered_presets.mob_spawn_ambience["cave_abm"] = {
 	
 	spawn_type = "abm",
@@ -139,7 +138,7 @@ creatures.registered_presets.mob_spawn_ambience["cave_abm"] = {
 	
 }
 
--- MOB Spawn Ambience Surface Generated
+-- 'Cave Gen' MOB Spawn Ambience
 creatures.registered_presets.mob_spawn_ambience["cave_gen"] = {
 	
 	spawn_type = "generated",

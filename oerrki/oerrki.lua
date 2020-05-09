@@ -136,10 +136,7 @@ local def = {
 		spawn_egg = { texture = "oerrki_spawner_egg.png", },
 
 		spawner = {
-			description = "Oerrki Spawner",
-			range = 8,
-			player_range = 20,
-			number = 6,
+			avoid_player_range = 20,
 			light = {min = 0, max = 8},
 			dummy_scale = {x=0.9, y=0.9},
 		}

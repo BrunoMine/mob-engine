@@ -1,0 +1,6 @@
+# Configurações aplicaveis para o menu gráfico
+# Settings applicable from Minetest GUI
+
+# Cow Spawn
+# Higher values increase the population of spawned cow around the world
+cow_spawn_chance (Cow Spawn) int 2

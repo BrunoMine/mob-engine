@@ -36,6 +36,7 @@ local def = {
 		hp = 12,
 		lifetime = 600, 
 		can_burn = true,
+		burn_light = {min = 15, max = 15},
 		can_fly = true,
 		has_falldamage = false,
 		hostile = true,

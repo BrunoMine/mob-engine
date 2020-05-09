@@ -217,7 +217,7 @@ creatures.register_mob("sheep:sheep", {
 	
 		ambience = {
 			
-			-- [1] 'Default' Spawn env node with dirt
+			-- [1] 'Default Env' Spawn env node with dirt
 			creatures.make_spawn_ambience({
 				preset = "default_env",
 				nodes = {

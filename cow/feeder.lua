@@ -1,7 +1,6 @@
 --[[
-= Sheep for Creatures MOB-Engine (cme) =
+= Cow for Creatures MOB-Engine (cme) =
 Copyright (C) 2019 Mob API Developers and Contributors
-Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 feeder.lua
 
@@ -22,8 +21,8 @@ be misrepresented as being the original software.
 ]]
 
 -- Feeder node
-minetest.register_node("sheep:sheep_feeder", {
-	description = "Sheep Feeder",
+minetest.register_node("cow:cow_feeder", {
+	description = "Cow Feeder",
 	drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -50,12 +49,12 @@ minetest.register_node("sheep:sheep_feeder", {
 		fixed = {-0.5, -0.5, -0.375, 0.5, 1, 0.5},
 	},
 	tiles = {
-		"default_acacia_wood.png", -- Top
-		"default_acacia_wood.png", -- Bottom
-		"default_acacia_wood.png", -- Right 
-		"default_acacia_wood.png", -- Left
-		"default_acacia_wood.png", -- Back
-		"default_acacia_wood.png" -- Front
+		"default_junglewood.png", -- Top
+		"default_junglewood.png", -- Bottom
+		"default_junglewood.png", -- Right 
+		"default_junglewood.png", -- Left
+		"default_junglewood.png", -- Back
+		"default_junglewood.png" -- Front
 	},
 	sunlight_propagates = true,
 	buildable_to = true,
@@ -63,12 +62,12 @@ minetest.register_node("sheep:sheep_feeder", {
 	sounds = default.node_sound_leaves_defaults(),
 })
 core.register_craft({
-	output = 'sheep:sheep_feeder',
-	replacements = {{"sheep:shepherd_wooden_stick", "sheep:shepherd_wooden_stick"}},
+	output = 'cow:cow_feeder',
+	replacements = {{"cow:cowboy_bell", "cow:cowboy_bell"}},
 	recipe = {
-		{'group:stick', 'default:acacia_wood', 'group:stick'},
-		{'default:acacia_wood', 'farming:wheat', 'default:acacia_wood'},
-		{'group:stick', 'sheep:shepherd_wooden_stick', 'group:stick'},
+		{'group:stick', 'default:junglewood', 'group:stick'},
+		{'default:junglewood', 'farming:wheat', 'default:junglewood'},
+		{'group:stick', 'cow:cowboy_bell', 'group:stick'},
 	}
 })
 
@@ -89,12 +88,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_acacia_wood.png", -- Back
-			"default_acacia_wood.png" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"default_junglewood.png", -- Back
+			"default_junglewood.png" -- Front
 		},
 	},
 	{ -- 2
@@ -112,12 +111,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_acacia_wood.png", -- Back
-			"default_acacia_wood.png" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"default_junglewood.png", -- Back
+			"default_junglewood.png" -- Front
 		},
 	},
 	{ -- 3
@@ -135,12 +134,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_acacia_wood.png", -- Back
-			"default_acacia_wood.png" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"default_junglewood.png", -- Back
+			"default_junglewood.png" -- Front
 		},
 	},
 	{ -- 4
@@ -158,12 +157,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_acacia_wood.png", -- Back
-			"default_acacia_wood.png" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"default_junglewood.png", -- Back
+			"default_junglewood.png" -- Front
 		},
 	},
 	{ -- 5
@@ -181,12 +180,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front_5.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front_5.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 6
@@ -204,12 +203,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front_6.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front_6.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 7
@@ -227,12 +226,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 8
@@ -250,12 +249,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.1875, 0.5}, 
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 9
@@ -273,12 +272,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.25, 0.5}, 
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 10
@@ -298,12 +297,12 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.375, 0.5}, 
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 	{ -- 11
@@ -323,17 +322,17 @@ for n,data in ipairs({
 		},
 		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.4375, 0.5}, 
 		tiles = {
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_acacia_wood.png", -- Bottom
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_junglewood.png", -- Bottom
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
 		},
 	},
 }) do
-	minetest.register_node("sheep:sheep_feeder_"..n, {
-		description = "Sheep Feeder",
+	minetest.register_node("cow:cow_feeder_"..n, {
+		description = "Cow Feeder",
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -358,7 +357,7 @@ for n,data in ipairs({
 end
 
 -- Register feeder
-creatures.register_feeder_node("sheep:sheep_feeder", {
+creatures.register_feeder_node("cow:cow_feeder", {
 	supply = {
 		["farming:straw"] = {
 			food = 5,
@@ -366,24 +365,60 @@ creatures.register_feeder_node("sheep:sheep_feeder", {
 	},
 	max_food = 100,
 	node_steps = {
-		{ food =   0, name = "sheep:sheep_feeder",   },
-		{ food =   1, name = "sheep:sheep_feeder_1", },
-		{ food =  10, name = "sheep:sheep_feeder_2", },
-		{ food =  20, name = "sheep:sheep_feeder_3", },
-		{ food =  30, name = "sheep:sheep_feeder_4", },
-		{ food =  40, name = "sheep:sheep_feeder_5", },
-		{ food =  50, name = "sheep:sheep_feeder_6", },
-		{ food =  60, name = "sheep:sheep_feeder_7", },
-		{ food =  70, name = "sheep:sheep_feeder_8", },
-		{ food =  80, name = "sheep:sheep_feeder_9", },
-		{ food =  90, name = "sheep:sheep_feeder_10",},
-		{ food = 100, name = "sheep:sheep_feeder_11",},
+		{
+			food = 0,
+			name = "cow:cow_feeder",
+		},
+		{
+			food = 1,
+			name = "cow:cow_feeder_1",
+		},
+		{
+			food = 10,
+			name = "cow:cow_feeder_2",
+		},
+		{
+			food = 20,
+			name = "cow:cow_feeder_3",
+		},
+		{
+			food = 30,
+			name = "cow:cow_feeder_4",
+		},
+		{
+			food = 40,
+			name = "cow:cow_feeder_5",
+		},
+		{
+			food = 50,
+			name = "cow:cow_feeder_6",
+		},
+		{
+			food = 60,
+			name = "cow:cow_feeder_7",
+		},
+		{
+			food = 70,
+			name = "cow:cow_feeder_8",
+		},
+		{
+			food = 80,
+			name = "cow:cow_feeder_9",
+		},
+		{
+			food = 90,
+			name = "cow:cow_feeder_10",
+		},
+		{
+			food = 100,
+			name = "cow:cow_feeder_11",
+		},
 	},
 })
 
 -- Drinking Fountain node
-minetest.register_node("sheep:drinking_fountain", {
-	description = "Sheep Drinking Fountain",
+minetest.register_node("cow:drinking_fountain", {
+	description = "Cow Drinking Fountain",
 	drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -402,12 +437,12 @@ minetest.register_node("sheep:drinking_fountain", {
 		fixed = {-0.4375, -0.5, -0.4375, 0.4375, -0.125, 0.4375}, 
 	},
 	tiles = {
-		"(default_water.png^((default_acacia_wood.png)^sheep_drinking_fountain_layer_top.png^[makealpha:76,255,0))", -- Top
-		"default_acacia_wood.png", -- Bottom
-		"default_acacia_wood.png", -- Right 
-		"default_acacia_wood.png", -- Left
-		"default_acacia_wood.png", -- Back
-		"default_acacia_wood.png" -- Front
+		"(default_water.png^((default_junglewood.png)^cow_drinking_fountain_layer_top.png^[makealpha:76,255,0))", -- Top
+		"default_junglewood.png", -- Bottom
+		"default_junglewood.png", -- Right 
+		"default_junglewood.png", -- Left
+		"default_junglewood.png", -- Back
+		"default_junglewood.png" -- Front
 	},
 	sunlight_propagates = true,
 	walkable = false,
@@ -416,14 +451,14 @@ minetest.register_node("sheep:drinking_fountain", {
 	sounds = default.node_sound_wood_defaults()
 })
 core.register_craft({
-	output = 'sheep:drinking_fountain',
+	output = 'cow:drinking_fountain',
 	replacements = {
-		{"sheep:shepherd_wooden_stick", "sheep:shepherd_wooden_stick"},
+		{"cow:cowboy_bell", "cow:cowboy_bell"},
 		{"group:water_bucket", "bucket:bucket_empty"}
 	},
 	recipe = {
-		{'group:stick', 'default:acacia_wood', 'group:stick'},
-		{'default:acacia_wood', 'group:water_bucket', 'default:acacia_wood'},
-		{'group:stick', 'sheep:shepherd_wooden_stick', 'group:stick'},
+		{'group:stick', 'default:junglewood', 'group:stick'},
+		{'default:junglewood', 'group:water_bucket', 'default:junglewood'},
+		{'group:stick', 'cow:cowboy_bell', 'group:stick'},
 	}
 })

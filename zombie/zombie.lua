@@ -36,15 +36,16 @@ local def = {
 		hp = 15,
 		lifetime = 600, 
 		can_burn = true,
+		burn_light = {min = 15, max = 15},
 		hostile = true,
 	},
 
 	modes = {
 		idle = {chance = 70, duration = 3, update_yaw = 6},
-		walk = {duration = 5.5, moving_speed = 1, search_radius = 5},
-		walk_around = {chance = 30, duration = 20, moving_speed = 1},
+		walk = {duration = 5.5, moving_speed = 1.1, search_radius = 5},
+		walk_around = {chance = 30, duration = 20, moving_speed = 1.1},
 		-- special modes
-		attack = {chance = 0, moving_speed = 2.5, duration = 20},
+		attack = {chance = 0, moving_speed = 1.1, duration = 20},
 	},
 
 	model = {
@@ -56,9 +57,9 @@ local def = {
 		rotation = -90.0,
 		animations = {
 			idle = {start = 0, stop = 80, speed = 15},
-			walk = {start = 102, stop = 122, speed = 10.5},
-			attack = {start = 102, stop = 122, speed = 25},
-			death = {start = 81, stop = 101, speed = 28, loop = false, duration = 2.12},
+			walk = {start = 102, stop = 122, speed = 20},
+			attack = {start = 102, stop = 122, speed = 20},
+			death = {start = 81, stop = 101, speed = 20, loop = false, duration = 2.12},
 		},
 	},
 
