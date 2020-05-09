@@ -244,9 +244,6 @@ creatures.register_mob("sheep:sheep", {
 		spawn_egg = { texture = "sheep_egg.png" },
 		
 		spawner = {
-			range = 8,
-			player_range = 20,
-			number = 6,
 			dummy_scale = {x=1.7, y=1.7},
 		},
 	},

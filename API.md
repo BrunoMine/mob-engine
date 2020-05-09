@@ -663,18 +663,20 @@ Definition tables
         
         spawn_zone_width = <number>,	-- width number (in blocks) of spawn zone without this MOB type
     
-        max_number = <number>, 		-- maximum mobs of this kind per mapblock (16x16x16)
+        max_number = <number>, 			-- maximum mobs of this kind per mapblock (16x16x16)
         
-        number = 1,          		-- how many mobs are spawned if found suitable spawn position (can be {interval})
+        number = 1,          			-- how many mobs are spawned if found suitable spawn position (can be {interval})
         
-        time_range = {interval}, 	-- time range in time of day format (0-24000) <optional>
+        time = {interval}, 				-- time range in time of day format (0-24000) <optional>
     
-        light = {interval}, 		-- min and max lightvalue (0-15) at spawn position <optional>
+        light = {interval}, 			-- min and max lightvalue (0-15) at spawn position <optional>
         
-        height_limit = {interval}, 	-- min and max height (world Y coordinate) <optional>
+        height = {interval}, 			-- min and max height (world Y coordinate) <optional>
     
         spawn_on = {"itemstring",...}, 	--[[ on what nodes mob can spawn <optional>
                                              ^ this search nodes near a selected place to spawn a group ]]
+											 
+		avoid_player_range = false, 	-- Distance for players to avoid mob spawn
         
         -- 'ABM' feature
         --[[

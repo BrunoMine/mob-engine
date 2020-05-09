@@ -165,7 +165,7 @@ function creatures.register_spawner(spawner_def)
 	local height = (box[5] or 2) - (box[2] or 0)
 	spawner_def.height = height
 
-	if spawner_def.player_range and type(spawner_def.player_range) == "number" then
+	if spawner_def.avoid_player_range and type(spawner_def.avoid_player_range) == "number" then
 		core.register_abm({
 			nodenames = {spawner_def.mob_name .. "_spawner"},
 			interval = 2,
@@ -179,21 +179,17 @@ function creatures.register_spawner(spawner_def)
 				local time_from_last_call = os.time() - spawner_timers[id]
 				local mobs,player_near = creatures.find_target(
 					pos, 
-					spawner_def.player_range, 
+					spawner_def.avoid_player_range, 
 					{
 						search_type = "player", 
 						xray = true,
 						no_count = true,
 					}
 				)
-				if player_near == true 
-					and time_from_last_call > 10 
-					and (math.random(1, 5) == 1 or (time_from_last_call ) > 27) 
-				then
-					spawner_timers[id] = os.time()
-
+				if avoid_player_spawn ~= true then
 					spawnerSpawn(pos, spawner_def)
 				end
+				spawner_timers[id] = os.time()
 			end,
 		})
 	else

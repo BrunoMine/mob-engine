@@ -46,7 +46,7 @@ creatures.registered_presets.mob_spawn["default"] = {
 	
 	spawner = {
 		range = 8,
-		player_range = 20,
+		avoid_player_range = 20,
 		number = 4,
 	},
 }
@@ -59,9 +59,9 @@ creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	max_number = 4,
 	spawn_zone_width = 100,
 	number = {min = 1, max = 3},
-	time_range = {min = 5100, max = 18300},
+	time = {min = 5100, max = 18300},
 	light = {min = 10, max = 15},
-	height_limit = {min = 0, max = 150},
+	height = {min = 0, max = 150},
 	
 	-- Spawn environment
 	spawn_env_chance = 2,
@@ -72,3 +72,84 @@ creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	})
 	
 }
+
+-- MOB Spawn Ambience ABM Generated
+creatures.registered_presets.mob_spawn_ambience["surface_abm"] = {
+	
+	spawn_type = "abm",
+	
+	number = 1,
+	max_number = 2,
+	spawn_zone_width = 80,
+	
+	light = {min = 0, max = 8},
+	height = {min = 0, max = 200},
+	
+	abm_interval = 300,
+	abm_chance = 7600,
+	abm_nodes = {
+		spawn_on = creatures.node_groups.surface,
+	},
+	
+}
+
+-- MOB Spawn Ambience Surface Generated
+creatures.registered_presets.mob_spawn_ambience["surface_gen"] = {
+	
+	spawn_type = "generated",
+
+	number = 1,
+	max_number = 2,
+	spawn_zone_width = 80,
+
+	light = {min = 0, max = 8},
+	height = {min = 0, max = 200},
+
+	on_generated_chance = 60,
+	on_generated_nodes = {
+		spawn_on = creatures.node_groups.surface,
+		get_under_air = true, 
+	},
+	
+}
+
+-- MOB Spawn Ambience ABM Generated
+creatures.registered_presets.mob_spawn_ambience["cave_abm"] = {
+	
+	spawn_type = "abm",
+	
+	number = 1,
+	max_number = 3,
+	spawn_zone_width = 80,
+	
+	height = {min = -30000, max = 0},
+	
+	abm_interval = 300,
+	abm_chance = 5500,
+	abm_nodes = {
+		spawn_on = {"default:stone"},
+	},
+	
+}
+
+-- MOB Spawn Ambience Surface Generated
+creatures.registered_presets.mob_spawn_ambience["cave_gen"] = {
+	
+	spawn_type = "generated",
+	
+	number = {min = 1, max = 2},
+	max_number = 3,
+	spawn_zone_width = 80,
+	
+	height = {min = -30000, max = 0},
+	
+	on_generated_chance = 60,
+	on_generated_nodes = { 
+		spawn_on = {"default:stone"}, 
+		get_under_air = true, 
+	},
+	
+}
+
+
+

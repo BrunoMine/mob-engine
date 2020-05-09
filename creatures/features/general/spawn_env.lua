@@ -106,8 +106,8 @@ creatures.register_spawn_env = function(label)
 			lacunarity = 1,
 		},
 		biomes = def.spawn_env_biomes,
-		y_max = def.height_limit.max or 200,
-		y_min = def.height_limit.min or 0,
+		y_max = def.height.max or 200,
+		y_min = def.height.min or 0,
 		param2 = 4,
 	})
 	
@@ -254,24 +254,3 @@ end)
 
 -- Registered env node makers
 creatures.make_env_node = {}
-
--- Make spawn env nodes
-creatures.make_spawn_ambience = function(def)
-	
-	-- Basic definitions
-	local spawn_def = table.copy(creatures.registered_presets.mob_spawn_ambience[def.preset or "default"])
-	
-	-- Spawn env node
-	if spawn_def.spawn_type == "environment" then 
-		spawn_def = creatures.make_env_node[def.nodes.type](spawn_def, def.nodes)
-	end
-	
-	-- Apply overrided definitions
-	spawn_def = creatures.apply_preset(
-		spawn_def, 
-		nil, 
-		def.override
-	)
-	
-	return spawn_def
-end

@@ -42,6 +42,20 @@ creatures.node_groups.snowy = {
 	"default:dirt_with_snow", 
 }
 
+-- Nodes from surface
+creatures.node_groups.surface = {
+	"default:stone", 
+	"default:dirt_with_grass", 
+	"default:dirt_with_dry_grass",
+	"default:dirt_with_coniferous_litter",
+	"default:dirt_with_rainforest_litter", 
+	"default:dirt_with_snow", "default:snow",
+	"default:dirt",
+	"default:cobblestone", 
+	"default:mossycobble", 
+	"group:sand",
+}
+
 -- Biome Groups
 creatures.biome_groups = {}
 

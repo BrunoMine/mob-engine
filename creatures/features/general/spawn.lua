@@ -120,14 +120,14 @@ creatures.spawn_at_ambience = function(pos, label, params)
 	
 	-- Check Time of Day
 	local tod = core.get_timeofday() * 24000
-	if params.ignore_time_range ~= true and def.time_range then
-		if creatures.in_range(def.time_range, tod, 24000) == false then
+	if params.ignore_time_range ~= true and def.time then
+		if creatures.in_range(def.time, tod, 24000) == false then
 			return
 		end
 	end
 	
 	-- Check height limits
-	if params.ignore_height_limits ~= true and def.height_limit and not creatures.in_range(def.height_limit, pos.y) then
+	if params.ignore_height_limits ~= true and def.height and not creatures.in_range(def.height, pos.y) then
 		return
 	end
 	
@@ -295,9 +295,9 @@ function creatures.register_spawn(label, def)
 		minetest.register_on_generated(function(minp, maxp, blockseed)
 			
 			-- Check height limits
-			if def.height_limit 
-				and not creatures.in_range(def.height_limit, minp.y) 
-				and not creatures.in_range(def.height_limit, maxp.y)
+			if def.height 
+				and not creatures.in_range(def.height, minp.y) 
+				and not creatures.in_range(def.height, maxp.y)
 			then
 				return
 			end
@@ -407,3 +407,34 @@ creatures.register_on_register_mob(function(mob_name, def)
 		end
 	end
 end)
+
+-- Make spawn env nodes
+creatures.make_spawn_ambience = function(def)
+	
+	-- Basic definitions
+	local spawn_def = table.copy(creatures.registered_presets.mob_spawn_ambience[def.preset or "default"])
+	
+	-- Spawn env node
+	if spawn_def.spawn_type == "environment" then 
+		spawn_def = creatures.make_env_node[def.nodes.type](spawn_def, def.nodes)
+	end
+	
+	-- Spawn ABM
+	if spawn_def.spawn_type == "abm" then 
+		-- Do nothing
+	end
+	
+	-- Spawn Generated
+	if spawn_def.spawn_type == "generated" then 
+		-- Do nothing
+	end
+	
+	-- Apply overrided definitions
+	spawn_def = creatures.apply_preset(
+		spawn_def, 
+		nil, 
+		def.override
+	)
+	
+	return spawn_def
+end
