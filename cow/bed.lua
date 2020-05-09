@@ -1,6 +1,6 @@
 --[[
 = Cow for Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 
 bed.lua
 
@@ -40,13 +40,13 @@ minetest.register_node("cow:bed", {
 	groups = {snappy = 3, attached_node = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
-core.register_craft({
+minetest.register_craft({
 	output = 'cow:bed',
 	replacements = {{"cow:cowboy_bell", "cow:cowboy_bell"}},
 	recipe = {
-		{'farming:straw', '', 'farming:straw'},
-		{'', 'cow:cowboy_bell', ''},
-		{'farming:straw', '', 'farming:straw'},
+		{	'farming:straw', 	'', 				'farming:straw'	},
+		{	'', 				'cow:cowboy_bell', 	''				},
+		{	'farming:straw', 	'', 				'farming:straw'	},
 	}
 })
 
@@ -56,21 +56,4 @@ creatures.register_mob_node("cow:bed", {
 	
 	-- Search MOB
 	search_mob = true,
-	
-	-- On load MOB
-	on_load_mob = function(pos, new_ent)
-		new_ent.randomized_value = minetest.deserialize(meta:get_string("randomized_values"))
-	end,
-	
-	-- On set mob node
-	on_set_mob_node = function(pos, ent)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("randomized_values", minetest.serialize(ent.randomized_value))
-	end,
-	
-	-- On reset mob node
-	on_reset_mob_node = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("randomized_values", "")
-	end,
 })

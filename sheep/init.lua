@@ -29,14 +29,16 @@ sheep.spawn_env_chance = tonumber(minetest.settings:get("sheep_spawn_chance") or
 -- Craftitems
 dofile(core.get_modpath("sheep") .. "/craftitems.lua")
 
+-- Feeder
+dofile(core.get_modpath("sheep") .. "/feeder.lua")
+
 -- Sheep
 dofile(core.get_modpath("sheep") .. "/sheep.lua")
 
 -- Bed
 dofile(core.get_modpath("sheep") .. "/bed.lua")
 
--- Feeder
-dofile(core.get_modpath("sheep") .. "/feeder.lua")
+
 
 
 

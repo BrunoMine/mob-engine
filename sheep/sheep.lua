@@ -66,18 +66,8 @@ creatures.register_mob("sheep:sheep", {
 			}
 		},
 		food = {
+			feeders = {"sheep:hay_feeder"},
 			nodes = {
-				"sheep:sheep_feeder_1",
-				"sheep:sheep_feeder_2",
-				"sheep:sheep_feeder_3",
-				"sheep:sheep_feeder_4",
-				"sheep:sheep_feeder_5",
-				"sheep:sheep_feeder_6",
-				"sheep:sheep_feeder_7",
-				"sheep:sheep_feeder_8",
-				"sheep:sheep_feeder_9",
-				"sheep:sheep_feeder_10",
-				"sheep:sheep_feeder_11",
 				"farming:straw",
 			}
 		},

@@ -1,6 +1,6 @@
 --[[
 = Cow for Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 
 feeder.lua
 
@@ -20,445 +20,322 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Feeder node
-minetest.register_node("cow:cow_feeder", {
-	description = "Cow Feeder",
-	drawtype = "nodebox",
-	paramtype = "light",
-	paramtype2 = "facedir",
-	node_box = {
-		type = "fixed",
-		fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125} 
-		}
-	},
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5}, 
-	},
-	collision_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.375, 0.5, 1, 0.5},
-	},
-	tiles = {
-		"default_junglewood.png", -- Top
-		"default_junglewood.png", -- Bottom
-		"default_junglewood.png", -- Right 
-		"default_junglewood.png", -- Left
-		"default_junglewood.png", -- Back
-		"default_junglewood.png" -- Front
-	},
-	sunlight_propagates = true,
-	buildable_to = true,
-	groups = {snappy = 3, attached_node = 1, flammable = 1},
-	sounds = default.node_sound_leaves_defaults(),
-})
-core.register_craft({
-	output = 'cow:cow_feeder',
-	replacements = {{"cow:cowboy_bell", "cow:cowboy_bell"}},
-	recipe = {
-		{'group:stick', 'default:junglewood', 'group:stick'},
-		{'default:junglewood', 'farming:wheat', 'default:junglewood'},
-		{'group:stick', 'cow:cowboy_bell', 'group:stick'},
-	}
-})
+local cow_hay_feeder = "cow:hay_feeder"
+local cow_drinking_fountain = "cow:drinking_fountain"
 
--- Feeder steps
-for n,data in ipairs({
-	{ -- 1
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, -0.25, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_junglewood.png", -- Back
-			"default_junglewood.png" -- Front
-		},
-	},
-	{ -- 2
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, -0.1875, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_junglewood.png", -- Back
-			"default_junglewood.png" -- Front
-		},
-	},
-	{ -- 3
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, -0.125, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_junglewood.png", -- Back
-			"default_junglewood.png" -- Front
-		},
-	},
-	{ -- 4
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, -0.0625, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"default_junglewood.png", -- Back
-			"default_junglewood.png" -- Front
-		},
-	},
-	{ -- 5
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front_5.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 6
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.0625, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front_6.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 7
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.125, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 8
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.1875, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.1875, 0.5}, 
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 9
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.25, 0.4375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.25, 0.5}, 
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 10
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.25, 0.4375}, 
-			{-0.3125, 0.3125, -0.1875, 0.3125, 0.375, 0.3125}, 
-			{-0.375, 0.25, -0.25, 0.375, 0.3125, 0.375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.375, 0.5}, 
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-	{ -- 11
-		node_box_fixed = { -- Created with NodeBoxEditor
-			{-0.5, -0.375, 0.4375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.0625, -0.3125}, 
-			{0.4375, -0.375, -0.375, 0.5, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, -0.4375, 0.125, 0.5}, 
-			{-0.5, -0.375, -0.375, 0.5, -0.3125, 0.5}, 
-			{0.4375, -0.5, -0.375, 0.5, -0.375, -0.3125}, 
-			{0.4375, -0.5, 0.4375, 0.5, -0.375, 0.5}, 
-			{-0.5, -0.5, 0.4375, -0.4375, -0.375, 0.5}, 
-			{-0.5, -0.5, -0.375, -0.4375, -0.375, -0.3125}, 
-			{-0.4375, -0.3125, -0.3125, 0.4375, 0.3125, 0.4375}, 
-			{-0.3125, 0.375, -0.1875, 0.3125, 0.4375, 0.3125}, 
-			{-0.375, 0.3125, -0.25, 0.375, 0.375, 0.375}, 
-		},
-		selection_box = {-0.5, -0.5, -0.375, 0.5, 0.4375, 0.5}, 
-		tiles = {
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
-			"default_junglewood.png", -- Bottom
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
-			"(default_junglewood.png^(farming_straw.png^cow_feeder_layer_front.png^[makealpha:76,255,0))" -- Front
-		},
-	},
-}) do
-	minetest.register_node("cow:cow_feeder_"..n, {
-		description = "Cow Feeder",
+if minetest.registered_items["sheep:hay_feeder"] then
+	
+	cow_hay_feeder = "sheep:hay_feeder"
+	
+else
+
+	-- Textures
+	local tiles_feeder = {
+		"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_top.png^[makealpha:76,255,0))", -- Top
+		"default_acacia_wood.png", -- Bottom
+		"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Right 
+		"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Left
+		"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))", -- Back
+		"(default_acacia_wood.png^(farming_straw.png^sheep_feeder_layer_side.png^[makealpha:76,255,0))" -- Front
+	}
+
+	-- Feeder definitions
+	local feeder_node_def = {
+		description = "Hay Feeder",
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
 		node_box = {
 			type = "fixed",
-			fixed = data.node_box_fixed,
+			fixed = { -- Created with NodeBoxEditor
+				{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+				{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+				{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+				{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+				{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+				{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+				{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+				{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+				{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125} 
+			}
 		},
 		selection_box = {
 			type = "fixed",
-			fixed = data.selection_box or {-0.5, -0.5, -0.375, 0.5, 0.125, 0.5},
+			fixed = {-0.5000, -0.5000, -0.3750,  0.5000, -0.0625,  0.5000}, 
 		},
 		collision_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.375, 0.5, 1, 0.5},
+			fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  1.0000,  0.5000},
 		},
-		tiles = data.tiles or {"farming_straw.png^[transformR90"},
+		tiles = {
+			"default_acacia_wood.png", -- Top
+			"default_acacia_wood.png", -- Bottom
+			"default_acacia_wood.png", -- Right 
+			"default_acacia_wood.png", -- Left
+			"default_acacia_wood.png", -- Back
+			"default_acacia_wood.png" -- Front
+		},
 		sunlight_propagates = true,
 		buildable_to = true,
-		groups = {snappy = 3, attached_node = 1, flammable = 1, not_in_creative_inventory = 1},
-		sounds = default.node_sound_wood_defaults()
+		groups = {snappy = 3, attached_node = 1, flammable = 1},
+		sounds = default.node_sound_wood_defaults(),
+	}
+
+	local node_steps_def = {
+
+		{ node_box = { type = "fixed", fixed = { -- 1
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375, -0.2500,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000, -0.0625,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 2
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375, -0.1875,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000, -0.0625,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 3
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375, -0.1250,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000, -0.0625,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 4
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375, -0.0625,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000, -0.0625,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 5
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.0000,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.0000,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 6
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.0625,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.0625,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 7
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.1250,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.1250,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 8
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.1875,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.1875,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 9
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.2500,  0.4375}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.2500,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 10
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.2500,  0.4375}, 
+			{-0.3125,  0.3125, -0.1875,  0.3125,  0.3750,  0.3125}, 
+			{-0.3750,  0.2500, -0.2500,  0.3750,  0.3125,  0.3750}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.3750,  0.5000}},
+		tiles = tiles_feeder, },
+		
+		{ node_box = { type = "fixed", fixed = { -- 11
+			{-0.5000, -0.3750,  0.4375,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.0625, -0.3125}, 
+			{ 0.4375, -0.3750, -0.3750,  0.5000, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750, -0.4375, -0.0625,  0.5000}, 
+			{-0.5000, -0.3750, -0.3750,  0.5000, -0.3125,  0.5000}, 
+			{ 0.4375, -0.5000, -0.3750,  0.5000, -0.3750, -0.3125}, 
+			{ 0.4375, -0.5000,  0.4375,  0.5000, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000,  0.4375, -0.4375, -0.3750,  0.5000}, 
+			{-0.5000, -0.5000, -0.3750, -0.4375, -0.3750, -0.3125}, 
+			{-0.4375, -0.3125, -0.3125,  0.4375,  0.3125,  0.4375}, 
+			{-0.3125,  0.3750, -0.1875,  0.3125,  0.4375,  0.3125}, 
+			{-0.3750,  0.3125, -0.2500,  0.3750,  0.3750,  0.3750}}},
+		selection_box = { type = "fixed", fixed = {-0.5000, -0.5000, -0.3750,  0.5000,  0.4375,  0.5000}},
+		tiles = tiles_feeder, },
+	}
+	
+	creatures.make_feeder_nodes("cow:hay_feeder", {
+		
+		supply = {
+			["farming:straw"] = { food = 5, },
+		},
+		
+		max_food = 100,
+		
+		node_def = feeder_node_def,
+		
+		steps_def = {
+			{ food =   1, node_def = node_steps_def[1]  },
+			{ food =  10, node_def = node_steps_def[2]  },
+			{ food =  20, node_def = node_steps_def[3]  },
+			{ food =  30, node_def = node_steps_def[4]  },
+			{ food =  40, node_def = node_steps_def[5]  },
+			{ food =  50, node_def = node_steps_def[6]  },
+			{ food =  60, node_def = node_steps_def[7]  },
+			{ food =  70, node_def = node_steps_def[8]  },
+			{ food =  80, node_def = node_steps_def[9]  },
+			{ food =  90, node_def = node_steps_def[10] },
+			{ food = 100, node_def = node_steps_def[11] },
+		}
 	})
+
 end
 
--- Register feeder
-creatures.register_feeder_node("cow:cow_feeder", {
-	supply = {
-		["farming:straw"] = {
-			food = 5,
+
+if minetest.registered_items["sheep:drinking_fountain"] then
+	
+	cow_drinking_fountain = "sheep:drinking_fountain"
+	
+else
+
+	-- Drinking Fountain node
+	minetest.register_node("cow:drinking_fountain", {
+		description = "Drinking Fountain",
+		drawtype = "nodebox",
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = { -- Created with NodeBoxEditor
+				{-0.4375, -0.5000,  0.3750,  0.4375, -0.1250,  0.4375}, 
+				{-0.4375, -0.5000, -0.4375,  0.4375, -0.1875,  0.4375}, 
+				{-0.4375, -0.5000, -0.4375,  0.4375, -0.1250, -0.375}, 
+				{-0.4375, -0.5000, -0.3750, -0.3750, -0.1250,  0.375}, 
+				{0.3750, -0.5000, -0.3750,  0.4375, -0.1250,  0.375}, 
+			}
 		},
-	},
-	max_food = 100,
-	node_steps = {
-		{
-			food = 0,
-			name = "cow:cow_feeder",
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.4375, -0.5000, -0.4375,  0.4375, -0.1250,  0.4375}, 
 		},
-		{
-			food = 1,
-			name = "cow:cow_feeder_1",
+		tiles = {
+			"(default_water.png^((default_acacia_wood.png)^sheep_drinking_fountain_layer_top.png^[makealpha:76,255,0))", -- Top
+			"default_acacia_wood.png", -- Bottom
+			"default_acacia_wood.png", -- Right 
+			"default_acacia_wood.png", -- Left
+			"default_acacia_wood.png", -- Back
+			"default_acacia_wood.png" -- Front
 		},
-		{
-			food = 10,
-			name = "cow:cow_feeder_2",
-		},
-		{
-			food = 20,
-			name = "cow:cow_feeder_3",
-		},
-		{
-			food = 30,
-			name = "cow:cow_feeder_4",
-		},
-		{
-			food = 40,
-			name = "cow:cow_feeder_5",
-		},
-		{
-			food = 50,
-			name = "cow:cow_feeder_6",
-		},
-		{
-			food = 60,
-			name = "cow:cow_feeder_7",
-		},
-		{
-			food = 70,
-			name = "cow:cow_feeder_8",
-		},
-		{
-			food = 80,
-			name = "cow:cow_feeder_9",
-		},
-		{
-			food = 90,
-			name = "cow:cow_feeder_10",
-		},
-		{
-			food = 100,
-			name = "cow:cow_feeder_11",
-		},
-	},
+		sunlight_propagates = true,
+		walkable = false,
+		buildable_to = true,
+		groups = {snappy = 3, attached_node = 1, flammable = 1},
+		sounds = default.node_sound_wood_defaults()
+	})
+
+end
+
+
+minetest.register_craft({
+	output = cow_hay_feeder,
+	replacements = {{"cow:cowboy_bell", "cow:cowboy_bell"}},
+	recipe = {
+		{'group:stick', 'default:acacia_wood', 'group:stick'},
+		{'default:acacia_wood', 'farming:wheat', 'default:acacia_wood'},
+		{'group:stick', 'cow:cowboy_bell', 'group:stick'},
+	}
 })
 
--- Drinking Fountain node
-minetest.register_node("cow:drinking_fountain", {
-	description = "Cow Drinking Fountain",
-	drawtype = "nodebox",
-	paramtype = "light",
-	paramtype2 = "facedir",
-	node_box = {
-		type = "fixed",
-		fixed = { -- Created with NodeBoxEditor
-			{-0.4375, -0.5, 0.375, 0.4375, -0.125, 0.4375}, 
-			{-0.4375, -0.5, -0.4375, 0.4375, -0.1875, 0.4375}, 
-			{-0.4375, -0.5, -0.4375, 0.4375, -0.125, -0.375}, 
-			{-0.4375, -0.5, -0.375, -0.375, -0.125, 0.375}, 
-			{0.375, -0.5, -0.375, 0.4375, -0.125, 0.375}, 
-		}
-	},
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.4375, -0.5, -0.4375, 0.4375, -0.125, 0.4375}, 
-	},
-	tiles = {
-		"(default_water.png^((default_junglewood.png)^cow_drinking_fountain_layer_top.png^[makealpha:76,255,0))", -- Top
-		"default_junglewood.png", -- Bottom
-		"default_junglewood.png", -- Right 
-		"default_junglewood.png", -- Left
-		"default_junglewood.png", -- Back
-		"default_junglewood.png" -- Front
-	},
-	sunlight_propagates = true,
-	walkable = false,
-	buildable_to = true,
-	groups = {snappy = 3, attached_node = 1, flammable = 1},
-	sounds = default.node_sound_wood_defaults()
-})
-core.register_craft({
-	output = 'cow:drinking_fountain',
+minetest.register_craft({
+	output = cow_drinking_fountain,
 	replacements = {
 		{"cow:cowboy_bell", "cow:cowboy_bell"},
 		{"group:water_bucket", "bucket:bucket_empty"}
 	},
 	recipe = {
-		{'group:stick', 'default:junglewood', 'group:stick'},
-		{'default:junglewood', 'group:water_bucket', 'default:junglewood'},
+		{'group:stick', 'default:acacia_wood', 'group:stick'},
+		{'default:acacia_wood', 'group:water_bucket', 'default:acacia_wood'},
 		{'group:stick', 'cow:cowboy_bell', 'group:stick'},
 	}
 })
+
+cow.cow_hay_feeder = cow_hay_feeder
+cow.cow_drinking_fountain = cow_drinking_fountain

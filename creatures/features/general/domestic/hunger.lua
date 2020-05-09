@@ -75,6 +75,19 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	if not def.hunger then return end
 	
+	-- Update food nodes with feeders
+	if (def.hunger.food or {}).feeders then
+		
+		def.hunger.food.nodes = def.hunger.food.nodes or {}
+		
+		for _,feeder_name in ipairs(def.hunger.food.feeders) do
+			for i=1, table.maxn(creatures.registered_feeder_nodes[feeder_name].node_steps) - 1 do
+				table.insert(def.hunger.food.nodes, feeder_name.."_"..i)
+			end
+		end
+		def.hunger.food.feeders = nil
+	end
+	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		

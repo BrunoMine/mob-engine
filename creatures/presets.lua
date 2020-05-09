@@ -25,6 +25,20 @@ be misrepresented as being the original software.
 -- Registered presets
 creatures.registered_presets = {}
 
+
+-- Merge table concat
+creatures.merge_preset_table = function(custom_def, preset_def)
+	
+	for setting_name,setting in pairs(preset_def) do
+		if custom_def[setting_name] == nil then
+			custom_def[setting_name] = setting
+		end
+	end
+	
+	return custom_def
+end
+
+
 -- Apply presets
 creatures.apply_preset = function(def, preset_name, presets, only_with_name)
 	
@@ -44,13 +58,7 @@ creatures.apply_preset = function(def, preset_name, presets, only_with_name)
 		preset_def = presets[preset_name]
 	end
 	
-	for setting_name,setting in pairs(preset_def) do
-		if def[setting_name] == nil then
-			def[setting_name] = setting
-		end
-	end
-	
-	return def
+	return creatures.merge_preset_table(def, preset_def)
 end
 
 

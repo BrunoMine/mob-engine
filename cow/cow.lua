@@ -37,30 +37,22 @@ creatures.register_mob("cow:cow", {
 		days_interval = 5,
 		water = {
 			nodes = {
-				"cow:drinking_fountain", 
+				cow.cow_drinking_fountain, 
 				"group:water",
 			}
 		},
 		food = {
-			nodes = {
-				"cow:cow_feeder_1",
-				"cow:cow_feeder_2",
-				"cow:cow_feeder_3",
-				"cow:cow_feeder_4",
-				"cow:cow_feeder_5",
-				"cow:cow_feeder_6",
-				"cow:cow_feeder_7",
-				"cow:cow_feeder_8",
-				"cow:cow_feeder_9",
-				"cow:cow_feeder_10",
-				"cow:cow_feeder_11",
-				"farming:straw",
-			}
+			feeders = {cow.cow_hay_feeder},
+			nodes = {"farming:straw"}
 		},
 	},
 	
 	modes = {
-		idle = {chance = 0.5, duration = 10, random_yaw = 4},
+		idle = {
+			chance = 0.5, 
+			duration = 10, 
+			random_yaw = 4
+		},
 		walk = {
 			chance = 0.15, 
 			duration = 20, 

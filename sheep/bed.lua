@@ -47,9 +47,9 @@ core.register_craft({
 		{"sheep:shepherd_wooden_stick", "sheep:shepherd_wooden_stick"}
 	},
 	recipe = {
-		{'farming:straw', '', 'farming:straw'},
-		{'', 'sheep:shepherd_wooden_stick', ''},
-		{'farming:straw', '', 'farming:straw'},
+		{	'farming:straw', 	'', 							'farming:straw'	},
+		{	'', 				'sheep:shepherd_wooden_stick', 	''				},
+		{	'farming:straw', 	'', 							'farming:straw'	},
 	}
 })
 
@@ -66,15 +66,4 @@ creatures.register_mob_node("sheep:bed", {
 		sheep.set_color(self)
 	end,
 	
-	-- On set mob node
-	on_set_mob_node = function(pos, ent)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", "Occupied")
-	end,
-	
-	-- On reset mob node
-	on_reset_mob_node = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", "Vacant")
-	end,
 })

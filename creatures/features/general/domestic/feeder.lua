@@ -1,7 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
 Copyright (C) 2020 Mob API Developers and Contributors
-Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 feeder.lua
 
@@ -268,3 +267,42 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 	end
 	
 end
+
+
+-- Make feeder nodes
+creatures.make_feeder_nodes = function(nodename, def)
+	
+	-- Feeder empty
+	minetest.register_node(nodename, def.node_def)
+	
+	-- Default Node step definitions
+	local default_node_step_def = table.copy(def.node_step_def or def.node_def)
+	default_node_step_def.groups.not_in_creative_inventory = 1
+	
+	-- Custom Node step definitions
+	local custom_node_steps_def = {}
+	for _,step_def in ipairs(def.steps_def) do
+		table.insert(custom_node_steps_def, step_def.node_def)
+	end
+	
+	-- Feeder steps
+	for n,custom_def in ipairs(custom_node_steps_def) do
+		minetest.register_node(nodename.."_"..n, creatures.merge_preset_table(custom_def, default_node_step_def))
+	end
+	
+	-- Feeder settings
+	local feeder_steps = {}
+	table.insert(feeder_steps, {food = 0, name = nodename})
+	for n,step_def in ipairs(def.steps_def) do
+		table.insert(feeder_steps, {food = step_def.food, name = nodename.."_"..n})
+	end
+	
+	-- Register feeder
+	creatures.register_feeder_node(nodename, {
+		supply = def.supply,
+		max_food = def.max_food,
+		node_steps = feeder_steps,
+	})
+	
+end
+
