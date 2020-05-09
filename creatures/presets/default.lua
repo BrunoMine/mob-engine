@@ -24,17 +24,23 @@ be misrepresented as being the original software.
 -- Animal MOB preset
 creatures.registered_presets.mob["default"] = {
 	stats_preset = "default",
+	spawn_preset = "default",
 }
 
 -- "Animal" MOB stats preset
 creatures.registered_presets.mob_stats["default"] = {
+	
 	hp = 12,
+	
 	can_jump = 1,
+	
 	can_swim = true,
-	can_burn = true,
+	can_burn = false,
 	can_panic = true,
+	
 	has_falldamage = true,
 	has_kockback = true,
+	
 }
 
 -- "Default" MOB Spawn preset
@@ -57,8 +63,9 @@ creatures.registered_presets.mob_spawn_ambience["default_env"] = {
 	spawn_type = "environment",
 	
 	max_number = 4,
-	spawn_zone_width = 100,
+	zone_width = 100,
 	number = {min = 1, max = 3},
+	
 	time = {min = 5100, max = 18300},
 	light = {min = 10, max = 15},
 	height = {min = 0, max = 150},
@@ -80,7 +87,7 @@ creatures.registered_presets.mob_spawn_ambience["surface_abm"] = {
 	
 	number = 1,
 	max_number = 2,
-	spawn_zone_width = 80,
+	zone_width = 80,
 	
 	light = {min = 0, max = 8},
 	height = {min = 0, max = 200},
@@ -100,7 +107,7 @@ creatures.registered_presets.mob_spawn_ambience["surface_gen"] = {
 
 	number = 1,
 	max_number = 2,
-	spawn_zone_width = 80,
+	zone_width = 80,
 
 	light = {min = 0, max = 8},
 	height = {min = 0, max = 200},
@@ -139,7 +146,7 @@ creatures.registered_presets.mob_spawn_ambience["cave_gen"] = {
 	
 	number = {min = 1, max = 2},
 	max_number = 3,
-	spawn_zone_width = 80,
+	zone_width = 80,
 	
 	height = {min = -30000, max = 0},
 	

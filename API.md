@@ -611,6 +611,7 @@ Definition tables
                 dummy_scale = <scale>, 	-- Dummy scale (default is {x=0.42, y=0.42})
                 light = <range>, 	-- min and max lightvalue at spawn position <optional>
                     ^ range  -- table {min = <value>, max = <value>}
+				avoid_player_range = 15, -- Distance for players to avoid mob spawn
             }
         },
         
@@ -661,7 +662,7 @@ Definition tables
                                              ^ "generated" for spawn on generated map
                                              ^ "abm" for spawn by ABM ]]
         
-        spawn_zone_width = <number>,	-- width number (in blocks) of spawn zone without this MOB type
+        zone_width = <number>,	-- width number (in blocks) of spawn zone without this MOB type
     
         max_number = <number>, 			-- maximum mobs of this kind per mapblock (16x16x16)
         
@@ -675,8 +676,6 @@ Definition tables
     
         spawn_on = {"itemstring",...}, 	--[[ on what nodes mob can spawn <optional>
                                              ^ this search nodes near a selected place to spawn a group ]]
-											 
-		avoid_player_range = false, 	-- Distance for players to avoid mob spawn
         
         -- 'ABM' feature
         --[[

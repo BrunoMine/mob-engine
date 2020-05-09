@@ -25,16 +25,19 @@ be misrepresented as being the original software.
 local spawn_chance = tonumber(minetest.settings:get("ghost_spawn_chance") or 1)
 
 local def = {
-	-- general
+	
+	-- MOB description
+	description = "Ghost",
+	
+	-- MOB preset
+	mob_preset = "default",
+	
 	stats = {
 		hp = 12,
 		lifetime = 600, 
 		can_burn = true,
 		can_fly = true,
-		burn_light = {min = 15, max = 15},
-		burn_time_of_day = {min = 6000, max = 18000},
 		has_falldamage = false,
-		has_kockback = true,
 		hostile = true,
 	},
 

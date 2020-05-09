@@ -25,17 +25,16 @@ be misrepresented as being the original software.
 local spawn_chance = tonumber(minetest.settings:get("chicken_spawn_chance") or 1)
 
 local def = {
+	
+	-- MOB description
+	description = "Oerrki",
+	
+	-- MOB preset
+	mob_preset = "default",
+	
 	stats = {
-		hp = 13,
+		hp = 15,
 		lifetime = 600,
-		can_jump = 1,
-		can_swim = true,
-		can_burn = true,
-		burn_light = {min = 15, max = 15},
-		burn_time_of_day = {min = 6000, max = 18000},
-		can_panic = true,
-		has_falldamage = true,
-		has_kockback = true,
 		sneaky = true,
 		hostile = true,
 	},

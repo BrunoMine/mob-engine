@@ -25,17 +25,17 @@ be misrepresented as being the original software.
 local spawn_chance = tonumber(minetest.settings:get("zombie_spawn_chance") or 1)
 
 local def = {
-	-- general
+	
+	-- MOB description
+	description = "Zombie",
+	
+	-- MOB preset
+	mob_preset = "default",
+	
 	stats = {
-		hp = 20,
-		lifetime = 600, -- 5 Minutes
-		can_jump = 1,
-		can_swim = true,
+		hp = 15,
+		lifetime = 600, 
 		can_burn = true,
-		burn_light = {min = 15, max = 15},
-		burn_time_of_day = {min = 6000, max = 18000},
-		has_falldamage = true,
-		has_kockback = true,
 		hostile = true,
 	},
 

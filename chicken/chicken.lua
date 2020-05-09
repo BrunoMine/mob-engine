@@ -38,17 +38,10 @@ creatures.register_mob("chicken:chicken", {
 	-- MOB preset
 	mob_preset = "default",
 	
-	-- Spawn preset
-	spawn_preset = "default",
-	
 	-- general
 	stats = {
 		hp = 5,
 		can_jump = 0.55,
-		can_swim = true,
-		can_burn = true,
-		can_panic = true,
-		has_kockback = true,
 		sneaky = true,
 	},
 	
@@ -176,8 +169,6 @@ creatures.register_mob("chicken:chicken", {
 		},
 		
 		spawner = {
-			player_range = 20,
-			number = 8,
 			dummy_scale = {x=2.2, y=2.2},
 		}
 	},

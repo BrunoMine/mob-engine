@@ -133,10 +133,10 @@ creatures.spawn_at_ambience = function(pos, label, params)
 	
 	-- Check creature count in zone
 	local max
-	if def.max_number and def.spawn_zone_width then
+	if def.max_number and def.zone_width then
 		local mates_num = #creatures.find_target(
 			pos, 
-			def.spawn_zone_width, 
+			def.zone_width, 
 			{
 				search_type = "mate", 
 				mob_name = def.mob_name, 
@@ -243,7 +243,7 @@ function creatures.register_spawn(label, def)
 	end
 	
 	-- Ambience
-	def.spawn_zone_width = def.spawn_zone_width or 16
+	def.zone_width = def.zone_width or 16
 	
 	creatures.registered_spawn[label] = table.copy(def)
 	
@@ -329,7 +329,7 @@ function creatures.register_spawn(label, def)
 				end
 				
 				local search_radius = (def.spawn_zone_width or 0) / 2
-				if not def.spawn_zone_width then
+				if not def.zone_width then
 					search_radius = creatures.default_value.nodes_near_radius
 				end
 				

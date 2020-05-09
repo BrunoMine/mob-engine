@@ -57,9 +57,6 @@ creatures.register_mob("sheep:sheep", {
 	-- MOB preset
 	mob_preset = "default",
 	
-	-- Spawn preset
-	spawn_preset = "default",
-	
 	hunger = {
 		days_interval = 5,
 		water = {
