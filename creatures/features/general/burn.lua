@@ -23,19 +23,27 @@ be misrepresented as being the original software.
 
 local changeHP = creatures.change_hp
 
+-- Default burn nodes
+creatures.burn_nodes = {
+	-- Fire
+	["fire:basic_flame"] = { dmg = 2 },
+	["fire:permanent_flame"] = { dmg = 2 },
+	-- Lava
+	["default:lava_source"] = { dmg = 4 },
+	["default:lava_flowing"] = { dmg = 4 },
+}
+local burn_nodes = creatures.burn_nodes
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
-	if def.stats.can_burn ~= true then return end
-	
+	if def.stats.can_burn == false then return end
+		
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
-		-- Settings
-		self.can_burn = def.stats.can_burn
-		
 		-- Timer
-		self.timers.burn = 0
+		self.timers.burn = math.random(0.1, 2)
 		
 	end)
 	
@@ -43,49 +51,41 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.burn = self.timers.burn + dtime
+		self.timers.burn = self.timers.burn - dtime
 		
 		-- Add damage when in lava
-		if self.timers.burn > 1 and self.last_node then
-			self.timers.burn = 0
-			local name = self.last_node.name
-			if self.can_burn then
-				if name == "fire:basic_flame" or name == "default:lava_source" then
-					changeHP(self, -4)
+		if self.timers.burn <= 0 then
+			self.timers.burn = 1
+			
+			local dmg = 0
+			
+			-- Burn by hot node
+			if self.last_node then
+				local nodes = def.stats.burn_nodes or burn_nodes
+				if nodes[self.last_node.name] then
+					dmg = nodes[self.last_node.name].dmg
 				end
 			end
-
-			-- Add damage when light is too bright
-			if self.can_burn then
-				local light_damage, time_damage
-				
-				-- Check light
-				if def.stats.burn_light then
-					light_damage = false
-					if self.last_light and creatures.in_range(def.stats.burn_light, self.last_light) == true then
-						light_damage = true
-					end
-				end
-				
-				-- Check time of day
-				if def.stats.burn_time_of_day then
-					time_damage = false
-					if creatures.in_range(def.stats.burn_time_of_day, (core.get_timeofday()*24000), 24000) == true then
-						time_damage = true
-					end
-				end
-				
-				-- Take damage
-				if light_damage ~= nil or time_damage ~= nil then
-					
-					if light_damage == nil then light_damage = true end
-					if time_damage == nil then time_damage = true end
-					
-					if light_damage == true and time_damage == true then
-						changeHP(self, -1)
-					end
+			
+			-- Burn by light
+			if def.stats.burn_light then
+				if self.last_light and creatures.in_range(def.stats.burn_light, self.last_light) == true then
+					dmg = dmg + (def.stats.burn_light_dmg or 1)
 				end
 			end
+			
+			-- Burn by light
+			if def.stats.burn_time then
+				if creatures.in_range(def.stats.burn_time, (core.get_timeofday()*24000), 24000) == true then
+					dmg = dmg + (def.stats.burn_time_dmg or 1)
+				end
+			end
+			
+			-- Apply damage
+			if dmg > 0 then
+				changeHP(self, (dmg * -1), "burn")
+			end
+			
 		end
 	end)
 	

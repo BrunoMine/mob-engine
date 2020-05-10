@@ -81,7 +81,7 @@ local find_path = creatures.find_path
 
 -- Find path
 creatures.new_path = function(self, target_pos, def)
-	local my_pos = self.object:getpos()
+	local my_pos = self.object:get_pos()
 	
 	local search_def = def.search_def or {}
 	self.path.way = find_path(

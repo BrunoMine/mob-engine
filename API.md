@@ -69,6 +69,7 @@ These values are reserved for the engine resources operation.
 * `fall`: falling feature
 * `last_pos`: last pos
 * `last_light`: last pos light
+* `can_burn`: is true if MOB can burn
 * `can_fly`: is true if MOB can fly
 * `can_jump`: block height MOB can jump
 * `weight`: MOB weight in kilograms
@@ -466,23 +467,26 @@ Definition tables
     {
 		description = "Cool MOB", -- MOB description <optional>
 		
-		mob_preset = "preset_name", 		-- MOB Preset <optional>
+		mob_preset = "preset_name", 	-- MOB Preset <optional>
 		spawn_preset = "preset_name", 	-- MOB Spawn Preset <optional>
-		mob_stats = "preset_name", 	-- MOB Stats Preset <optional>
+		mob_stats = "preset_name", 		-- MOB Stats Preset <optional>
 		
         stats = {
             hp = 5, 			-- 1 HP = "1/2 player heart"
             breath = 5,			-- 1 = "1/2 player bubble"
             hostile = false, 		-- is mob hostile (required for mode "attack") <optional>
             lifetime = 300, 		-- after which time mob despawns, in seconds <optional>
+			can_burn = true, 		-- if MOB can burn <optional> (default is true)
             can_swim = false, 		-- can mob swim or will it drown <optional>
             can_fly = false, 		-- allows to fly (requires mode "fly") and disable step sounds <optional>
             can_panic = false, 		-- runs fast around when hit (requires mode "walk") <optional>
-            has_kockback = false,    	-- get knocked back when hit <optional>
+            has_kockback = false,   -- get knocked back when hit <optional>
             sneaky = false, 		-- disables step sounds <optional>
             burn_light = {range},	-- which light level will burn creature (requires can_burn = true) <optional>
-            burn_time_of_day = {range}, -- which time of day will burn creature (requires can_burn = true) <optional>
-            
+			burn_light_dmg = 1, 	-- Damage per second when burn by light (default is 1) <optional>
+            burn_time = {range}, 	-- which time of day will burn creature (requires can_burn = true) <optional>
+			burn_time_dmg = 1, 		-- Damage per second when burn by time of day (default is 1) <optional>
+            burn_nodes = {nodes}, 	-- burn nodes <optional>
             max_drop = 2, 		-- height in nodes <optional> (Default is 2)
             has_falldamage = false, 	-- deals damage if falling more than max_drop blocks <optional>
             

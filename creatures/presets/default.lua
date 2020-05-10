@@ -20,7 +20,6 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
-
 -- 'Default' MOB preset
 creatures.registered_presets.mob["default"] = {
 	stats_preset = "default",
@@ -35,7 +34,7 @@ creatures.registered_presets.mob_stats["default"] = {
 	can_jump = 1,
 	
 	can_swim = true,
-	can_burn = false,
+	can_burn = true,
 	can_panic = true,
 	
 	has_falldamage = true,
