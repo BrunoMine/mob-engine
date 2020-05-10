@@ -59,7 +59,6 @@ These values are reserved for the engine resources operation.
   * `mobs_near`: for random sounds feature
   * `fall`: for fall damage
 
-  
 ##### General
 * `mode`: current mode name
 * `mode_def`: current mode definitions
@@ -94,6 +93,7 @@ These values are reserved for the engine resources operation.
 * `activated`: is true if MOB is activated
 * `is_died`: is true if MOB is died
 * `is_wild`: boolean for if MOB is wild
+* `from_spawner_egg`: boolean for if MOB is wild
 * `mobs_near`: MOBs count near
 * `mob_get_staticdata_tb`: Registered callbacks
 * `mob_on_step_tb`: Registered callbacks
@@ -108,6 +108,7 @@ These values are reserved for the engine resources operation.
 * `mob_is_fertile_tb`: Registered callbacks
 
 #### Luaentity methods
+* `luaentity:mob_is_active()`: Check if MOB is active
 * `luaentity:mob_set_dir(dir, [rotate])`: Set a rotation in dir for the MOB
   * `rotate` is used to include an additional rotation in degrees
 * `luaentity:mob_set_yaw(yaw, [rotate])`: Set a rotation in yaw for the MOB
@@ -492,7 +493,7 @@ Definition tables
         }
         
         hunger = { -- MOB hunger (this ignore lifetime) <optional>
-            days_interval = 5, -- Interval to eat each node
+            days_interval = 1, -- Interval to eat each food unit <optional> (Default is 1)
             water = true, -- true if need drik water <optional>
             water_nodes = {"modname:node"}, -- Table of nodes for drink <optional> (default is {"group:water"})
             food = { -- params for eat foods <optional>
@@ -754,14 +755,18 @@ Definition tables
         supply = { -- Table of nodes that will supply the feeder (right click)
             ["mymod:food"] = {
                 food = 1, -- food per item
-                count = 5, -- filled items at once.
+                count = 5, -- filled items at once <optional> (if nil, max possible items is filled)
             },
             ["mymod:food_pack"] = {
                 food = 5, -- food per item
-                count = 1, -- filled items at once.
-            },,
+                count = 1, -- filled items at once <optional> (if nil, max possible items is filled)
+            },
         },
+		
         max_food = 10, -- Limit of food level
+		
+		disable_infotext = false, -- Disable infotext from feeder <optional>
+		
         node_steps = { -- Table of nodes to be used like different supply stages depending of food level <optional>
             {
                 food = 0,

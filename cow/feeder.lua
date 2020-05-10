@@ -245,8 +245,27 @@ else
 	creatures.make_feeder_nodes("cow:hay_feeder", {
 		
 		supply = {
-			["farming:straw"] = { food = 5, },
+			["farming:straw"] = { food = 9, count = 3 },
+			["default:grass_1"] = { food = 1, count = 15 },
+			["default:grass_2"] = { food = 1, count = 15 },
+			["default:grass_3"] = { food = 1, count = 15 },
+			["default:grass_4"] = { food = 1, count = 15 },
+			["default:grass_5"] = { food = 1, count = 15 },
+			["default:dry_shrub"] = { food = 1, count = 15 },
+			["default:dry_grass_1"] = { food = 1, count = 15 },
+			["default:dry_grass_2"] = { food = 1, count = 15 },
+			["default:dry_grass_3"] = { food = 1, count = 15 },
+			["default:dry_grass_4"] = { food = 1, count = 15 },
+			["default:dry_grass_5"] = { food = 1, count = 15 },
+			["default:junglegrass"] = { food = 1, count = 15 },
+			["default:marram_grass_1"] = { food = 1, count = 15 },
+			["default:marram_grass_2"] = { food = 1, count = 15 },
+			["default:marram_grass_3"] = { food = 1, count = 15 },
+			["default:marram_grass_4"] = { food = 1, count = 15 },
+			["default:marram_grass_5"] = { food = 1, count = 15 },
 		},
+		
+		disable_infotext = true,
 		
 		max_food = 100,
 		

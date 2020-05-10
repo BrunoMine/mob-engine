@@ -18,11 +18,13 @@ See LICENSE.txt for more info about LGPL 3.0 license
 Originally by BrunoMine, Bruno Borges <borgesdossantosbruno@gmail.com> (LGPL 3.0)
 
 [josephsardin](https://freesound.org/people/josephsardin) (CC0)
-	cow_idle.ogg
-	cow_idle.2.ogg
-	cow_idle.3.ogg
-	cow_idle.4.ogg
-	cow_idle.5.ogg
+	cow.ogg
+	cow.0.ogg
+	cow.1.ogg
+	cow.2.ogg
+	cow.3.ogg
+	cow_damage.ogg
+	cow_damage.0.ogg
 
 [njabrams](https://freesound.org/people/njabrams) (CC0)
 	cow_bucket_milk.ogg

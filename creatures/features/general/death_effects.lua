@@ -37,7 +37,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.remove = true
 		
 		-- Physic
-		self.object:set_properties({collisionbox = {0,0,0, 0,0,0}})
+		--self.object:set_properties({collisionbox = {0,0,0, 0,0,0}})
 		
 		-- Sound
 		if mob_def.sounds and mob_def.sounds.on_death then
@@ -54,7 +54,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 			creatures.set_animation(self, "death")
 			
-			local duration = mob_def.model.animations.death.duration or 0.5
+			local duration = mob_def.model.animations.death.duration or 3
 			core.after(duration, function()
 				self.object:remove()
 			end)

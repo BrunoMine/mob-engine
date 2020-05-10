@@ -42,8 +42,10 @@ local update_feeder_node = function(pos)
 	local food = meta:get_float("food") or 0
 	
 	-- Set infotext
-	local percent = math.ceil((food/def.max_food)*100)
-	meta:set_string("infotext", "Food: "..percent.."% ("..food..")")
+	if def.disable_infotext ~= true then
+		local percent = math.ceil((food/def.max_food)*100)
+		meta:set_string("infotext", "Food: "..percent.."% ("..food..")")
+	end
 	
 	local selected_node_step = def.node_steps[1]
 	
@@ -128,7 +130,7 @@ creatures.feeder.supply_item = function(pos, itemstack)
 	local take = 0
 	
 	-- Check how many items can be used
-	while ((food + supply_def.food) <= feeder_def.max_food) and item_count > 0 do
+	while ((food + supply_def.food) <= feeder_def.max_food) and (take < (supply_def.count or 99999)) and item_count > 0 do
 		food = food + supply_def.food
 		item_count = item_count - 1
 		take = take + 1
@@ -152,6 +154,7 @@ creatures.register_feeder_node = function(nodename, def, secondary)
 	feeder_nodes[nodename].supply = def.supply
 	feeder_nodes[nodename].max_food = def.max_food
 	feeder_nodes[nodename].node_steps = def.node_steps
+	feeder_nodes[nodename].disable_infotext = def.disable_infotext
 	
 	-- Old definitions to override
 	feeder_nodes[nodename].old_on_rightclick = creatures.copy_tb(registered_items[nodename].on_rightclick)
@@ -302,6 +305,7 @@ creatures.make_feeder_nodes = function(nodename, def)
 		supply = def.supply,
 		max_food = def.max_food,
 		node_steps = feeder_steps,
+		disable_infotext = def.disable_infotext,
 	})
 	
 end

@@ -75,6 +75,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	if not def.hunger then return end
 	
+	-- Check default values
+	def.hunger.days_interval = def.hunger.days_interval or 1
+	
 	-- Update food nodes with feeders
 	if (def.hunger.food or {}).feeders then
 		
@@ -104,8 +107,13 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		self.timers.hunger = self.timers.hunger - dtime
 		
-		if self.is_wild ~= true and self.timers.hunger <= 0 then
+		if self.timers.hunger <= 0 then
 			self.timers.hunger = self:mob_actfac_time(10, 2)
+			
+			self.hunger_activated = true
+			
+			-- Check if need check
+			if self.is_wild == true or self.from_spawner_egg == true then return end
 			
 			local thirsty = false
 			local hungry = false
@@ -193,8 +201,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 					kill_mob(self, "creatures:thirsty")
 				end
 			end
-			
-			self.hunger_activated = true
 		end
 	end)
 	

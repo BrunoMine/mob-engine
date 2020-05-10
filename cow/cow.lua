@@ -34,7 +34,6 @@ creatures.register_mob("cow:cow", {
 	},
 	
 	hunger = {
-		days_interval = 5,
 		water = {
 			nodes = {
 				cow.cow_drinking_fountain, 
@@ -43,7 +42,6 @@ creatures.register_mob("cow:cow", {
 		},
 		food = {
 			feeders = {cow.cow_hay_feeder},
-			nodes = {"farming:straw"}
 		},
 	},
 	
@@ -118,8 +116,8 @@ creatures.register_mob("cow:cow", {
 	},
 	
 	sounds = {
-		on_damage = {name = "sheep", gain = 1.0, distance = 10},
-		on_death = {name = "sheep", gain = 1.0, distance = 10},
+		on_damage = {name = "cow_damage", gain = 1.0, distance = 10},
+		on_death = {name = "cow_damage", gain = 1.0, distance = 10},
 		swim = {name = "creatures_splash", gain = 1.0, distance = 10,},
 		random = {
 			idle = {name = "cow", gain = 0.6, distance = 10},

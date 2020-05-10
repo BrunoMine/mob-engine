@@ -35,9 +35,9 @@ local setColor = sheep.set_color
 local function shear(self, drop_count, sound)
 	if self.has_wool == true then
 		self.has_wool = false
-		local pos = self.object:getpos()
+		local pos = self.object:get_pos()
 		if sound then
-			core.sound_play("shears", {pos = pos, gain = 1, max_hear_distance = 10})
+			core.sound_play("creatures_shears", {pos = pos, gain = 1, max_hear_distance = 10})
 		end
 
 		setColor(self)
@@ -58,7 +58,6 @@ creatures.register_mob("sheep:sheep", {
 	mob_preset = "default",
 	
 	hunger = {
-		days_interval = 5,
 		water = {
 			nodes = {
 				"sheep:drinking_fountain", 
@@ -67,9 +66,6 @@ creatures.register_mob("sheep:sheep", {
 		},
 		food = {
 			feeders = {"sheep:hay_feeder"},
-			nodes = {
-				"farming:straw",
-			}
 		},
 	},
 	
@@ -100,10 +96,6 @@ creatures.register_mob("sheep:sheep", {
 				}
 			},
 		},
-		on_randomize = function(self, values)
-			self.has_wool = true
-			setColor(self)
-		end,
 	},
 	
 	modes = {
@@ -234,7 +226,19 @@ creatures.register_mob("sheep:sheep", {
 			dummy_scale = {x=1.7, y=1.7},
 		},
 	},
-
+	
+	on_activate = function(self, staticdata)
+	
+		if self.has_wool == nil then self.has_wool = true end
+		self["sheep:last_day_clipped"] = self["sheep:last_day_clipped"] or core.get_day_count()
+		
+		setColor(self)
+		
+		-- Timer
+		self.sheep_regrow_wool = self:mob_actfac_time(30)
+		
+	end,
+	
 	get_staticdata = function(self)
 		return {
 			has_wool = self.has_wool,
@@ -242,19 +246,7 @@ creatures.register_mob("sheep:sheep", {
 			["sheep:last_day_clipped"] = self["sheep:last_day_clipped"],
 		}
 	end,
-
-	on_activate = function(self, staticdata)
 	
-		if staticdata == "" then
-			self.has_wool = true
-			self["sheep:last_day_clipped"] = core.get_day_count()
-		end
-		
-		-- Timer
-		self["sheep:regrow_timer"] = 0
-		
-	end,
-
 	mob_item_tool = {
 		["creatures:shears"] = {
 			wear = 500,
@@ -270,10 +262,10 @@ creatures.register_mob("sheep:sheep", {
 	},
 
 	on_step = function(self, dtime)
-		self["sheep:regrow_timer"] = self["sheep:regrow_timer"] + dtime
+		self.sheep_regrow_wool = self.sheep_regrow_wool - dtime
 		
-		if self["sheep:regrow_timer"] >= 30 then
-			self["sheep:regrow_timer"] = 0
+		if self.sheep_regrow_wool <= 0 then
+			self.sheep_regrow_wool = self:mob_actfac_time(30)
 			
 			if (self["sheep:last_day_clipped"]+3) <= core.get_day_count() then
 				self["sheep:last_day_clipped"] = core.get_day_count()

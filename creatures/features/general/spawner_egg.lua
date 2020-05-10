@@ -1,6 +1,6 @@
 --[[
 = Creatures MOB-Engine (cme) =
-Copyright (C) 2017 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 spawner_egg.lua
@@ -41,7 +41,12 @@ local function eggSpawn(itemstack, placer, pointed_thing, egg_def)
 		pos.y = pos.y + 0.5
 		local height = (egg_def.box[5] or 2) - (egg_def.box[2] or 0)
 		if checkSpace(pos, height) == true then
-			core.add_entity(pos, egg_def.mob_name)
+			
+			local obj = minetest.add_entity(pos, egg_def.mob_name)
+			if obj then
+				obj:get_luaentity().from_spawner_egg = true
+			end
+			
 			if minetest.settings:get_bool("creative_mode") ~= true then
 				itemstack:take_item()
 			end
@@ -79,6 +84,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		return
 	end
 	
+
 	-- Register Spawn
 	if def.spawning then
 	
@@ -95,5 +101,20 @@ creatures.register_on_register_mob(function(mob_name, def)
 		end
 		
 	end
+	
+	-- Register 'on_activate'
+	creatures.register_on_activate(mob_name, function(self, staticdata)
+		
+		self.from_spawner_egg = self.from_spawner_egg or false
+		
+	end)
+	
+	-- Register 'get_staticdata'
+	creatures.register_get_staticdata(mob_name, function(self)
+		return {
+			from_spawner_egg = self.from_spawner_egg,
+		}
+	end)
+	
 end)
 

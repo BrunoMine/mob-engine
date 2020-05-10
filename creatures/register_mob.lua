@@ -47,19 +47,6 @@ local function entity_table(mob_name, def)
 	
 	local ent_def = {}
 	
-	-- Register call custom 'get_staticdata'
-	if def.get_staticdata then creatures.register_get_staticdata(mob_name, def.get_staticdata) end
-	-- Register call custom 'on_activate'
-	if def.on_activate then creatures.register_on_activate(mob_name, def.on_activate) end
-	-- Register call custom 'on_deactivate'
-	if def.on_deactivate then creatures.register_on_deactivate(mob_name, def.on_deactivate) end
-	-- Register call custom 'on_punch'
-	if def.on_punch then creatures.register_on_punch(mob_name, def.on_punch) end
-	-- Register call custom 'on_rightclick'
-	if def.on_rightclick then creatures.register_on_rightclick(mob_name, def.on_rightclick) end
-	-- Register call custom 'on_step'
-	if def.on_step then creatures.register_on_step(mob_name, def.on_step) end
-	
 	-- Get staticdata
 	ent_def.get_staticdata = function(self) 
 		-- Registered callbacks
@@ -146,6 +133,19 @@ function creatures.register_mob(mob_name, mob_def) -- returns true if sucessfull
 	
 	-- Register Entity
 	core.register_entity(mob_name, setmetatable(creatures.registered_mobs[mob_name].ent_def, {__index = entity_meta}))
+	
+	-- Register call custom 'get_staticdata'
+	if mob_def.get_staticdata then creatures.register_get_staticdata(mob_name, mob_def.get_staticdata) end
+	-- Register call custom 'on_activate'
+	if mob_def.on_activate then creatures.register_on_activate(mob_name, mob_def.on_activate) end
+	-- Register call custom 'on_deactivate'
+	if mob_def.on_deactivate then creatures.register_on_deactivate(mob_name, mob_def.on_deactivate) end
+	-- Register call custom 'on_punch'
+	if mob_def.on_punch then creatures.register_on_punch(mob_name, mob_def.on_punch) end
+	-- Register call custom 'on_rightclick'
+	if mob_def.on_rightclick then creatures.register_on_rightclick(mob_name, mob_def.on_rightclick) end
+	-- Register call custom 'on_step'
+	if mob_def.on_step then creatures.register_on_step(mob_name, mob_def.on_step) end
 	
 	return true
 end

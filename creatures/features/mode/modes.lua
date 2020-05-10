@@ -94,6 +94,9 @@ creatures.start_mode = function(self, mode)
 	-- Update mode on_step
 	self.mob_mode_on_step = creatures.registered_modes[mode].on_step or function() end
 	
+	-- Check MOB object
+	if self:mob_is_active() == false then return end
+	
 	if creatures.registered_modes[mode] and creatures.registered_modes[mode].start then
 		creatures.registered_modes[mode].start(self)
 	end
