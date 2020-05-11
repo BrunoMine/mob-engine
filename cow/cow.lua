@@ -105,13 +105,13 @@ creatures.register_mob("cow:cow", {
 	
 	randomize = {
 		values = {
-			{textures = {"cow_white_and_black.png"},},
-			{textures = {"cow_white_and_brown.png"},},
-			{textures = {"cow_brown_and_black.png"},},
-			{textures = {"cow_white.png"},},
-			{textures = {"cow_grey.png"},},
-			{textures = {"cow_black.png"},},
-			{textures = {"cow_brown.png"},},
+			{textures = {"cow_white_and_black.png"}, tags = { leather_color = "white_and_black" }},
+			{textures = {"cow_white_and_brown.png"}, tags = { leather_color = "white_and_brown" }},
+			{textures = {"cow_brown_and_black.png"}, tags = { leather_color = "brown_and_black" }},
+			{textures = {"cow_white.png"}, tags = { leather_color = "white" }},
+			{textures = {"cow_grey.png"}, tags = { leather_color = "grey" }},
+			{textures = {"cow_black.png"}, tags = { leather_color = "black" }},
+			{textures = {"cow_brown.png"}, tags = { leather_color = "brown" }},
 		},
 	},
 	
@@ -181,6 +181,18 @@ creatures.register_mob("cow:cow", {
 	drops = {
 		{"cow:raw_beef", 1, chance = 1},
 	},
+	
+	drops = function(self)
+		
+		if self.is_child then return end
+		
+		local items = {{"cow:raw_beef"}}
+		if self.leather_color then
+			table.insert(items, {"cow:leather_" .. self.leather_color})
+		end
+		
+		creatures.drop_items(self.object:get_pos(), items)
+	end,
 	
 	on_rightclick = function(self, clicker)
 		if self.is_died == true or self.is_child == true then return end

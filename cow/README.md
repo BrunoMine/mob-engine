@@ -1,21 +1,16 @@
-# Cow
-[![download](https://img.shields.io/github/tag/BrunoMine/fine_mobs.svg?style=flat-square&label=release)](https://github.com/BrunoMine/cow/archive/master.zip)
-[![git](https://img.shields.io/badge/git-project-green.svg?style=flat-square)](https://github.com/BrunoMine/cow)
-[![forum](https://img.shields.io/badge/minetest-mod-green.svg?style=flat-square)](https://forum.minetest.net)
-[![bower](https://img.shields.io/badge/bower-mod-green.svg?style=flat-square)](https://minetest-bower.herokuapp.com/mods/cow)
+# Cow for Creatures MOB-Engine
+Copyright (c) 2019-2020 Mob API Developers and Contributors
 
-## Description
 Change the appearance of mobs
 
-## Requirements
-* Minetest 0.4.17 or higher
-* creatures mod
-
+---
 ## License
-See LICENSE.txt for more info about LGPL 3.0 license
 
-### Authors of the source code
-Originally by BrunoMine, Bruno Borges <borgesdossantosbruno@gmail.com> (LGPL 3.0)
+**Code (if not stated differently)**
+(c) Copyright 2019-2020 Mob API Developers and Contributors;
+see "LICENSE.txt" for details.
+
+**Media (textures, sounds and meshes/models)**
 
 [josephsardin](https://freesound.org/people/josephsardin) (CC0)
 	cow.ogg
@@ -31,7 +26,24 @@ Originally by BrunoMine, Bruno Borges <borgesdossantosbruno@gmail.com> (LGPL 3.0
 	cow_bucket_milk.0.ogg
 	cow_bucket_milk.1.ogg
 
-### Authors of media (textures, models and sonds)
-All that are not described here are authored by 
-BrunoMine, Bruno Borges <borgesdossantosbruno@gmail.com> (CC BY-SA 3.0)
-
+BrunoMine 2020 (CC-BY-SA 3.0)
+	cow_bucket_milk.png
+	cow_cowboy_bell.png
+	cow_raw_beef.png
+	cow_roast_beef.png
+	cow_spawner_egg.png
+	cow_bed.png
+	cow_black.png
+	cow_brown.png
+	cow_brown_and_black.png
+	cow_grey.png
+	cow_white.png
+	cow_white_and_black.png
+	cow_white_and_brown.png
+	cow_leather_black.png
+	cow_leather_brown.png
+	cow_leather_brown_and_black.png
+	cow_leather_grey.png
+	cow_leather_white.png
+	cow_leather_white_and_black.png
+	cow_leather_white_and_brown.png

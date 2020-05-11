@@ -60,3 +60,46 @@ core.register_craft({
 	output = "cow:roast_beef",
 	recipe = "cow:raw_beef",
 })
+
+
+-- Cow Leather White and Black
+core.register_craftitem("cow:leather_white_and_black", {
+	description = "Cow Leather White and Black",
+	inventory_image = "cow_leather_white_and_black.png",
+})
+
+-- Cow Leather Black
+core.register_craftitem("cow:leather_black", {
+	description = "Cow Leather Black",
+	inventory_image = "cow_leather_black.png",
+})
+
+-- Cow Leather White and Brown
+core.register_craftitem("cow:leather_white_and_brown", {
+	description = "Cow Leather White and Brown",
+	inventory_image = "cow_leather_white_and_brown.png",
+})
+
+-- Cow Leather Brown
+core.register_craftitem("cow:leather_brown", {
+	description = "Cow Leather Brown",
+	inventory_image = "cow_leather_brown.png",
+})
+
+-- Cow Leather Brown and Black
+core.register_craftitem("cow:leather_brown_and_black", {
+	description = "Cow Leather Brown and Black",
+	inventory_image = "cow_leather_brown_and_black.png",
+})
+
+-- Cow Leather Brown and Black
+core.register_craftitem("cow:leather_white", {
+	description = "Cow Leather White",
+	inventory_image = "cow_leather_white.png",
+})
+
+-- Cow Leather Grey
+core.register_craftitem("cow:leather_grey", {
+	description = "Cow Leather Grey",
+	inventory_image = "cow_leather_grey.png",
+})

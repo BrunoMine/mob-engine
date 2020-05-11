@@ -23,7 +23,8 @@ be misrepresented as being the original software.
 
 
 -- Methods
-local p1top2 = creatures.get_dist_p1top2
+local dist_p1top2 = creatures.get_dist_p1top2
+local dir_p1top2 = creatures.get_dir_p1top2
 local find_target = creatures.find_target
 
 -- Finish path
@@ -144,7 +145,7 @@ creatures.entity_meta.mob_path_step = function(self, dtime)
 		
 		-- Check path step
 		do
-			local dist = p1top2(mypos, way[1])
+			local dist = dist_p1top2(mypos, way[1])
 			
 			-- Arrived at the last point
 			if dist < 1.1 then
@@ -188,7 +189,7 @@ creatures.entity_meta.mob_path_step = function(self, dtime)
 		self.path.time = 1/speed
 		
 		-- Rotate to next location path
-		local new_dir = p1top2(mypos, way[1])
+		local new_dir = dir_p1top2(mypos, way[1])
 		if new_dir then
 			self:mob_set_dir(new_dir)
 		end
