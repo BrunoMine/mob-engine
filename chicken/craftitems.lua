@@ -22,26 +22,41 @@ be misrepresented as being the original software.
 ]]
 
 -- Flesh
-core.register_craftitem("chicken:chicken_flesh", {
+minetest.register_craftitem("chicken:chicken_flesh", {
 	description = "Raw Chicken Flesh",
 	inventory_image = "chicken_flesh.png",
-	on_use = core.item_eat(1)
+	on_use = minetest.item_eat(1)
 })
 
-core.register_craftitem("chicken:chicken_meat", {
+minetest.register_craftitem("chicken:chicken_meat", {
 	description = "Chicken Meat",
 	inventory_image = "chicken_meat.png",
-	on_use = core.item_eat(3)
+	on_use = minetest.item_eat(3)
 })
 
-core.register_craft({
+minetest.register_craft({
 	type = "cooking",
 	output = "chicken:chicken_meat",
 	recipe = "chicken:chicken_flesh",
 })
 
--- Feather
-core.register_craftitem("chicken:feather", {
-	description = "Feather",
-	inventory_image = "chicken_feather.png",
+-- White Chicken Feather
+minetest.register_craftitem("chicken:feather_white", {
+	description = "White Chicken Feather",
+	inventory_image = "chicken_feather_white.png",
+	groups = {feather=1},
+})
+
+-- Black Chicken Feather
+minetest.register_craftitem("chicken:feather_black", {
+	description = "Black Chicken Feather",
+	inventory_image = "chicken_feather_black.png",
+	groups = {feather=1},
+})
+
+-- Brown Chicken Feather
+minetest.register_craftitem("chicken:feather_brown", {
+	description = "Brown Chicken Feather",
+	inventory_image = "chicken_feather_brown.png",
+	groups = {feather=1},
 })

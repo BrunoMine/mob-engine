@@ -84,6 +84,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 			-- Apply damage
 			if dmg > 0 then
 				changeHP(self, (dmg * -1), "burn")
+				
+				-- Panic if possible
+				if self.mode ~= "attack" then
+					creatures.start_mode(self, "panic")
+				end
 			end
 			
 		end

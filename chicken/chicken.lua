@@ -63,9 +63,9 @@ creatures.register_mob("chicken:chicken", {
 	
 	randomize = {
 		values = {
-			{textures = {"chicken_white.png"}},
-			{textures = {"chicken_black.png"}},
-			{textures = {"chicken_brown.png"}}
+			{textures = {"chicken_white.png"}, tags = { feather_color = "white" }},
+			{textures = {"chicken_black.png"}, tags = { feather_color = "black" }},
+			{textures = {"chicken_brown.png"}, tags = { feather_color = "brown" }}
 		}
 	},
 	
@@ -172,10 +172,22 @@ creatures.register_mob("chicken:chicken", {
 			dummy_scale = {x=2.2, y=2.2},
 		}
 	},
-
-	drops = {
-		{"chicken:chicken_flesh"},
-		{"chicken:feather", {min = 1, max = 2}, chance = 0.45},
-	},
+	
+	drops = function(self)
+		if self.is_child then return end
+		
+		local items = {}
+		
+		-- Meat
+		if self.death_reason == "burn" then
+			table.insert(items, {"chicken:chicken_meat"})
+		else
+			table.insert(items, {"chicken:chicken_flesh"})
+		end
+		
+		table.insert(items, {"chicken:feather_" .. self.feather_color, {min = 1, max = 2}, chance = 0.45})
+		
+		creatures.drop_items(self.object:get_pos(), items)
+	end,
 	
 })

@@ -178,18 +178,20 @@ creatures.register_mob("cow:cow", {
 		spawn_type = "mob_node", 
 	},
 	
-	drops = {
-		{"cow:raw_beef", 1, chance = 1},
-	},
-	
 	drops = function(self)
 		
 		if self.is_child then return end
 		
-		local items = {{"cow:raw_beef"}}
-		if self.leather_color then
-			table.insert(items, {"cow:leather_" .. self.leather_color})
+		local items = {}
+		
+		-- Meat
+		if self.death_reason == "burn" then
+			table.insert(items, {"cow:roast_beef"})
+		else
+			table.insert(items, {"cow:raw_beef"})
 		end
+		
+		table.insert(items, {"cow:leather_" .. self.leather_color})
 		
 		creatures.drop_items(self.object:get_pos(), items)
 	end,

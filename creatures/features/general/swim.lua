@@ -34,6 +34,21 @@ local velocity_add = creatures.velocity_add
 local copy_tb = creatures.copy_tb
 
 
+-- Default swim nodes
+creatures.swim_nodes = {
+	-- Lava
+	["default:lava_source"] = true,
+	["default:lava_flowing"] = true,
+	-- Water
+	["default:water_source"] = true,
+	["default:water_flowing"] = true,
+	-- River Water
+	["default:river_water_source"] = true,
+	["default:river_water_flowing"] = true
+}
+local swim_nodes = creatures.swim_nodes
+
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
@@ -43,67 +58,65 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.can_swim = def.stats.can_swim
 		
 		-- Timers
-		self.timers.swim = math.random(0.1, self:mob_actfac_time(0.4))
-		self.timers.drown = 0
+		self.timers.swim = math.random(0.6, 0.8)
+		self.timers.drown = 3
 	end)
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
-		
 		self.timers.swim = self.timers.swim - dtime
 		
 		-- Check swim
 		if self.timers.swim <= 0 then
-			self.timers.swim = self:mob_actfac_time(0.4)
+			self.timers.swim = math.random(0.6, 0.8)
 			
 			local me = self.object
-			
-			-- Remove gravity when in water
-			if self.in_water then
-				
-				
-				self.physic.gravity = false
-				-- Update physic
-				update_physic(self)
-				-- Update acceleration in water
-				me:set_acceleration({x = 0, y = -1, z = 0})
-				-- Reduce fall speed
-				local vel = me:get_velocity()
-				if vel.y < 0 then
-					vel.y = vel.y * 0.1
-					me:set_velocity(vel)
-				end
-			else
-				-- Update physic
-				reset_physic(self)
-				update_physic(self)
-			end
-			
-			
-			local me = self.object
-			local current_pos = me:get_pos()
-			
-			-- MOB definition
-			local mob_def = get_mob_def(self)
 			
 			-- Check if in water
-			if self.last_node and self.last_node.name == "default:water_source" then
+			if self.last_node and swim_nodes[self.last_node.name] then
 				self.in_water = true
 			else
 				self.in_water = false
 			end
 			
-			
-			-- Check breath pos
-			local breath_pos = copy_tb(current_pos)
-			breath_pos.y = breath_pos.y + mob_def.model.vision_height or 0
-			if mob_def.model.vision_height > 0.4 then
-				breath_pos.y = breath_pos.y - 0.4
+			-- Remove gravity when in water
+			if self.in_water then
+				
+				if self.physic.gravity then
+					
+					self.physic.gravity = false
+					
+					-- Update physic
+					self:mob_update_physic()
+					
+					-- Update acceleration in water
+					me:set_acceleration({x = 0, y = -1, z = 0})
+					
+					-- Reduce fall speed
+					local vel = me:get_velocity()
+					if vel.y < 0 then
+						vel.y = vel.y * 0.1
+						me:set_velocity(vel)
+					end
+				end
 			else
-				breath_pos.y = breath_pos.y - mob_def.model.vision_height
+				
+				-- Update physic
+				self:mob_reset_physic()
+				self:mob_update_physic()
 			end
-			if get_node(breath_pos).name == "default:water_source" then
+			
+			local c_pos = me:get_pos()
+			
+			-- MOB definition
+			local mob_def = get_mob_def(self)
+			
+			-- Check Breath
+			local breath_y = c_pos.y + (mob_def.model.vision_height or 0)
+			local breath_nodename = get_node({x = c_pos.x, y = breath_y, z = c_pos.z}).name
+			
+			if swim_nodes[breath_nodename] then
 				
 				-- Reduce breath
 				self.breath = self.breath - 1
@@ -113,20 +126,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 				
 				-- Swin
 				local vel = me:get_velocity()
-				if vel.y < -0.7 then
-					velocity_add(self, {x = 0, y = 1.1, z = 0})
-				elseif vel.y >= -0.7 and vel.y < 0.3 then
-					velocity_add(self, {x = 0, y = 0.9, z = 0})
-				elseif vel.y >= 0.3 and vel.y < 1 then
-					velocity_add(self, {x = 0, y = 0.4, z = 0})
-				end
+				me:set_velocity({x = vel.x, y = 1, z = vel.z})
 				
 				-- play swimming sounds
 				if def.sounds and def.sounds.swim then
 					local swim_snd = def.sounds.swim
-					sound_play(swim_snd.name, {pos = current_pos, gain = swim_snd.gain or 1, max_hear_distance = swim_snd.distance or 10})
+					sound_play(swim_snd.name, {pos = c_pos, gain = swim_snd.gain or 1, max_hear_distance = swim_snd.distance or 10})
 				end
-				spawn_particles(current_pos, vel, "bubble.png")
+				spawn_particles(c_pos, vel, "bubble.png")
 			
 			-- Out of water
 			else
@@ -140,14 +147,19 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 		end
 		
-		self.timers.drown = self.timers.drown + dtime
+		self.timers.drown = self.timers.drown - dtime
 		
 		-- Add damage when drowning
-		if self.timers.drown > 3 then
-			self.timers.drown = 0
+		if self.timers.drown <= 0 then
+			self.timers.drown = 1
 			
 			if self.breath <= 0 then
-				changeHP(self, -1, "creatures:drown")
+				changeHP(self, -1, "drown")
+				
+				-- Panic if possible
+				if self.mode ~= "attack" then
+					creatures.start_mode(self, "panic")
+				end
 			end
 		end
 	end)

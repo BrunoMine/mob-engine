@@ -186,7 +186,7 @@ function creatures.register_spawner(spawner_def)
 						no_count = true,
 					}
 				)
-				if avoid_player_spawn ~= true then
+				if spawner_def.avoid_player_spawn ~= true then
 					spawnerSpawn(pos, spawner_def)
 				end
 				spawner_timers[id] = os.time()

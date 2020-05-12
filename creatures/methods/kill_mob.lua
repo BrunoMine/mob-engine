@@ -26,6 +26,8 @@ be misrepresented as being the original software.
 creatures.kill_mob = function(self, reason)
 	if not self then return end
 	
+	self.death_reason = reason or ""
+	
 	local def = creatures.mob_def(self)
 	local me = self.object
 	

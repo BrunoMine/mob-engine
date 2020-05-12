@@ -21,9 +21,13 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+
 -- Update physic
 creatures.update_physic = function(self)
-	
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.update_physic' method (use 'self:mob_update_physic')")
+	self:mob_update_physic()
+end
+creatures.entity_meta.mob_update_physic = function(self)
 	-- Gravity
 	if self.physic.gravity == true then
 		local acell = -1 + (self.weight * -0.2)
@@ -36,8 +40,13 @@ creatures.update_physic = function(self)
 	end
 end
 
+
 -- Reset physic
 creatures.reset_physic = function(self)
+	minetest.log("deprecated", "[Creatures] Deprecated 'creatures.reset_physic' method (use 'self:mob_reset_physic')")
+	self:mob_reset_physic()
+end
+creatures.entity_meta.mob_reset_physic = function(self)
 	self.physic.gravity = self.physic.default_gravity
 end
 

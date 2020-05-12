@@ -165,10 +165,21 @@ creatures.register_mob("sheep:sheep", {
 	
 	drops = function(self)
 		if self.is_child then return end
-		local items = {{"sheep:sheep_flesh"}}
-		if self.has_wool then
-			table.insert(items, {"wool:" .. self.wool_color, {min = 1, max = 2}})
+		
+		local items = {}
+		
+		-- Meat
+		if self.death_reason == "burn" then
+			table.insert(items, {"sheep:sheep_meat"})
+		else
+			table.insert(items, {"sheep:sheep_flesh"})
 		end
+		
+		-- Wool
+		if self.has_wool then
+			table.insert(items, {"wool:" .. self.wool_color})
+		end
+		
 		creatures.drop_items(self.object:get_pos(), items)
 	end,
 	

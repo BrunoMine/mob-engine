@@ -23,7 +23,7 @@ see "LICENSE.txt" for details.
 
 BlockMen (CC-BY-SA 3.0)
 	chicken_egg.png
-	chicken_feather.png
+	chicken_feather_white.png
 	chicken_flesh.png
 	chicken_fried_egg.png
 	chicken_meat.png
@@ -35,9 +35,8 @@ Gamit (WTFPL)
 BrunoMine (CC-BY-SA 3.0)
 	chicken_black.png -- Derivated from Gamit's work (WTFPL)
 	chicken_brown.png -- Derivated from Gamit's work (WTFPL)
-	chicken_feeder_layer_side.png
-	chicken_feeder_layer_top.png
-	chicken_feeder_seeds.png
+	chicken_feather_black.png -- Derivated from BlockMen's work (CC-BY-SA 3.0)
+	chicken_feather_brown.png -- Derivated from BlockMen's work (CC-BY-SA 3.0)
 
 [dobroide](https://freesound.org/people/dobroide) (CC BY 3.0)
 	chicken.1.ogg

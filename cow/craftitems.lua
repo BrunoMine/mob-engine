@@ -36,7 +36,7 @@ core.register_craft({
 
 -- Bucket with Milk
 core.register_craftitem("cow:bucket_milk", {
-	description = "Bucket with Milk",
+	description = "Milk Bucket",
 	inventory_image = "cow_bucket_milk.png",
 	stack_max = 1,
 })
@@ -62,44 +62,51 @@ core.register_craft({
 })
 
 
--- Cow Leather White and Black
+-- White and Black Cow Leather
 core.register_craftitem("cow:leather_white_and_black", {
-	description = "Cow Leather White and Black",
+	description = "White and Black Cow Leather",
 	inventory_image = "cow_leather_white_and_black.png",
+	groups = {leather=1},
 })
 
--- Cow Leather Black
+-- Black Cow Leather
 core.register_craftitem("cow:leather_black", {
-	description = "Cow Leather Black",
+	description = "Black Cow Leather",
 	inventory_image = "cow_leather_black.png",
+	groups = {leather=1},
 })
 
--- Cow Leather White and Brown
+-- White and Brown Cow Leather
 core.register_craftitem("cow:leather_white_and_brown", {
-	description = "Cow Leather White and Brown",
+	description = "White and Brown Cow Leather",
 	inventory_image = "cow_leather_white_and_brown.png",
+	groups = {leather=1},
 })
 
--- Cow Leather Brown
+-- Brown Cow Leather
 core.register_craftitem("cow:leather_brown", {
-	description = "Cow Leather Brown",
+	description = "Brown Cow Leather",
 	inventory_image = "cow_leather_brown.png",
+	groups = {leather=1},
 })
 
--- Cow Leather Brown and Black
+-- Brown and Black Cow Leather
 core.register_craftitem("cow:leather_brown_and_black", {
-	description = "Cow Leather Brown and Black",
+	description = "Brown and Black Cow Leather",
 	inventory_image = "cow_leather_brown_and_black.png",
+	groups = {leather=1},
 })
 
--- Cow Leather Brown and Black
+-- Brown and Black Cow Leather
 core.register_craftitem("cow:leather_white", {
-	description = "Cow Leather White",
+	description = "White Cow Leather",
 	inventory_image = "cow_leather_white.png",
+	groups = {leather=1},
 })
 
--- Cow Leather Grey
+-- Grey Cow Leather
 core.register_craftitem("cow:leather_grey", {
-	description = "Cow Leather Grey",
+	description = "Grey Cow Leather",
 	inventory_image = "cow_leather_grey.png",
+	groups = {leather=1},
 })

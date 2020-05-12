@@ -87,6 +87,7 @@ These values are reserved for the engine resources operation.
 * `mob_node`: table for mob node params
 * `walk_around_time`: time of walk around mode
 * `fly_time`: time limit of fly
+* `death_reason`: death reason for when death
 * `hunger_activated`: boolean for if MOB hunger is checked
 * `last_satiated_day`: last satiated day
 * `is_child`: is true when MOB is a child
