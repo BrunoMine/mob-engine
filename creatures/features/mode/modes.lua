@@ -177,7 +177,6 @@ creatures.register_on_register_mob(function(mob_name, def)
 end)
 
 
-
 -- Register a mode
 creatures.registered_modes = {}
 creatures.register_mode = function(modename, def)
@@ -195,3 +194,92 @@ dofile(modpath .."/features/mode/modes/follow.lua")
 dofile(modpath .."/features/mode/modes/attack.lua")
 dofile(modpath .."/features/mode/modes/eat.lua")
 dofile(modpath .."/features/mode/modes/idle.lua")
+
+-- Make MOB modes
+creatures.make_mob_modes = function(def)
+	
+	local modes = def.custom or {}
+	
+	-- Idle ratio
+	def.idle_ratio = def.idle_ratio or 50
+	
+	-- Duration
+	def.duration = def.duration or 5
+	def.max_duration = def.max_duration or 20
+	
+	-- Speeds
+	def.walk_speed = def.walk_speed or 1
+	def.run_speed = def.run_speed or (def.walk_speed * 2)
+	
+	-- idle
+	modes.idle = {
+		chance = 70, 
+		duration = (def.idle_ratio/100) * def.duration, 
+		update_yaw = 8, 
+	}
+	
+	-- walk
+	modes.walk = { 
+		duration = def.duration, 
+		moving_speed = def.walk_speed,
+	}
+	
+	-- walk_around
+	modes.walk_around = { 
+		chance = 100 - def.idle_ratio,
+		duration = ((100 - def.idle_ratio) / 100), 
+		moving_speed = def.walk_speed,
+	}
+	
+	-- fly
+	if def.fly or def.fly_speed then 
+		modes.fly = {
+			duration = def.duration, 
+			moving_speed = def.fly_speed or def.walk_speed, 
+			max_height = def.fly_max_height, 
+			target_offset = def.fly_target_offset,
+		}
+	end
+	
+	-- panic
+	modes.panic = { 
+		duration = 5, 
+		moving_speed = def.run_speed,
+	}
+
+	-- Attack
+	if def.attack == true then
+		modes.attack = {
+			duration = def.max_duration,
+			moving_speed = def.run_speed, 
+		}
+	end
+	
+	-- Follow
+	if def.follow_items or def.follow == true then
+		modes.follow = {
+			duration = def.max_duration, 
+			moving_speed = def.walk_speed, 
+			radius = def.follow_radius or 5, 
+			search_timer = def.follow_search_timer or 5, 
+			items = def.follow_items, 
+		}
+	end
+	
+	-- Eat
+	if def.eat or def.eat_nodes then 
+		modes.eat = {
+			duration = def.eat_full_time or 3,
+			eat_instant = def.eat_exact_time or 1.5,
+			sound = def.eat_sound,
+			nodes = def.eat_nodes,
+		}
+	end
+	
+	-- Custom modes 
+	for mode_name, mode_def in pairs(def.custom or {}) do
+		modes[mode_name] = creatures.merge_preset_table(modes[mode_name] or {}, mode_def)
+	end
+	
+	return modes
+end

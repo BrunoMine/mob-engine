@@ -86,7 +86,7 @@ creatures.register_mode("eat", {
 		self:mob_set_anim("eat")
 		
 		-- Timer to chance node
-		self.mdt.eat = self.mode_def.eat_time
+		self.mdt.eat = self.mode_def.eat_instant
 	end,
 	
 	-- On step
@@ -112,7 +112,7 @@ creatures.register_mode("eat", {
 			-- Sounds
 			local sound = acts.sound or self.mode_def.sound
 			if sound then 
-				sound_play(sound, {pos = self.current_pos, max_hear_distance = 5, gain = 1})
+				sound_play(sound[1], {pos = self.current_pos, max_hear_distance = sound[3], gain = sound[2]})
 			end
 			
 			-- Reset values

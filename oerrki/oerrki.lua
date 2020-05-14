@@ -37,17 +37,28 @@ local def = {
 		lifetime = 600,
 		sneaky = true,
 		hostile = true,
+		
+		can_panic = false,
 	},
 	
-	modes = {
-		idle = {chance = 70, duration = 3, update_yaw = 8},
-		walk = {chance = 30, duration = 5.5, moving_speed = 1.5, search_radius = 5},
-		--walk_long = {chance = 0.11, duration = 8, moving_speed = 1.3, update_yaw = 5}, not registered mode
-
-		-- special modes
-		attack = {moving_speed = 2.9, duration = 20},
-		panic = {duration = 4, moving_speed = 3.2},
+	combat = {
+		attack_damage = 2,
+		attack_speed = 0.6,
+		attack_radius = 2.1,
+		attack_hit_interval = 1.5,
+		attack_collide_with_target = true,
+		
+		search_enemy = true,
+		search_timer = 1.6,
+		search_radius = 12,
+		search_type = "player",
 	},
+	
+	modes = creatures.make_mob_modes({
+		walk_speed = 1.5,
+		run_speed = 2.9,
+		attack = true,
+	}),
 	
 	sounds = {
 		on_damage = {name = "oerrki_hit", gain = 1.0, distance = 10},
@@ -62,30 +73,15 @@ local def = {
 	model = {
 		mesh = "oerrki.b3d",
 		textures = {"oerrki.png"},
-		collisionbox_width = 0.6,
-		collisionbox_height = 1.85,
+		c_box = {0.6, 1.85},
 		vision_height = 1.65,
 		rotation = -90.0,
 		animations = {
-			idle = {start = 1, stop = 23, speed = 15},
-			walk = {start = 24, stop = 31, speed = 8, loop = false},
-			walk_long = {start = 24, stop = 31, speed = 8, loop = false},
-			attack = {start = 37, stop = 49, speed = 18},
-			death = {start = 50, stop = 76, speed = 32, loop = false, duration = 2.52},
+			idle = {	frames = { 1, 23, 15}},
+			walk = {	frames = {24, 31,  8, false}},
+			attack = {	frames = {37, 49, 18}},
+			death = {	frames = {50, 76, 32, false}, duration = 2.52},
 		},
-	},
-	
-	combat = {
-		attack_damage = 2,
-		attack_speed = 0.6,
-		attack_radius = 2.1,
-		attack_hit_interval = 1.5,
-		attack_collide_with_target = true,
-		
-		search_enemy = true,
-		search_timer = 1.6,
-		search_radius = 12,
-		search_type = "player",
 	},
 
 	spawning = {

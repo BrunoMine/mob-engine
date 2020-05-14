@@ -69,51 +69,50 @@ creatures.register_mob("chicken:chicken", {
 		}
 	},
 	
-	modes = {
-		-- Standard Modes
-		idle = {chance = 40, duration = 2, update_yaw = 3},
-		panic = {
-			duration = 6, 
-			moving_speed = 2.7
+	modes = creatures.make_mob_modes({
+		walk_speed = 0.7, 
+		run_speed = 2.7, 
+		
+		-- Follow
+		follow_items = {["farming:seed_wheat"]=true}, 
+		
+		-- Eat
+		eat_full_time = 4,
+		eat_exact_time = 2,
+		eat_nodes = {
+			["default:grass_1"] = {}, 
+			["default:grass_2"] = {}, 
+			["default:grass_3"] = {}, 
+			["default:grass_4"] = {}, 
+			["default:grass_5"] = {}, 
+			["default:dirt_with_grass"] = {}, 
 		},
-		walk = {
-			duration = 20, 
-			moving_speed = 0.7,
-			search_radius = 3,
+		
+		-- Custom
+		custom = {
+			["chicken:dropegg"] = {chance = 1, duration = 8},
+			["chicken:idle2"] = {chance = 19, duration = 0.8},
+			["chicken:pick"] = {chance = 20, duration = 2},
 		},
-		walk_around = {
-			chance = 20, 
-			duration = 20, 
-			moving_speed = 0.7
-		},
-		follow = {chance = 0, duration = 20, radius = 4, moving_speed = 1, items = {["farming:seed_wheat"]=true}, search_timer = 4},
-		-- Custom Modes
-		["chicken:dropegg"] = {chance = 1, duration = 8},
-		["chicken:idle2"] = {chance = 19, duration = 0.8, random_yaw = true},
-		["chicken:pick"] = {chance = 20, duration = 2},
-	},
-
-
+	}),
+	
 	model = {
 		mesh = "chicken.b3d",
 		textures = {"chicken_white.png"},
-		collisionbox_width = 0.5,
-		collisionbox_height = 0.7,
+		c_box = {0.5, 0.7},
 		vision_height = 0.4,
 		weight = 15,
 		rotation = 90.0,
 		collide_with_objects = false,
 		animations = {
-			-- Standard Animations
-			idle = {start = 0, stop = 1, speed = 10},
-			walk = {start = 4, stop = 36, speed = 50},
-			-- special modes
-			swim = {start = 51, stop = 87, speed = 40},
-			panic = {start = 51, stop = 87, speed = 55},
-			death = {start = 135, stop = 160, speed = 28, loop = false, duration = 2.12},
+			idle = {	frames = { 0, 1,  10}},
+			walk = {	frames = { 4, 36, 50}},
+			swim = {	frames = {51, 87, 40}},
+			panic = {	frames = {51, 87, 55}},
+			death = {	frames = {135, 160, 28, false}, duration = 2.12},
 			-- Custom Animations
-			["chicken:idle2"] = {start = 40, stop = 50, speed = 50},
-			["chicken:pick"] = {start = 88, stop = 134, speed = 50},
+			["chicken:idle2"] = {	frames = {40,  50, 50}},
+			["chicken:pick"] = {	frames = {88, 134, 50}},
 		},
 	},
 	

@@ -39,39 +39,7 @@ local def = {
 		burn_light = {min = 15, max = 15},
 		hostile = true,
 	},
-
-	modes = {
-		idle = {chance = 70, duration = 3, update_yaw = 6},
-		walk = {duration = 5.5, moving_speed = 1.1, search_radius = 5},
-		walk_around = {chance = 30, duration = 20, moving_speed = 1.1},
-		-- special modes
-		attack = {chance = 0, moving_speed = 1.1, duration = 20},
-	},
-
-	model = {
-		mesh = "zombie.b3d",
-		textures = {"zombie.png"},
-		collisionbox_width = 0.5,
-		collisionbox_height = 1.75,
-		vision_height = 1.4,
-		rotation = -90.0,
-		animations = {
-			idle = {start = 0, stop = 80, speed = 15},
-			walk = {start = 102, stop = 122, speed = 20},
-			attack = {start = 102, stop = 122, speed = 20},
-			death = {start = 81, stop = 101, speed = 20, loop = false, duration = 2.12},
-		},
-	},
-
-	sounds = {
-		on_damage = {name = "zombie_hit", gain = 0.4, distance = 10},
-		on_death = {name = "zombie_death", gain = 0.7, distance = 10},
-		swim = {name = "creatures_splash", gain = 1.0, distance = 10},
-		random = {
-			idle = {name = "zombie", gain = 0.7, distance = 12},
-		},
-	},
-
+	
 	combat = {
 		attack_damage = 1,
 		attack_hit_interval = 0.9,
@@ -82,6 +50,35 @@ local def = {
 		search_timer = 2,
 		search_radius = 12,
 		search_type = "player",
+	},
+	
+	modes = creatures.make_mob_modes({
+		walk_speed = 1.1,
+		run_speed = 1.1,
+		attack = true,
+	}),
+	
+	model = {
+		mesh = "zombie.b3d",
+		textures = {"zombie.png"},
+		c_box = {0.5, 1.75},
+		vision_height = 1.4,
+		rotation = -90.0,
+		animations = {
+			idle = {	frames = {  0,  80, 15}},
+			walk = {	frames = {102, 122, 20}},
+			attack = {	frames = {102, 122, 20}},
+			death = {	frames = { 81, 101, 20, false}, duration = 2.12},
+		},
+	},
+
+	sounds = {
+		on_damage = {name = "zombie_hit", gain = 0.4, distance = 10},
+		on_death = {name = "zombie_death", gain = 0.7, distance = 10},
+		swim = {name = "creatures_splash", gain = 1.0, distance = 10},
+		random = {
+			idle = {name = "zombie", gain = 0.7, distance = 12},
+		},
 	},
 
 	spawning = {

@@ -98,59 +98,39 @@ creatures.register_mob("sheep:sheep", {
 		},
 	},
 	
-	modes = {
-		idle = {
-			chance = 50, 
-			duration = {min=5, max=10}, 
-			random_yaw = 4
+	modes = creatures.make_mob_modes({
+		walk_speed = 1.3, 
+		run_speed = 2.1, 
+		
+		-- Follow
+		follow_items = {["farming:wheat"]=true}, 
+		
+		-- Eat
+		eat_full_time = 4,
+		eat_exact_time = 2,
+		eat_sound = {"creatures_eat_grass", 1.0, 10}, 
+		eat_nodes = {
+			["default:grass_1"] = {remove=true}, 
+			["default:grass_2"] = {remove=true}, 
+			["default:grass_3"] = {remove=true}, 
+			["default:grass_4"] = {remove=true}, 
+			["default:grass_5"] = {remove=true}, 
+			["default:dirt_with_grass"] = {replace="default:dirt"}, 
 		},
-		walk = {
-			duration = 20, 
-			moving_speed = 1.3,
-			search_radius = 5
-		},
-		walk_around = {
-			chance = 30, 
-			duration = 20, 
-			moving_speed = 0.7
-		},
-		-- special modes
-		follow = {
-			duration = 20, 
-			radius = 4, 
-			moving_speed = 1, 
-			items = {["farming:wheat"]=true}, 
-			search_timer = 4
-		},
-		eat = {	
-			chance = 20,
-			duration = 4,
-			eat_time = 2,
-			sound = "creatures_eat_grass",
-			nodes = {
-				["default:grass_1"] = {remove=true}, 
-				["default:grass_2"] = {remove=true}, 
-				["default:grass_3"] = {remove=true}, 
-				["default:grass_4"] = {remove=true}, 
-				["default:grass_5"] = {remove=true}, 
-				["default:dirt_with_grass"] = {replace="default:dirt"}, 
-			}
-		},
-	},
+	}),
 	
 	model = {
 		mesh = "sheep.b3d",
 		textures = {"sheep.png^sheep_white.png"},
-		collisionbox_width = 0.9,
-		collisionbox_height = 1.2,
+		c_box = {0.9, 1.2},
 		rotation = -90.0,
 		vision_height = 0.9,
 		animations = {
-			idle = {start = 1, stop = 60, speed = 15},
-			walk = {start = 81, stop = 101, speed = 18},
-			eat = {start = 107, stop = 170, speed = 12, loop = false},
-			follow = {start = 81, stop = 101, speed = 15},
-			death = {start = 171, stop = 191, speed = 32, loop = false, duration = 2.52},
+			idle = {	frames = {  1,  60, 15}},
+			walk = {	frames = { 81, 101, 18}},
+			eat = {		frames = {107, 170, 12, false}},
+			follow = {	frames = { 81, 101, 15}},
+			death = {	frames = {171, 191, 32, false}, duration = 2.52},
 		},
 	},
 
@@ -187,8 +167,7 @@ creatures.register_mob("sheep:sheep", {
 		name = "sheep:sheep_child",
 		days_to_grow = 5,
 		model = {
-			collisionbox_width = 0.7,
-			collisionbox_height = 1.1,
+			c_box = {0.7, 1.1}, 
 			scale = {x = 0.65, y = 0.65}
 		},
 		

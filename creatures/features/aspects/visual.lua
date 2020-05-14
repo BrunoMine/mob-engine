@@ -27,6 +27,16 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Entity definitions
 	
+	-- Adjust model frames
+	for mode,d in pairs(def.model.animations) do
+		if d.frames then
+			def.model.animations[mode].start = d.frames[1]
+			def.model.animations[mode].stop = d.frames[2]
+			def.model.animations[mode].speed = d.frames[3]
+			if d.frames[4] == false then def.model.animations[mode].loop = false end
+		end
+	end
+	
 	-- Mesh
 	def.ent_def.visual = "mesh"
 	def.ent_def.mesh = def.model.mesh

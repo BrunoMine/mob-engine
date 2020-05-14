@@ -36,7 +36,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
 		-- Timer
-		self.timers.enemy_search = random(1.01, (self:mob_actfac_time(def.combat.search_timer)+1.01))
+		self.timers.enemy_search = random(1.01, (self:mob_actfac_time(def.combat.search_timer)+1.01)) or 1
 		
 	end)
 	

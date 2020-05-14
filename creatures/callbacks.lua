@@ -94,6 +94,8 @@ creatures.create_mob_callback("on_step", {
 		
 		if self:mob_is_active() == false then return end
 		
+		if self.activated ~= true then return end
+		
 		-- Round dtime
 		local rdtime = math.floor(dtime * 100) / 100 
 		

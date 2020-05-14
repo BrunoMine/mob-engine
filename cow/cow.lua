@@ -45,61 +45,40 @@ creatures.register_mob("cow:cow", {
 		},
 	},
 	
-	modes = {
-		idle = {
-			chance = 0.5, 
-			duration = 10, 
-			random_yaw = 4
+	modes = creatures.make_mob_modes({
+		walk_speed = 0.8, 
+		run_speed = 1.2, 
+		
+		-- Follow
+		follow_items = {["farming:wheat"]=true}, 
+		
+		-- Eat
+		eat_full_time = 4,
+		eat_exact_time = 1.2,
+		eat_sound = {"creatures_eat_grass", 1.0, 10}, 
+		eat_nodes = {
+			["default:grass_1"] = {remove=true}, 
+			["default:grass_2"] = {remove=true}, 
+			["default:grass_3"] = {remove=true}, 
+			["default:grass_4"] = {remove=true}, 
+			["default:grass_5"] = {remove=true}, 
+			["default:dirt_with_grass"] = {replace="default:dirt"}, 
 		},
-		walk = {
-			chance = 0.15, 
-			duration = 20, 
-			moving_speed = 0.8,
-			search_radius = 5
-		},
-		walk_around = {
-			chance = 0.15, 
-			duration = 20, 
-			moving_speed = 0.7
-		},
-		eat = {	
-			chance = 0.2,
-			duration = 4,
-			eat_time = 1.2,
-			sound = "creatures_eat_grass",
-			nodes = {
-				["default:grass_1"] = {remove=true}, 
-				["default:grass_2"] = {remove=true}, 
-				["default:grass_3"] = {remove=true}, 
-				["default:grass_4"] = {remove=true}, 
-				["default:grass_5"] = {remove=true}, 
-				["default:dirt_with_grass"] = {replace="default:dirt"}, 
-			}
-		},
-		follow = {
-			chance = 0, 
-			duration = 20, 
-			radius = 5, 
-			moving_speed = 0.8, 
-			items = {["farming:wheat"]=true}, 
-			search_timer = 5
-		},
-	},
+	}),
 	
 	model = {
 		mesh = "cow.b3d",
 		textures = {"cow_white_and_black.png"},
-		collisionbox_width = 0.9,
-		collisionbox_height = 1.2,
+		c_box = {0.9, 1.2}, 
 		rotation = -90.0,
 		scale = {x = 3.7, y = 3.7},
 		vision_height = 0.9,
 		animations = {
-			idle = {start = 1, stop = 30, speed = 18},
-			walk = {start = 31, stop = 60, speed = 20},
-			run = {start = 91, stop = 120, speed = 20},
-			eat = {start = 61, stop = 90, speed = 12, loop = false},
-			death = {start = 121, stop = 135, speed = 15, loop = false, duration = 2.52},
+			idle = {	frames = {  1,  30, 18}},
+			walk = {	frames = { 31,  60, 20}},
+			run = {		frames = { 91, 120, 20}},
+			eat = {		frames = { 61,  90, 12, false}},
+			death = {	frames = {121, 135, 15, false}, duration = 2.52},
 		},
 	},
 	
@@ -165,8 +144,7 @@ creatures.register_mob("cow:cow", {
 		name = "cow:cow_child",
 		days_to_grow = 7,
 		model = {
-			collisionbox_width = 0.7,
-			collisionbox_height = 1.1,
+			c_box = {0.7, 1.1},
 			scale = {x = 2.35, y = 2.35}
 		},
 	},

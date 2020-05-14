@@ -73,6 +73,11 @@ end
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
+	if def.model.c_box then
+		def.model.collisionbox_width = def.model.c_box[1]
+		def.model.collisionbox_height = def.model.c_box[2]
+	end
+	
 	-- Check values
 	def.model.collisionbox_width = def.model.collisionbox_width or creatures.default_value.collisionbox_width
 	def.model.collisionbox_height = def.model.collisionbox_height or creatures.default_value.collisionbox_height
