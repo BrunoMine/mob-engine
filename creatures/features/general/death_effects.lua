@@ -42,10 +42,10 @@ creatures.register_on_register_mob(function(mob_name, def)
 		-- Sound
 		if mob_def.sounds and mob_def.sounds.on_death then
 			local death_snd = mob_def.sounds.on_death
-			core.sound_play(death_snd.name, {
-				pos = self.object:getpos(), 
-				max_hear_distance = death_snd.distance or 5, 
-				gain = death_snd.gain or 1
+			minetest.sound_play(death_snd[1], {
+				pos = self.object:get_pos(), 
+				gain = death_snd[2] or 1, 
+				max_hear_distance = death_snd[3] or 5, 
 			})
 		end
 		
@@ -55,7 +55,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 			creatures.set_animation(self, "death")
 			
 			local duration = mob_def.model.animations.death.duration or 3
-			core.after(duration, function()
+			minetest.after(duration, function()
 				self.object:remove()
 			end)
 			

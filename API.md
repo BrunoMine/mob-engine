@@ -794,11 +794,11 @@ Definition tables
 
 ### Sounds definition (`register_mob`)
     {
-        name = <name>,        -- sound name as string; see Minetest documentation
-        gain = 1.0,           -- sound gain; see Minetest documentation
-        distance = <duration>,-- hear distance in blocks/nodes (number or interval) <optional>
-        time_min = <time>     -- minimum time in seconds between sounds (random only) <optional>
-        time_max = <time>     -- maximum time in seconds between sounds (random only) <optional>
+        <name>, 	-- sound name as string; see Minetest documentation
+        <gain>, 	-- sound gain; see Minetest documentation (default is 1.0) <optional>
+        <distance>, -- hear distance in blocks/nodes (default is 10) <optional>
+        <min_time>, -- minimum time in seconds between sounds (random only) <optional>
+        <max_time> 	-- maximum time in seconds between sounds (random only) <optional>
     }
 
 

@@ -73,11 +73,11 @@ local def = {
 	},
 
 	sounds = {
-		on_damage = {name = "zombie_hit", gain = 0.4, distance = 10},
-		on_death = {name = "zombie_death", gain = 0.7, distance = 10},
-		swim = {name = "creatures_splash", gain = 1.0, distance = 10},
+		on_damage = {"zombie_hit", 0.4},
+		on_death = {"zombie_death", 0.7},
+		swim = {"creatures_splash"},
 		random = {
-			idle = {name = "zombie", gain = 0.7, distance = 12},
+			idle = {"zombie", 0.7, 12},
 		},
 	},
 

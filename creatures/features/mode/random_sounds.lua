@@ -67,14 +67,14 @@ creatures.register_on_register_mob(function(mob_name, def)
 			end
 			
 			-- Play sound
-			sound_play(sound.name, {
+			sound_play(sound[1], {
 				pos = self.object:get_pos(), 
-				gain = sound.gain or 1, 
-				max_hear_distance = sound.distance or 30
+				gain = sound[2] or 1, 
+				max_hear_distance = sound[3] or 10
 			})
 			
 			-- Restart loop with current mode frequency
-			self.timers.rdm_sound = math.random((sound.time_min or 5), (sound.time_max or 15))
+			self.timers.rdm_sound = math.random((sound[4] or 5), (sound[5] or 15))
 		end
 	end)
 	

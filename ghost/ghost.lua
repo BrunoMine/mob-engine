@@ -78,10 +78,10 @@ local def = {
 	},
 
 	sounds = {
-		on_damage = {name = "ghost_hit", gain = 0.4, distance = 10},
-		on_death = {name = "ghost_death", gain = 0.7, distance = 10},
+		on_damage = {"ghost_hit", 0.4},
+		on_death = {"ghost_death", 0.7},
 		random = {
-			idle = {name = "ghost", gain = 0.5, distance = 10, time_min = 20, time_max = 30},
+			idle = {"ghost", 0.5, 10, 20, 30},
 		},
 	},
 

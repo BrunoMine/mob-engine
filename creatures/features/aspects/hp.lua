@@ -72,7 +72,11 @@ local function onDamage(self, hp, reason)
 		on_hit(me) -- red flashing
 		if def.sounds and def.sounds.on_damage then
 			local dmg_snd = def.sounds.on_damage
-			core.sound_play(dmg_snd.name, {pos = me:get_pos(), max_hear_distance = dmg_snd.distance or 5, gain = dmg_snd.gain or 1})
+			minetest.sound_play(dmg_snd[1], {
+				pos = me:get_pos(), 
+				gain = dmg_snd[2] or 1.0, 
+				max_hear_distance = dmg_snd[3] or 5
+			})
 		end
 	end
 end

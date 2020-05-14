@@ -135,11 +135,11 @@ creatures.register_mob("sheep:sheep", {
 	},
 
 	sounds = {
-		on_damage = {name = "sheep", gain = 1.0, distance = 10},
-		on_death = {name = "sheep", gain = 1.0, distance = 10},
-		swim = {name = "creatures_splash", gain = 1.0, distance = 10,},
+		on_damage = {"sheep"},
+		on_death = {"sheep"},
+		swim = {"creatures_splash"},
 		random = {
-			idle = {name = "sheep", gain = 0.6, distance = 10, time_min = 20, time_max = 30},
+			idle = {"sheep", 0.6, 10, 20, 30},
 		},
 	},
 	

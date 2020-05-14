@@ -60,16 +60,6 @@ local def = {
 		attack = true,
 	}),
 	
-	sounds = {
-		on_damage = {name = "oerrki_hit", gain = 1.0, distance = 10},
-		on_death = {name = "oerrki_hit", gain = 1.0, distance = 10},
-		swim = {name = "creatures_splash", gain = 1.0, distance = 10},
-		random = {
-			idle = {name = "oerrki_idle", gain = 1.0, distance = 25},
-			attack = {name = "oerrki_attack", gain = 1.0, distance = 20},
-		},
-	},
-	
 	model = {
 		mesh = "oerrki.b3d",
 		textures = {"oerrki.png"},
@@ -83,7 +73,17 @@ local def = {
 			death = {	frames = {50, 76, 32, false}, duration = 2.52},
 		},
 	},
-
+	
+	sounds = {
+		on_damage = {"oerrki_hit"},
+		on_death = {"oerrki_hit"},
+		swim = {"creatures_splash"},
+		random = {
+			idle = {"oerrki_idle", 1.0, 25},
+			attack = {"oerrki_attack", 1.0, 20},
+		},
+	},
+	
 	spawning = {
 		ambience = {
 			

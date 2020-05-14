@@ -131,7 +131,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 				-- play swimming sounds
 				if def.sounds and def.sounds.swim then
 					local swim_snd = def.sounds.swim
-					sound_play(swim_snd.name, {pos = c_pos, gain = swim_snd.gain or 1, max_hear_distance = swim_snd.distance or 10})
+					sound_play(swim_snd[1], {pos = c_pos, gain = swim_snd[2] or 1, max_hear_distance = swim_snd[3] or 10})
 				end
 				spawn_particles(c_pos, vel, "bubble.png")
 			
