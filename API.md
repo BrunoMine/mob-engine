@@ -323,6 +323,7 @@ In this mode the MOB execute eat animation on current location.
 * `creatures.mode_def(luaentity, [mode_name])`: Get mode definitions
   * If `mode_name` is nil, current mode is used
 * `creatures.start_mode(luaentity, mode_name)`: Start a mode in a MOB
+* `creatures.make_mob_modes({maker modes definition})`: Make MOB modes table
 
 ### MOB Node
 
@@ -880,6 +881,53 @@ Definition tables
         },
 		
         override = {override}, -- Definitions to be overridden into MOB Spawn Ambience
+    }
+
+
+### Maker Modes definition (`make_mob_modes`)
+    {
+        walk_speed = 1, 	-- Walk speed (default is 1) <optional>
+		run_speed = 2, 		-- Run speed (default is double the walk speed) <optional>
+		
+		duration = 8, 		-- Default durations for modes (default is 5) <optional>
+		max_duration = 20, 	-- Maximun durations for modes (default is 20) <optional>
+		
+		modes_ratio = { 	-- Modes ratio (each mode has a percentage of chance) <optional>
+			idle = 50,
+			walk_around = 30,
+			eat = 20, 
+		}
+		
+		-- Follow
+		follow = true, 			-- Enable follow mode (default is false) <optional>
+		follow_radius = 5, 		-- Radius to keep follow (default is 5) <optional>
+		follow_search_timer = 5,-- Time to check around to follow (default is 5) <optional>
+		follow_items = { 		-- Itens table to follow player is follow mode is enable
+			["item1"]=true,
+			["item2"]=true,
+		},
+		
+		-- Eat
+		eat = true, 			-- Enable eat mode
+		eat_full_time = 4, 		-- Full time action (default is 3) <optional>
+		eat_exact_time = 2, 	-- Exact time when node is eatten (default is 1.5) <optional>
+		eat_sound = {Snd}, 		-- Sound played when node is eatten (Sounds definition format) <optional>
+		eat_nodes = { 			-- Nodes to eat
+			["node1"] = {
+				remove=true, 	-- Remove node <optional>
+				replace="node", -- Replace node <optional>
+				sound = {Snd},	-- Sound played when this node is eatten (Sounds definition format) <optional>
+			}, 
+			["node2"] = {...}, 
+		},
+		
+		-- Attack
+		attack = true, 			-- Enable attack mode
+		
+		-- Fly
+		fly = true, 		-- Rnable fly mode
+		fly_speed = 1, 		-- Fly speed (default is walk speed) <optional>
+		fly_run_speed = 2, 	-- Fly speed running (default is run speed) <optional>
     }
 
 

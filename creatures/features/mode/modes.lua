@@ -200,8 +200,21 @@ creatures.make_mob_modes = function(def)
 	
 	local modes = def.custom or {}
 	
-	-- Idle ratio
-	def.idle_ratio = def.idle_ratio or 50
+	-- Modes ratio
+	if def.modes_ratio == nil then
+		if def.eat or def.eat_nodes then
+			def.modes_ratio = {
+				idle = 50,
+				walk_around = 30,
+				eat = 20,
+			}
+		else
+			def.modes_ratio = {
+				idle = 70,
+				walk_around = 30,
+			}
+		end
+	end
 	
 	-- Duration
 	def.duration = def.duration or 5
@@ -213,9 +226,8 @@ creatures.make_mob_modes = function(def)
 	
 	-- idle
 	modes.idle = {
-		chance = 70, 
-		duration = (def.idle_ratio/100) * def.duration, 
-		update_yaw = 8, 
+		chance = def.modes_ratio.idle, 
+		duration = def.duration, 
 	}
 	
 	-- walk
@@ -226,8 +238,8 @@ creatures.make_mob_modes = function(def)
 	
 	-- walk_around
 	modes.walk_around = { 
-		chance = 100 - def.idle_ratio,
-		duration = ((100 - def.idle_ratio) / 100), 
+		chance = def.modes_ratio.walk_around,
+		duration = def.max_duration, 
 		moving_speed = def.walk_speed,
 	}
 	
@@ -269,6 +281,7 @@ creatures.make_mob_modes = function(def)
 	-- Eat
 	if def.eat or def.eat_nodes then 
 		modes.eat = {
+			chance = def.modes_ratio.eat,
 			duration = def.eat_full_time or 3,
 			eat_instant = def.eat_exact_time or 1.5,
 			sound = def.eat_sound,
