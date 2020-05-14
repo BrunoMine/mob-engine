@@ -120,6 +120,7 @@ creatures.register_mode("attack", {
 		-- first target memory
 		self.mode_vars.target_memory = 1
 		minetest.after(5, reset_target_memory, self, 1)
+		self.modetimer = 20
 		
 		-- Target
 		self.mode_vars.can_find_path = true
@@ -245,7 +246,8 @@ creatures.register_mode("attack", {
 			if see_target == true then
 				local memory_number = self.mode_vars.target_memory + 1
 				self.mode_vars.target_memory = memory_number
-				core.after(15, reset_target_memory, self, memory_number)
+				self.modetimer = 20
+				minetest.after(15, reset_target_memory, self, memory_number)
 			end
 			
 			
