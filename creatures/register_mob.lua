@@ -49,12 +49,20 @@ local function entity_table(mob_name, def)
 	
 	-- Get staticdata
 	ent_def.get_staticdata = function(self) 
-		-- Registered callbacks
-		return self:mob_get_staticdata() 
+		
+		-- Registered 'get_staticdata' on MOB Engine
+		local staticdata = self:mob_get_staticdata() 
+		
+		-- Run on_get_staticdata
+		self:mob_on_get_staticdata(staticdata)
+		
+		return staticdata
 	end
 	
 	-- On activate
 	ent_def.on_activate = function(self, staticdata)		
+		
+		self.activated = true
 		
 		-- Load registered callbacks tables
 		for table_name,meta in pairs(creatures.registered_mobs[mob_name].meta_tables) do

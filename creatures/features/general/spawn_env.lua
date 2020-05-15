@@ -55,6 +55,8 @@ local try_spawn = function(pos, label, spawn_on)
 	-- Check if spawn
 	if self == nil then return end
 	
+	self.mob_number = creatures.new_mob_number()
+	
 	self.is_wild = true
 	self.spawn_env = {
 		node_pos = table.copy(pos),

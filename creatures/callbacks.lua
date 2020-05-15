@@ -120,8 +120,8 @@ creatures.create_mob_callback("on_punch", {
 })
 
 
--- Register 'on_deactivate'
-creatures.create_mob_callback("on_deactivate", {
+-- Register 'on_get_staticdata'
+creatures.create_mob_callback("on_get_staticdata", {
 	register_type = "mob_functions",
 	
 	executer_type = "checker",
@@ -153,12 +153,7 @@ creatures.create_mob_callback("get_staticdata", {
 	
 	executer_type = "custom",
 	executer_is_mob_callback = true,
-	executer = function(self, dtime)
-		
-		if self.activated == true then
-			self:mob_on_deactivate()
-		end
-		self.activated = true
+	executer = function(self)
 		
 		-- Run registered 'get_staticdata'
 		local data = {}

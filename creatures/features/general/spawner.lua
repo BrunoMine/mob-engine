@@ -120,7 +120,11 @@ local function spawnerSpawn(pos, spawner_def)
 				local llvl = core.get_node_light(p)
 				if not spawner_def.light or (spawner_def.light and inRange(spawner_def.light, llvl)) then
 					cnt = cnt + 1
-					core.add_entity(p, spawner_def.mob_name)
+					local obj = minetest.add_entity(p, spawner_def.mob_name)
+					if obj then
+						local lua_entity = obj:get_luaentity()
+						lua_entity.mob_number = creatures.new_mob_number()
+					end
 				end
 			end
 		end

@@ -57,9 +57,6 @@ core.register_craft({
 creatures.register_mob_node("sheep:bed", {
 	mob_name = "sheep:sheep",
 	
-	-- Search MOB
-	search_mob = true,
-	
 	-- On load MOB
 	on_load_mob = function(pos, self)
 		self.has_wool = true

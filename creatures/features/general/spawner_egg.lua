@@ -44,7 +44,9 @@ local function eggSpawn(itemstack, placer, pointed_thing, egg_def)
 			
 			local obj = minetest.add_entity(pos, egg_def.mob_name)
 			if obj then
-				obj:get_luaentity().from_spawner_egg = true
+				local lua_entity = obj:get_luaentity()
+				lua_entity.from_spawner_egg = true
+				lua_entity.mob_number = creatures.new_mob_number()
 			end
 			
 			if minetest.settings:get_bool("creative_mode") ~= true then

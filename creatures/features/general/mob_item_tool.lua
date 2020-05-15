@@ -27,7 +27,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	if not def.mob_item_tool then return end
 	
-	-- Register 'on_activate'
+	-- Register 'on_rightclick'
 	creatures.register_on_rightclick(mob_name, function(self, clicker)
 		
 		local itemstack = clicker:get_wielded_item()

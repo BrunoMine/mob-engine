@@ -97,10 +97,10 @@ These values are reserved for the engine resources operation.
 * `is_wild`: boolean for if MOB is wild
 * `from_spawner_egg`: boolean for if MOB is wild
 * `mobs_near`: MOBs count near
+* `mob_on_get_staticdata_tb`: Registered callbacks
 * `mob_get_staticdata_tb`: Registered callbacks
 * `mob_on_step_tb`: Registered callbacks
 * `mob_on_punch_tb`: Registered callbacks
-* `mob_on_deactivate_tb`: Registered callbacks
 * `mob_on_die_tb`: Registered callbacks
 * `mob_on_rightclick_tb`: Registered callbacks
 * `mob_on_activate_tb`: Registered callbacks
@@ -162,11 +162,11 @@ For default, when a registered callback return (#1) `true` then prevent run next
   * `func` is a function `function(self, clicker) end`
 * `creatures.register_get_staticdata(mob_name, func)`: Register callback for when run default get_staticdata callback
   * `func` is a function `function(self) end`
+* `creatures.register_on_get_staticdata(mob_name, func)`: Register callback for when run default on_get_staticdata callback
+  * `func` is a function `function(self, staticdata) end`
     * This function need return staticdata in a table
 * `creatures.register_on_activate(mob_name, func)`: Register callback for when run default on_activate callback
   * `func` is a function `function(self, staticdata) end`
-* `creatures.register_on_deactivate(mob_name, func)`: Register callback for when deactivate MOB (not operational)
-  * `func` is a function `function(self) end`
 * `creatures.register_on_clear_objects(mob_name, func)`: Register callback for when run minetest.clear_objects
   * `func` is a function `function(self) end`
 * `creatures.register_on_hitted(func)`: Register callback for when MOB is hitted
@@ -180,9 +180,9 @@ For default, when a registered callback return (#1) `true` then prevent run next
 * `luaentity:mob_on_step(dtime)`: Run default on_step callback
 * `creatures.on_punch(mob_name, self, puncher, time_from_last_punch, tool_capabilities, dir)`: Register callback for when run default on_punch callback
 * `luaentity:mob_on_rightclick(clicker)`: Run default on_rightclick callback
-* `creatures.get_staticdata(mob_name, self)`: Run default get_staticdata callback
+* `luaentity:mob_get_staticdata(self)`: Run default get_staticdata callback
+* `luaentity:mob_on_get_staticdata(self, staticdata)`: Run default on_get_staticdata callback
 * `luaentity:mob_on_activate(staticdata)`: Run default on_activate callback
-* `luaentity:mob_on_deactivate()`: Run on_deactivate callback
 * `creatures.on_clear_objects(mob_name, self)`: Run on_clear_objects callback
 * `creatures.on_hitted(self, puncher, time_from_last_punch, tool_capabilities, dir)`: Run on_hitted callback
 * `luaentity:mob_on_change_hp(hp)`: Run on_change_hp callback
@@ -841,16 +841,12 @@ Definition tables
 
 ### MOB Node definition (`register_mob_node`)
     {
-        mob_name = "creatures:sheep",    -- MOB name
-        search_mob = true,               -- search a MOB to the node
-        on_set_mob_node = <function>,    --[[ callback for on set MOB node
-                                              <function> is 'function(pos, luaentity) end']]
-        on_reset_mob_node = <function>,  --[[ callback for on reset MOB node
-                                              <function> is 'function(pos) end']]
-        on_save_mob = <function>,        --[[ callback for on save MOB
-                                              <function> is 'function(pos, luaentity) end']]
-        on_load_mob = <function>,        --[[ callback for on load MOB
-                                              <function> is 'function(pos, luaentity) end']]
+        mob_name = "creatures:sheep", 	-- MOB name
+		search_radius = 10, 			-- Search radius for MOBs near node (default is 10) <optional>
+        on_save_mob = <function>,       --[[ callback for on save MOB <optional>
+                                             <function> is 'function(pos, luaentity) end']]
+        on_load_mob = <function>,       --[[ callback for on load MOB <optional>
+                                             <function> is 'function(pos, luaentity) end']]
     }
 
 

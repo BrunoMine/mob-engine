@@ -73,6 +73,7 @@ dofile(modpath .."/features/aspects/physic.lua")
 dofile(modpath .."/features/aspects/is_active.lua")
 
 -- Basic
+dofile(modpath .."/features/basic/number.lua")
 dofile(modpath .."/features/basic/combat.lua")
 dofile(modpath .."/features/basic/sounds.lua")
 dofile(modpath .."/features/basic/jump.lua")

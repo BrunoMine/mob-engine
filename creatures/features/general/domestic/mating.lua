@@ -22,6 +22,7 @@ be misrepresented as being the original software.
 ]]
 
 -- Indexed methods
+local get_under = creatures.get_under_walkable_nodes_in_area
 local find_target = creatures.find_target
 local random = math.random
 local total = table.maxn
@@ -57,7 +58,7 @@ creatures.create_mob_callback("is_fertile", {
 })
 
 
--- Register 'spawn_child'
+-- Register 'mob_spawn_child'
 creatures.create_mob_callback("spawn_child", {
 	register_type = "mob_functions",
 	
@@ -75,6 +76,19 @@ creatures.register_on_register_mob(function(mob_name, def)
 	if def.mating.child_mob == nil then
 		def.mating.child_mob = def.child.name
 	end
+	
+	-- Register 'mob_spawn_child'
+	creatures.register_spawn_child(mob_name, function(self)
+		
+		local pos = self.object:get_pos()
+		
+		local obj = minetest.add_entity(pos, def.mating.child_mob)
+		if obj then
+			local lua_entity = obj:get_luaentity()
+			lua_entity.mob_number = creatures.new_mob_number()
+		end
+		
+	end)
 	
 	-- Register 'get_staticdata'
 	creatures.register_get_staticdata(mob_name, function(self)

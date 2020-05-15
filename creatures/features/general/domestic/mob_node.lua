@@ -21,9 +21,6 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Indexed methods
-local check_mob_in_pos = creatures.check_mob_in_pos
-local hash_tb = {}
 
 creatures.registered_mob_nodes = {}
 
@@ -36,201 +33,140 @@ local check_node = function(pos)
 	return true
 end
 
--- Save MOB
-local save_mob = function(self)
+
+-- Get saved MOBs
+local get_saved_mobs = function(pos)
+	if not check_node(pos) then return end
 	
-	-- Save in the mob node
-	local meta = minetest.get_meta(self.mob_node.pos)
-	meta:set_string("creatures:saved_mob", "true")
-	meta:set_float("creatures:last_cleaning_cycle", creatures.cleaning_cycle)
+	-- Meta
+	local meta = minetest.get_meta(pos)
 	
-	-- Save tags
-	for _,tag_name in ipairs(creatures.mob_node_save_tags) do
-		meta:set_string("creatures:saved_mob_node_tag_"..tag_name, minetest.serialize(self[tag_name]))
+	-- Saved mobs
+	local saved_mobs = meta:get_string("saved_mobs")
+	if saved_mobs == "" then
+		saved_mobs = {}
+	else
+		saved_mobs = minetest.deserialize(saved_mobs)
 	end
 	
-	-- Run callback
-	local def = creatures.get_mob_node_def(minetest.get_node(self.mob_node.pos).name)
-	if def.on_save_mob then
-		def.on_save_mob(self.mob_node.pos, self)
-	end
-	
+	return saved_mobs
 end
 
--- Set mob in node
-local set_mob_node = function(pos, self)
-	if check_node(pos) == false then 
-		return 
-	end
+-- Set saved MOBs
+local set_saved_mobs = function(pos, saved_mobs)
 	
 	local meta = minetest.get_meta(pos)
 	
-	-- Hash link of occupation
-	local hashlink = tostring(self.object)
+	local n = 0
+	for a,b in pairs(saved_mobs) do
+		n = n + 1
+	end
 	
-	self.mob_node.hashlink = hashlink
-	self.mob_node.pos = {
-		x = creatures.int(pos.x),
-		y = creatures.int(pos.y),
-		z = creatures.int(pos.z)
+	meta:set_string("saved_mobs", minetest.serialize(saved_mobs))
+end
+
+
+-- Check node from MOB
+local check_node_from_node = function(self)
+	if not check_node(self.mob_node.pos) then return false end
+	
+	-- Saved mobs
+	local saved_mobs = get_saved_mobs(self.mob_node.pos)
+	
+	if saved_mobs[self.mob_number] == nil then return false end
+	
+	return true
+end
+
+
+-- Save MOB on node
+local save_mob = function(self, only_update_mob, staticdata)
+	
+	-- Check MOB number
+	if self.mob_number == nil then return false end
+	
+	-- Check node
+	if not check_node(self.mob_node.pos) then return false end
+	
+	-- Saved mobs
+	local saved_mobs = get_saved_mobs(self.mob_node.pos)
+	
+	-- Save MOB
+	saved_mobs[self.mob_number] = {
+		mob_name = self.mob_name,
+		pos = self.object:get_pos(),
+		staticdata = staticdata or self:get_staticdata(),
 	}
 	
-	meta:set_string("creatures:hashlink", hashlink)
+	set_saved_mobs(self.mob_node.pos, saved_mobs)
 	
-	save_mob(self)
-	
-	hash_tb[hashlink] = self.object
-	
-	-- Run callback
-	local def = creatures.get_mob_node_def(minetest.get_node(pos).name)
-	if def.on_set_mob_node then
-		def.on_set_mob_node(pos, self)
+	-- Execute custom callback
+	local def = creatures.registered_mob_nodes[minetest.get_node(self.mob_node.pos).name]
+	if def.on_save_mob then
+		def.on_save_mob(pos, self)
 	end
+	
+	if only_update_mob ~= true then
+		-- Update last cleaning cycle
+		minetest.get_meta(self.mob_node.pos):set_float("cleaning_cycle", creatures.cleaning_cycle)
+	end
+	
+	return true
 end
 
 
--- Reset mob node
-local reset_mob_node = function(pos)
-	if check_node(pos) == false then return end
+-- Remove MOB from node
+local remove_mob = function(self)
 	
-	local meta = minetest.get_meta(pos)
+	-- Check node
+	if not check_node(self.mob_node.pos) then return false end
 	
-	meta:set_string("creatures:hashlink", "")
-	meta:set_string("creatures:saved_mob", "")
+	-- Saved mobs
+	local saved_mobs = get_saved_mobs(self.mob_node.pos)
 	
-	-- Run callback
-	local def = creatures.get_mob_node_def(minetest.get_node(pos).name)
-	if def.on_reset_mob_node then
-		def.on_reset_mob_node(pos)
-	end
-end
-
-
--- Check if can walk to mob_node
-local node_way = function(self, pos, origin)
-	if not pos then
-		pos = self.mob_node.pos
-	end
+	-- Remove MOB
+	saved_mobs[self.mob_number] = nil
 	
-	if minetest.find_path(
-		origin or self.object:get_pos(), 
-		pos, 
-		8, -- search distance
-		1, -- max jump
-		2, -- max drop
-		"A*_noprefetch" -- algorithm
-	) then
-		return true
-	end
-	return false
+	set_saved_mobs(self.mob_node.pos, saved_mobs)
+	
+	return true
 end
 
 
 -- Load MOB
-local load_mob = function(pos)
-	local meta = minetest.get_meta(pos)
-	meta:set_float("creatures:last_cleaning_cycle", creatures.cleaning_cycle)
+local load_mobs = function(pos)
 	
-	-- MOB node definitions
-	local def = creatures.get_mob_node_def(minetest.get_node(pos).name)
+	-- Check node
+	if not check_node(pos) then return false end
 	
-	-- Spawn MOB
-	local obj = core.add_entity(pos, def.mob_name)
-	local self = obj:get_luaentity()
+	-- Saved mobs
+	local saved_mobs = get_saved_mobs(pos)
 	
-	-- Setup MOB
-	self.mob_node = {}
-	self.mob_node.pos = creatures.copy_tb(pos)
-	self.mob_node.hashlink = meta:get_string("creatures:hashlink")
-	
-	hash_tb[self.mob_node.hashlink] = self.object
-	
-	-- Load tags
-	for _,tag_name in ipairs(creatures.mob_node_save_tags) do
-		self[tag_name] = minetest.deserialize(meta:get_string("creatures:saved_mob_node_tag_"..tag_name))
-	end
-	
-	-- Update randomized values
-	creatures.set_random_values(self, true)
-	
-	-- Run callback
-	local def = creatures.get_mob_node_def(minetest.get_node(pos).name)
-	if def.on_load_mob then
-		def.on_load_mob(pos, self)
-	end
-end
-
--- Check vacant mob node
-local vacant_mob_node = function(pos)
-	local meta = minetest.get_meta(pos)
-	
-	if meta:get_string("creatures:hashlink") == "" then
+	for mob_number,data in pairs(saved_mobs) do
+		local obj = minetest.add_entity(data.pos, data.mob_name, data.staticdata)
+		local self = obj:get_luaentity()
 		
-		return true
+		-- Execute custom callback
+		local def = creatures.registered_mob_nodes[minetest.get_node(pos).name]
+		if def.on_load_mob then
+			def.on_load_mob(pos, self)
+		end
 	end
 	
-	return false
+	-- Update last cleaning cycle
+	minetest.get_meta(pos):set_float("cleaning_cycle", creatures.cleaning_cycle)
 end
 
--- Check mob node
-creatures.check_mob_node = function(self)
-	if not self.mob_node.hashlink or not self.mob_node.pos then 
-		return false 
-	end
-	local meta = minetest.get_meta(self.mob_node.pos)
-	
-	if meta:get_string("creatures:hashlink") == self.mob_node.hashlink then
-		return true
-	end
-	
-	return false
-end
-local check_mob_node = creatures.check_mob_node
 
 -- Check cleaning cycle
-local check_cleaning_cycle = function(pos)
+local valid_cleaning_cycle = function(pos)
 	local meta = minetest.get_meta(pos)
-	local last_cycle = meta:get_float("creatures:last_cleaning_cycle") or 0
-	
-	if meta:get_string("creatures:saved_mob") == "true" 
-		and last_cycle ~= creatures.cleaning_cycle 
-	then
-		load_mob(pos)
+	local last_cycle = meta:get_float("cleaning_cycle") or creatures.cleaning_cycle
+	if last_cycle < creatures.cleaning_cycle then
+		return false
 	end
+	return true
 end
-
--- Register 'on_register_mob'
-creatures.register_on_register_mob(function(mob_name, def)
-	
-	if not def.mating then return end
-	
-	-- Register 'is_fertile'
-	creatures.register_is_fertile(mob_name, function(self)
-		
-		-- Check spawn for child
-		if def.mating.spawn_type == "mob_node" then
-		
-			-- Has a mob node
-			if check_mob_node(self) == false then
-				return false
-			end
-			
-			-- Spawn pos is empty
-			if check_mob_in_pos(self, self.mob_node.pos) ~= true then
-				return false
-			end
-		end
-		
-		return true
-	end)
-
-	-- Spawn child
-	creatures.register_spawn_child(mob_name, function(self) 
-		-- Spawn at mob node
-		minetest.add_entity(self.mob_node.pos, def.mating.child_mob)
-	end)
-	
-end)
 
 
 -- Register mob node
@@ -244,27 +180,12 @@ creatures.register_mob_node = function(mob_node, def)
 		interval = 5,
 		chance = 1,
 		action = function(pos)
-		
-			local meta = minetest.get_meta(pos)
-			local hashlink = meta:get_string("creatures:hashlink")
-			
-			-- Check hash
-			if hashlink == "" then return end
 			
 			-- If removed all objects
-			check_cleaning_cycle(pos)
+			if valid_cleaning_cycle(pos) == true then return end
 			
-			-- Check
-			if hash_tb[hashlink] 
-				and hash_tb[hashlink]:get_pos()
-				and creatures.get_dist_p1top2(pos, hash_tb[hashlink]:get_pos()) < 10 
-				and node_way(hash_tb[hashlink]:get_luaentity(), pos, hash_tb[hashlink]:get_pos()) == true
-			then
-				return
-			end
-			
-			-- Not found
-			reset_mob_node(pos)
+			-- Load MOBs
+			load_mobs(pos)
 		end
 	}
 	
@@ -276,22 +197,19 @@ creatures.register_mob_node = function(mob_node, def)
 		run_at_every_load = true,
 		action = function(pos, node)
 			
-			local meta = minetest.get_meta(pos)
-			local hashlink = meta:get_string("creatures:hashlink")
-			
-			-- Check hash
-			if hashlink == "" then return end
-			
 			-- If removed all objects
-			check_cleaning_cycle(pos)
+			if valid_cleaning_cycle(pos) == true then return end
+			
+			-- Load MOBs
+			load_mobs(pos)
 		end,
 	})
 	
 	
 	-- Register 'on_die' callback
 	creatures.register_on_die(mob_name, function(self, reason)
-		if self.mob_node and self.mob_node.pos then
-			reset_mob_node(self.mob_node.pos)
+		if self.mob_node then
+			remove_mob(self)
 			self.mob_node = nil
 		end
 	end)
@@ -300,69 +218,75 @@ creatures.register_mob_node = function(mob_node, def)
 	-- Register 'get_staticdata'
 	creatures.register_get_staticdata(mob_name, function(self)
 		return {
-			mob_node = self.mob_node
+			mob_node = self.mob_node,
 		}
-		
+	end)
+	
+	
+	-- Register 'on_get_staticdata'
+	creatures.register_on_get_staticdata(mob_name, function(self, staticdata)
+		if self.mob_node == nil then return end
+		-- Update MOB pos when cleared
+		save_mob(self, true, staticdata)
+	end)
+	
+	
+	-- Register 'on_clear_objects'
+	creatures.register_on_clear_objects(mob_name, function(self, staticdata)
+		if self.mob_node == nil then return end
+		-- Update MOB pos when cleared
+		save_mob(self, true)
 	end)
 	
 	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)
 		
-		self.mob_node = self.mob_node or {}
-		
-		if self.mob_node and self.mob_node.hashlink then
-			hash_tb[self.mob_node.hashlink] = self.object
-		end
-		
-		self.timers.mob_node = 0
+		self.timers.mob_node = 10
 		
 	end)
-	
 	
 	-- Register 'on_step'
 	creatures.register_on_step(mob_name, function(self, dtime)
 		
 		-- Timer update
-		self.timers.mob_node = self.timers.mob_node + dtime
+		self.timers.mob_node = self.timers.mob_node - dtime
 		
-		if self.timers.mob_node >= 5 then
-			self.timers.mob_node = 0
+		if self.timers.mob_node <= 9 then
+			self.timers.mob_node = 10
 			
 			local me = self.object
 			local my_pos = me:get_pos()
 			
-			
-			-- If with mob node
-			if self.mob_node.pos then
+			-- With MOB node
+			if self.mob_node then
+				
+				local dist = creatures.get_dist_p1top2(my_pos, self.mob_node.pos)
 				
 				-- Check mob node
-				if check_mob_node(self) == true then
+				if dist < (def.search_radius or 10) 
+					and check_node_from_node(self) == true
+				then
 					
 					-- Reset lifetime
 					self.lifetimer = 0
-					
-					return
 				
 				-- Lose mob node
 				else
-					self.mob_node.pos = nil
-					self.mob_node.hashlink = nil
+					
+					remove_mob(self)
+					self.mob_node = nil
 				end
 			
-			
-			-- If without mob node
+			-- Without MOB node
 			else
-				-- Search MOB system
-				if def.search_mob == true then
-					-- Search a mob nodes
-					for _,p in ipairs(minetest.find_nodes_in_area(vector.add(my_pos, 4), vector.subtract(my_pos, 4), {mob_node})) do
-						if node_way(self, p) == true and vacant_mob_node(p) == true then
-							-- Use this mob node
-							set_mob_node(p, self)
-							break
-						end
-					end
+				-- Search a mob nodes
+				for _,p in ipairs(minetest.find_nodes_in_area(vector.subtract(my_pos, 4), vector.add(my_pos, 4), {mob_node})) do
+					-- Use this mob node
+					self.mob_node = {
+						pos = p,
+					}
+					save_mob(self)
 				end
 			end 
 			
