@@ -114,15 +114,22 @@ creatures.register_mode("chicken:dropegg", {
 		self["chicken:last_dropday"] = self["chicken:last_dropday"] or 0
 		
 		-- Today
-		local today = core.get_day_count()
+		local today = minetest.get_day_count()
 		
 		-- Check if drop egg today
-		if self["chicken:last_dropday"] ~= today and creatures.check_mob_node(self) == true then
+		if self["chicken:last_dropday"] ~= today then
 			
 			local walk_mode = creatures.mode_def(self, "walk")
 			local current_pos = self.object:get_pos()
 			
-			local pmn = creatures.copy_tb(self.mob_node.pos)
+			local pmn = minetest.find_node_near(current_pos, 3, {"chicken:nest"}, true)
+			
+			if not pmn then 
+				-- Finish mode
+				creatures.start_mode(self, "idle")
+				return 
+			end
+			
 			pmn.y = pmn.y - 0.4
 			
 			-- Check if is in the nest
@@ -132,7 +139,7 @@ creatures.register_mode("chicken:dropegg", {
 				-- Drop Egg
 				local ps = creatures.copy_tb(self.mob_node.pos)
 				ps.y = ps.y - 0.3
-				core.add_item(ps, "chicken:egg")
+				minetest.add_item(ps, "chicken:egg")
 				self["chicken:last_dropday"] = today
 				
 				-- Move chicken to nest center
@@ -148,12 +155,13 @@ creatures.register_mode("chicken:dropegg", {
 				-- Walk to nest
 				if creatures.new_path( -- Try find path
 					self, 
-					self.mob_node.pos, 
-					walk_mode.moving_speed,
-					on_finish_path,
-					on_interrupt_path,
+					pmn, 
 					{
-						target_dist = 0.2,
+						on_finish = on_finish_path,
+						on_interrupt = on_interrupt_path,
+						search_def = {
+							target_dist = 0.2,
+						}, 
 					}
 				) == true then
 					

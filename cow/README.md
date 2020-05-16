@@ -29,6 +29,9 @@ see "LICENSE.txt" for details.
 BrunoMine 2020 (CC-BY-SA 3.0)
 	cow_bucket_milk.png
 	cow_cowboy_bell.png
+	cow_cowboy_bell_side1.png
+	cow_cowboy_bell_side2.png
+	cow_cowboy_bell_top.png
 	cow_raw_beef.png
 	cow_roast_beef.png
 	cow_spawner_egg.png

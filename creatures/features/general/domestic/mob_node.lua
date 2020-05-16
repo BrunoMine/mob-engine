@@ -114,7 +114,7 @@ end
 local remove_mob = function(self)
 	
 	-- Check node
-	if not check_node(self.mob_node.pos) then return false end
+	if not check_node(self.mob_node.pos) or not self.mob_number then return false end
 	
 	-- Saved mobs
 	local saved_mobs = get_saved_mobs(self.mob_node.pos)

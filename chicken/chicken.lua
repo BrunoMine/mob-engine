@@ -46,20 +46,12 @@ creatures.register_mob("chicken:chicken", {
 	},
 	
 	hunger = {
-		days_interval = 5,
 		food = {
-			nodes = {
-				"chicken:chicken_feeder_1",
-				"chicken:chicken_feeder_2",
-				"chicken:chicken_feeder_3",
-				"chicken:chicken_feeder_4",
-				"chicken:chicken_feeder_5",
-				"chicken:chicken_feeder_6",
-				"chicken:chicken_feeder_7",
-				"chicken:chicken_feeder_8"
-			}
+			feeders = {"chicken:seed_feeder"},
 		},
 	},
+	
+	mob_node = { name = "chicken:nest" }, 
 	
 	randomize = {
 		values = {
@@ -73,20 +65,16 @@ creatures.register_mob("chicken:chicken", {
 		walk_speed = 0.7, 
 		run_speed = 2.7, 
 		
-		-- Follow
-		follow_items = {["farming:seed_wheat"]=true}, 
-		
-		-- Eat
-		eat_full_time = 4,
-		eat_exact_time = 2,
-		eat_nodes = {
-			["default:grass_1"] = {}, 
-			["default:grass_2"] = {}, 
-			["default:grass_3"] = {}, 
-			["default:grass_4"] = {}, 
-			["default:grass_5"] = {}, 
-			["default:dirt_with_grass"] = {}, 
+		modes_ratio = {
+			idle = 50,
+			walk_around = 10,
+			["chicken:dropegg"] = 2, 
+			["chicken:idle2"] = 18, 
+			["chicken:pick"] = 20, 
 		},
+		
+		-- Follow
+		follow_items = {["farming:seed_wheat"]=true},
 		
 		-- Custom
 		custom = {

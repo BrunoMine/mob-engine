@@ -342,7 +342,6 @@ MOB node is controlled by stored strings in node metadata
 #### Methods
 * `creatures.register_mob_node(node_name, {mob node definition})`: Register a MOB node
   * `node_name` is a itemstring of registered node
-* `creatures.check_mob_node(self)`: Check if a MOB has a node
 
 ### MOB Path
 This functionality is used to plan and execute intelligent movement through a path.

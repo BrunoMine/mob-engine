@@ -41,6 +41,12 @@ BrunoMine 2019 (CC-BY-SA 3.0)
 	sheep_feeder_layer_top.png
 	sheep_flesh.png
 	sheep_meat.png
+	sheep_shepherd_wooden_stick.png
+	sheep_shepherd_wooden_stick_bottom.png
+	sheep_shepherd_wooden_stick_front.png
+	sheep_shepherd_wooden_stick_left.png
+	sheep_shepherd_wooden_stick_right.png
+	sheep_shepherd_wooden_stick_top.png
 
 [confusion_music](https://freesound.org/people/confusion_music) (CC-BY 3.0)
 	sheep.1.ogg

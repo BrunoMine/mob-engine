@@ -58,10 +58,6 @@ minetest.register_node("chicken:nest", {
 	buildable_to = true,
 	groups = {snappy = 3, attached_node = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
-	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", "Vacant")
-	end,
 })
 core.register_craft({
 	output = 'chicken:nest',
@@ -70,24 +66,4 @@ core.register_craft({
 		{'farming:wheat', 'farming:seed_wheat', 'farming:wheat'},
 		{'', 'farming:wheat', ''},
 	}
-})
-
-
-creatures.register_mob_node("chicken:nest", {
-	mob_name = "chicken:chicken",
-	
-	-- Search MOB
-	search_mob = true,
-	
-	-- On set mob node
-	on_set_mob_node = function(pos, ent)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", "Occupied")
-	end,
-	
-	-- On reset mob node
-	on_reset_mob_node = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", "Vacant")
-	end,
 })

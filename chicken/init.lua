@@ -39,11 +39,11 @@ dofile(core.get_modpath("chicken") .. "/egg.lua")
 -- Craftitems
 dofile(core.get_modpath("chicken") .. "/craftitems.lua")
 
--- Chicken
-dofile(core.get_modpath("chicken") .. "/chicken.lua")
+-- Feeder
+dofile(core.get_modpath("chicken") .. "/feeder.lua")
 
 -- Nest
 dofile(core.get_modpath("chicken") .. "/nest.lua")
 
--- Feeder
-dofile(core.get_modpath("chicken") .. "/feeder.lua")
+-- Chicken
+dofile(core.get_modpath("chicken") .. "/chicken.lua")
