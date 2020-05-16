@@ -20,19 +20,6 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Cowboy Bell
-core.register_craftitem("cow:cowboy_bell", {
-	description = "Cowboy Bell",
-	inventory_image = "cow_cowboy_bell.png",
-})
-core.register_craft({
-	output = 'cow:cowboy_bell',
-	recipe = {
-		{'', 'wool:blue', 'wool:blue'},
-		{'default:steel_ingot', 'default:steel_ingot', 'wool:blue'},
-		{'group:stick', 'default:steel_ingot', ''},
-	}
-})
 
 -- Bucket with Milk
 core.register_craftitem("cow:bucket_milk", {

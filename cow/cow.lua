@@ -66,6 +66,8 @@ creatures.register_mob("cow:cow", {
 		},
 	}),
 	
+	mob_node = { name = "cow:cowboy_bell" },
+	
 	model = {
 		mesh = "cow.b3d",
 		textures = {"cow_white_and_black.png"},

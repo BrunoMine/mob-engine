@@ -69,6 +69,15 @@ creatures.register_mob("sheep:sheep", {
 		},
 	},
 	
+	mob_node = { 
+		name = "sheep:shepherd_wooden_stick", 
+		-- On load MOB
+		on_load_mob = function(pos, self)
+			self.has_wool = true
+			sheep.set_color(self)
+		end,
+	},
+	
 	randomize = {
 		values = {
 			{

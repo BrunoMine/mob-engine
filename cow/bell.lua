@@ -2,7 +2,7 @@
 = Cow for Creatures MOB-Engine (cme) =
 Copyright (C) 2020 Mob API Developers and Contributors
 
-bed.lua
+bell.lua
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of
@@ -20,40 +20,48 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Bed node
-minetest.register_node("cow:bed", {
-	description = "Cow Bed",
+
+-- Cowboy Bell
+minetest.register_node("cow:cowboy_bell", {
+	description = "Cowboy Bell",
+	inventory_image = "cow_cowboy_bell.png",
 	drawtype = "nodebox",
 	paramtype = "light",
-	paramtype2 = "facedir",
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.46875, -0.5, -0.46875, 0.46875, -0.4375, 0.46875}, 
-			{-0.4375, -0.5, -0.4375, 0.4375, -0.375, 0.4375}, 
+			{-0.25, -0.5, -0.25, 0.25, -0.375, 0.25}, 
+			{-0.1875, -0.375, -0.1875, 0.1875, -0.125, 0.1875}, 
+			{-0.125, -0.125, -0.125, 0.125, -0.0625, 0.125}, 
+			{-0.0625, -0.0625, -0.0625, 0.0625, 0, 0.0625}, 
 		}
 	},
-	tiles = {"cow_bed.png"},
+	tiles = {
+		"cow_cowboy_bell_top.png", -- Top
+		"cow_cowboy_bell_bottom.png", -- Bottom
+		"cow_cowboy_bell_side1.png", -- Right 
+		"cow_cowboy_bell_side1.png", -- Left
+		"cow_cowboy_bell_side2.png^[transformFX", -- Back
+		"cow_cowboy_bell_side2.png" -- Front
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25}, 
+	},
+	collision_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25},
+	},
 	sunlight_propagates = true,
 	buildable_to = true,
-	walkable = false,
 	groups = {snappy = 3, attached_node = 1, flammable = 1},
-	sounds = default.node_sound_leaves_defaults(),
+	sounds = default.node_sound_wood_defaults(),
 })
 minetest.register_craft({
-	output = 'cow:bed',
-	replacements = {{"cow:cowboy_bell", "cow:cowboy_bell"}},
+	output = 'cow:cowboy_bell',
 	recipe = {
-		{	'farming:straw', 	'', 				'farming:straw'	},
-		{	'', 				'cow:cowboy_bell', 	''				},
-		{	'farming:straw', 	'', 				'farming:straw'	},
+		{'', 'wool:blue', 'wool:blue'},
+		{'default:steel_ingot', 'default:steel_ingot', 'wool:blue'},
+		{'group:stick', 'default:steel_ingot', ''},
 	}
-})
-
--- Sheep Bed
-creatures.register_mob_node("cow:bed", {
-	mob_name = "cow:cow",
-	
-	-- Search MOB
-	search_mob = true,
 })

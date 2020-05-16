@@ -21,19 +21,6 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
--- Shepherd's wooden stick
-core.register_craftitem("sheep:shepherd_wooden_stick", {
-	description = "Shepherd's wooden stick",
-	inventory_image = "sheep_shepherd_wooden_stick.png",
-})
-core.register_craft({
-	output = 'sheep:shepherd_wooden_stick',
-	recipe = {
-		{'', 'farming:wheat', 'group:stick'},
-		{'', 'group:stick', 'farming:string'},
-		{'group:stick', 'farming:string', 'farming:string'},
-	}
-})
 
 -- Flesh
 core.register_craftitem("sheep:sheep_flesh", {

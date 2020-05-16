@@ -80,7 +80,7 @@ end
 
 
 -- Save MOB on node
-local save_mob = function(self, only_update_mob, staticdata)
+local save_mob = function(self, staticdata)
 	
 	-- Check MOB number
 	if self.mob_number == nil then return false end
@@ -104,11 +104,6 @@ local save_mob = function(self, only_update_mob, staticdata)
 	local def = creatures.registered_mob_nodes[minetest.get_node(self.mob_node.pos).name]
 	if def.on_save_mob then
 		def.on_save_mob(pos, self)
-	end
-	
-	if only_update_mob ~= true then
-		-- Update last cleaning cycle
-		minetest.get_meta(self.mob_node.pos):set_float("cleaning_cycle", creatures.cleaning_cycle)
 	end
 	
 	return true
@@ -161,7 +156,14 @@ end
 -- Check cleaning cycle
 local valid_cleaning_cycle = function(pos)
 	local meta = minetest.get_meta(pos)
-	local last_cycle = meta:get_float("cleaning_cycle") or creatures.cleaning_cycle
+	local last_cycle = meta:get_float("cleaning_cycle")
+	
+	if meta:get_string("started") == "" then
+		last_cycle = creatures.cleaning_cycle
+		meta:set_float("cleaning_cycle", creatures.cleaning_cycle)
+		meta:set_string("started", "yes")
+	end
+	
 	if last_cycle < creatures.cleaning_cycle then
 		return false
 	end
@@ -227,7 +229,7 @@ creatures.register_mob_node = function(mob_node, def)
 	creatures.register_on_get_staticdata(mob_name, function(self, staticdata)
 		if self.mob_node == nil then return end
 		-- Update MOB pos when cleared
-		save_mob(self, true, staticdata)
+		save_mob(self, staticdata)
 	end)
 	
 	
@@ -235,7 +237,7 @@ creatures.register_mob_node = function(mob_node, def)
 	creatures.register_on_clear_objects(mob_name, function(self, staticdata)
 		if self.mob_node == nil then return end
 		-- Update MOB pos when cleared
-		save_mob(self, true)
+		save_mob(self)
 	end)
 	
 	
@@ -252,7 +254,7 @@ creatures.register_mob_node = function(mob_node, def)
 		-- Timer update
 		self.timers.mob_node = self.timers.mob_node - dtime
 		
-		if self.timers.mob_node <= 9 then
+		if self.timers.mob_node <= 0 then
 			self.timers.mob_node = 10
 			
 			local me = self.object
@@ -280,8 +282,9 @@ creatures.register_mob_node = function(mob_node, def)
 			
 			-- Without MOB node
 			else
-				-- Search a mob nodes
-				for _,p in ipairs(minetest.find_nodes_in_area(vector.subtract(my_pos, 4), vector.add(my_pos, 4), {mob_node})) do
+				-- Search a MOB node
+				local p = minetest.find_node_near(my_pos, 8, {mob_node}, true)
+				if p then
 					-- Use this mob node
 					self.mob_node = {
 						pos = p,
@@ -302,5 +305,17 @@ creatures.get_mob_node_def = function(node_name)
 	return creatures.registered_mob_nodes[node_name]
 end
 
-
+-- Register 'on_register_mob'
+creatures.register_on_register_mob(function(mob_name, def)
+	
+	-- Register MOB node
+	if def.mob_node then 
+		creatures.register_mob_node(def.mob_node.name, {
+			mob_name = mob_name,
+			on_save_mob = def.mob_node.on_save_mob,
+			on_load_mob = def.mob_node.on_load_mob,
+		})
+	end
+	
+end)
 

@@ -32,11 +32,11 @@ dofile(core.get_modpath("sheep") .. "/craftitems.lua")
 -- Feeder
 dofile(core.get_modpath("sheep") .. "/feeder.lua")
 
+-- Shepherd's Wooden Stick
+dofile(core.get_modpath("sheep") .. "/shepherds_stick.lua")
+
 -- Sheep
 dofile(core.get_modpath("sheep") .. "/sheep.lua")
-
--- Bed
-dofile(core.get_modpath("sheep") .. "/bed.lua")
 
 
 

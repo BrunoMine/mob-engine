@@ -19,9 +19,8 @@ dofile(modpath.."/craftitems.lua")
 -- Feeder
 dofile(modpath.."/feeder.lua")
 
+-- Bell
+dofile(modpath.."/bell.lua")
+
 -- Cow
 dofile(modpath.."/cow.lua")
-
--- Bed
-dofile(modpath.."/bed.lua")
-
