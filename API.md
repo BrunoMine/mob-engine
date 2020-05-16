@@ -526,6 +526,14 @@ Definition tables
             <...>
         },
         
+		mob_node = { 				-- MOB node definitions
+			name = "node", 			-- Nodename of a node
+			on_save_mob = <func>, 	--[[ callback for on save MOB <optional>
+									     <function> is 'function(pos, luaentity) end']]
+			on_load_mob = <func>, 	--[[ callback for on load MOB <optional>
+									     <function> is 'function(pos, luaentity) end']]
+		},
+		
         child = {
             name = "mod:mobname", 	-- MOB name
             days_to_grow = 5, 		-- Days to grow
