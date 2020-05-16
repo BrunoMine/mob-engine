@@ -238,7 +238,8 @@ local node_steps_def = {
 creatures.make_feeder_nodes("sheep:hay_feeder", {
 	
 	supply = {
-		["farming:straw"] = { food = 9, count = 3 },
+		["farming:wheat"] = { food = 1, count = 15 },
+		["farming:straw"] = { food = 3, count = 5 },
 		["default:grass_1"] = { food = 1, count = 15 },
 		["default:grass_2"] = { food = 1, count = 15 },
 		["default:grass_3"] = { food = 1, count = 15 },

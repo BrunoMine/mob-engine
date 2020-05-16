@@ -240,6 +240,19 @@ creatures.register_mob_node = function(mob_node, def)
 		save_mob(self)
 	end)
 	
+	-- For child MOB
+	if def.child then
+		-- Register 'on_grow'
+		creatures.register_on_grow(def.child.name, function(self, new_self) 
+			
+			-- Update MOB node
+			if self.mob_node then
+				new_self.mob_node = self.mob_node
+				save_mob(new_self)
+			end
+			
+		end)
+	end
 	
 	-- Register 'on_activate'
 	creatures.register_on_activate(mob_name, function(self, staticdata)

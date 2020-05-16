@@ -46,6 +46,7 @@ creatures.register_mob("chicken:chicken", {
 	},
 	
 	hunger = {
+		days_interval = 3, 
 		food = {
 			feeders = {"chicken:seed_feeder"},
 		},
@@ -66,10 +67,9 @@ creatures.register_mob("chicken:chicken", {
 		run_speed = 2.7, 
 		
 		modes_ratio = {
-			idle = 50,
-			walk_around = 10,
-			["chicken:dropegg"] = 2, 
-			["chicken:idle2"] = 18, 
+			idle = 40,
+			walk_around = 30,
+			["chicken:idle2"] = 10, 
 			["chicken:pick"] = 20, 
 		},
 		
@@ -78,9 +78,8 @@ creatures.register_mob("chicken:chicken", {
 		
 		-- Custom
 		custom = {
-			["chicken:dropegg"] = {chance = 1, duration = 8},
-			["chicken:idle2"] = {chance = 19, duration = 0.8},
-			["chicken:pick"] = {chance = 20, duration = 2},
+			["chicken:idle2"] = {duration = 0.8},
+			["chicken:pick"] = {duration = 2},
 		},
 	}),
 	
@@ -177,4 +176,40 @@ creatures.register_mob("chicken:chicken", {
 		creatures.drop_items(self.object:get_pos(), items)
 	end,
 	
+	on_activate = function(self, staticdata)
+		
+		self.chicken_egg_timer = math.random(5, 15)
+		self["chicken:last_dropday"] = self["chicken:last_dropday"] or minetest.get_day_count()
+		
+	end,
+	
+	on_step = function(self, dtime)
+		
+		if self.is_child then return end
+		
+		self.chicken_egg_timer = self.chicken_egg_timer - dtime
+		
+		if self.chicken_egg_timer <= 0 then
+			self.chicken_egg_timer = 10
+			
+			-- Today
+			local today = minetest.get_day_count()
+			
+			-- Check if drop egg today
+			if self["chicken:last_dropday"] == today then return end
+			
+			-- Search nest near
+			local current_pos = self.object:get_pos()
+			
+			local nest_pos = minetest.find_node_near(current_pos, 3, {"chicken:nest"}, true)
+			
+			-- Check nest
+			if not nest_pos then return end
+			
+			-- Drop Egg
+			minetest.add_item(nest_pos, "chicken:egg")
+			
+			self["chicken:last_dropday"] = today
+		end
+	end,
 })

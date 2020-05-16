@@ -156,7 +156,7 @@ For default, when a registered callback return (#1) `true` then prevent run next
   * `func` is a function `function(mob_name, mob_def) end`
 * `creatures.register_on_step(mob_name, func)`: Register callback for when run default on_step callback
   * `func` is a function `function(self, dtime) end`
-* `creatures.register_on_punch(mob_name, func)`: Register callback for when run default on_step callback
+* `creatures.register_on_punch(mob_name, func)`: Register callback for when run default on_punch callback
   * `func` is a function `function(self, puncher, time_from_last_punch, tool_capabilities, dir) end`
 * `creatures.register_on_rightclick(mob_name, func)`: Register callback for when run default on_rightclick callback
   * `func` is a function `function(self, clicker) end`

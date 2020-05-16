@@ -45,6 +45,7 @@ creatures.register_on_register_mob(function(mob_name, def)
 		model = merge_tb(def.model, child_def.model or {}),
 		sounds = merge_tb(def.sounds, child_def.sounds or {}),
 		drops = child_def.drops or def.drops,
+		mob_node = merge_tb(def.mob_node, child_def.mob_node or {}),
 		
 		-- Callbacks
 		get_staticdata = child_def.get_staticdata or def.get_staticdata,
@@ -103,7 +104,10 @@ creatures.register_on_register_mob(function(mob_name, def)
 	
 	-- Register 'on_grow'
 	creatures.register_on_grow(def.child.name, function(self, new_self) 
-	
+		
+		-- Keep MOB number
+		new_self.mob_number = self.mob_number
+		
 		-- Keep randomized values
 		new_self.randomized_value = self.randomized_value
 		creatures.set_random_values(new_self)

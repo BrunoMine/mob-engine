@@ -1,6 +1,6 @@
 --[[
 = Chicken for Creatures MOB-Engine (cme) =
-Copyright (C) 2019 Mob API Developers and Contributors
+Copyright (C) 2020 Mob API Developers and Contributors
 Copyright (C) 2015-2016 BlockMen <blockmen2015@gmail.com>
 
 egg.lua
@@ -22,7 +22,6 @@ be misrepresented as being the original software.
 ]]
 
 
-
 local function timer(step, entity)
 	if not entity or not entity.ref then
 		return
@@ -31,11 +30,11 @@ local function timer(step, entity)
 	local vel = entity.ref:getvelocity()
 	if vel ~= nil and vel.x == 0 and vel.y == 0 and vel.z == 0 then
 		if math.random(1, 100) <= 5 then
-			core.add_entity(entity.ref:getpos(), "chicken:chicken")
+			minetest.add_entity(entity.ref:getpos(), "chicken:chicken")
 		end
 		entity.ref:remove()
 	else
-		core.after(step, timer, step, entity)
+		minetest.after(step, timer, step, entity)
 	end
 end
 
@@ -79,109 +78,5 @@ core.register_craft({
 	type = "cooking",
 	output = "chicken:fried_egg",
 	recipe = "chicken:egg",
-})
-
-
-local on_finish_path = function(self)
-	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,z=0})
-	-- Stop walk animation
-	creatures.set_animation(self, "idle")
-	
-	-- Restart mode
-	creatures.start_mode(self, "chicken:dropegg")
-end
-
-local on_interrupt_path = function(self)
-	-- Stop movement
-	creatures.send_in_dir(self, 0, {x=0,z=0})
-	-- Stop walk animation
-	creatures.set_animation(self, "idle")
-	
-	-- Finish mode
-	creatures.start_mode(self, "idle")
-end
-
--- Drop Egg mode ("dropegg")
-creatures.register_mode("chicken:dropegg", {
-	
-	-- On step
-	start = function(self, dtime)
-		
-		if self.is_child then return end
-		
-		-- Last day when dropped egg
-		self["chicken:last_dropday"] = self["chicken:last_dropday"] or 0
-		
-		-- Today
-		local today = minetest.get_day_count()
-		
-		-- Check if drop egg today
-		if self["chicken:last_dropday"] ~= today then
-			
-			local walk_mode = creatures.mode_def(self, "walk")
-			local current_pos = self.object:get_pos()
-			
-			local pmn = minetest.find_node_near(current_pos, 3, {"chicken:nest"}, true)
-			
-			if not pmn then 
-				-- Finish mode
-				creatures.start_mode(self, "idle")
-				return 
-			end
-			
-			pmn.y = pmn.y - 0.4
-			
-			-- Check if is in the nest
-			local d, vd = creatures.get_dist_p1top2(current_pos, pmn)
-			if math.abs(vd.x) < 0.25 and math.abs(vd.z) < 0.25 then
-				
-				-- Drop Egg
-				local ps = creatures.copy_tb(self.mob_node.pos)
-				ps.y = ps.y - 0.3
-				minetest.add_item(ps, "chicken:egg")
-				self["chicken:last_dropday"] = today
-				
-				-- Move chicken to nest center
-				ps.y = ps.y - 0.18
-				self.object:set_pos(ps)
-				
-				-- Finish mode
-				creatures.start_mode(self, "idle")
-				
-			-- Go to nest
-			else
-			
-				-- Walk to nest
-				if creatures.new_path( -- Try find path
-					self, 
-					pmn, 
-					{
-						on_finish = on_finish_path,
-						on_interrupt = on_interrupt_path,
-						search_def = {
-							target_dist = 0.2,
-						}, 
-					}
-				) == true then
-					
-					-- Start walk animation
-					creatures.set_animation(self, "walk")
-				else
-				
-					-- Finish mode
-					creatures.start_mode(self, "idle")
-				end
-				
-			end
-		end
-	end,
-	
-	-- On step
-	on_step = function(self, dtime)
-	
-		creatures.path_step(self, dtime)
-		
-	end,
 })
 
