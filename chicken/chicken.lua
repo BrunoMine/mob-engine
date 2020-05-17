@@ -74,7 +74,7 @@ creatures.register_mob("chicken:chicken", {
 		},
 		
 		-- Follow
-		follow_items = {["farming:seed_wheat"]=true},
+		follow_items = {["farming:seed_wheat"]=true,["farming:seed_cotton"]=true},
 		
 		-- Custom
 		custom = {
