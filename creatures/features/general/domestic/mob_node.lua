@@ -143,7 +143,7 @@ local load_mobs = function(pos)
 		
 		-- Execute custom callback
 		local def = creatures.registered_mob_nodes[minetest.get_node(pos).name]
-		if def.on_load_mob then
+		if self and def.on_load_mob then
 			def.on_load_mob(pos, self)
 		end
 	end
