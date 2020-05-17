@@ -96,6 +96,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 		
 		-- Physic parameters
 		self.physic = {}
+		
+		-- Gravity
 		self.physic.gravity = true
 		self.physic.default_gravity = true
 		

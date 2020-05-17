@@ -75,6 +75,7 @@ creatures.register_mob("cow:cow", {
 		rotation = -90.0,
 		scale = {x = 3.7, y = 3.7},
 		vision_height = 0.9,
+		weight = 100, 
 		animations = {
 			idle = {	frames = {  1,  30, 18}},
 			walk = {	frames = { 31,  60, 20}},

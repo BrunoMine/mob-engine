@@ -91,6 +91,15 @@ local check_collision = function(obj1, obj2)
 	return true
 end
 
+local check_weight = function(self, under_self)
+	local weight_over = self.weight or creatures.default_value.weight
+	local weight_under = under_self.weight or creatures.default_value.weight
+	if weight_over > weight_under then
+		return true
+	end
+	return false
+end
+
 -- Register 'on_register_mob'
 creatures.register_on_register_mob(function(mob_name, def)
 	
@@ -131,7 +140,8 @@ creatures.register_on_register_mob(function(mob_name, def)
 					}
 				)
 			) do
-				if obj:get_luaentity() and check_collision(me, obj) == true then
+				local luaentity = obj:get_luaentity()
+				if luaentity and check_weight(self, luaentity) == true and check_collision(me, obj) == true then
 					obj:punch(me, check_hit_bottom_time, tool_capabilities, {x=0,y=-1,z=0})
 				end
 			end

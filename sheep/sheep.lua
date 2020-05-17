@@ -134,6 +134,7 @@ creatures.register_mob("sheep:sheep", {
 		c_box = {0.9, 1.2},
 		rotation = -90.0,
 		vision_height = 0.9,
+		weight = 45,
 		animations = {
 			idle = {	frames = {  1,  60, 15}},
 			walk = {	frames = { 81, 101, 18}},

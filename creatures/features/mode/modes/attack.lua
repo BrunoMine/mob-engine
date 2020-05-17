@@ -168,7 +168,7 @@ creatures.register_mode("attack", {
 		
 		-- Check if can punch
 		if self.mdt.punch <= 0 then
-			self.mdt.punch = get_time_to_punch(self)
+			self.mdt.punch = 1 -- Default time 
 			
 			-- Check target
 			if not self.target or not self.target:get_pos() then
@@ -177,6 +177,9 @@ creatures.register_mode("attack", {
 				creatures.start_mode(self, "idle")
 				return
 			end
+			
+			-- Calcule timer
+			self.mdt.punch = get_time_to_punch(self)
 			
 			if get_target_dist(self) < self.mode_vars.combat.attack_radius
 				and creatures.mob_sight(self, self.target, {physical_access=true}) == true -- Check line of sight

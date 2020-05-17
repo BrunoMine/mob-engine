@@ -88,7 +88,7 @@ creatures.register_mob("chicken:chicken", {
 		textures = {"chicken_white.png"},
 		c_box = {0.5, 0.7},
 		vision_height = 0.4,
-		weight = 15,
+		weight = 5, 
 		rotation = 90.0,
 		collide_with_objects = false,
 		animations = {
