@@ -20,10 +20,20 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("sheep")
 
 -- Shepherd's Wooden Stick
 minetest.register_node("sheep:shepherd_wooden_stick", {
-	description = "Shepherd's Wooden Stick",
+	description = S("Shepherd's Wooden Stick"),
 	inventory_image = "sheep_shepherd_wooden_stick.png",
 	wield_image = "sheep_shepherd_wooden_stick.png",
 	drawtype = "nodebox",
@@ -31,26 +41,26 @@ minetest.register_node("sheep:shepherd_wooden_stick", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.0625, -0.5, -0.0625, 0.0625, 0.0625, 0.0625}, 
-			{0.125, 0.125, -0.0625, 0.25, 0.375, 0.0625}, 
-			{0.0625, 0.0625, -0.0625, 0.1875, 0.1875, 0.0625}, 
-			{0, 0, -0.0625, 0.125, 0.125, 0.0625}, 
-			{0.0625, 0.3125, -0.0625, 0.1875, 0.4375, 0.0625}, 
-			{-0.0625, 0.375, -0.0625, 0.125, 0.5, 0.0625}, 
-			{-0.125, 0.3125, -0.0625, 0, 0.4375, 0.0625}, 
+			{-0.0625, -0.5, -0.0625, 0.0625, 0.0625, 0.0625},
+			{0.125, 0.125, -0.0625, 0.25, 0.375, 0.0625},
+			{0.0625, 0.0625, -0.0625, 0.1875, 0.1875, 0.0625},
+			{0, 0, -0.0625, 0.125, 0.125, 0.0625},
+			{0.0625, 0.3125, -0.0625, 0.1875, 0.4375, 0.0625},
+			{-0.0625, 0.375, -0.0625, 0.125, 0.5, 0.0625},
+			{-0.125, 0.3125, -0.0625, 0, 0.4375, 0.0625},
 		}
 	},
 	tiles = {
 		"sheep_shepherd_wooden_stick_top.png", -- Top
 		"sheep_shepherd_wooden_stick_bottom.png", -- Bottom
-		"sheep_shepherd_wooden_stick_right.png", -- Right 
+		"sheep_shepherd_wooden_stick_right.png", -- Right
 		"sheep_shepherd_wooden_stick_left.png", -- Left
 		"sheep_shepherd_wooden_stick_front.png^[transformFX", -- Back
 		"sheep_shepherd_wooden_stick_front.png" -- Front
 	},
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.1875, -0.5, -0.125, 0.25, 0.5, 0.125}, 
+		fixed = {-0.1875, -0.5, -0.125, 0.25, 0.5, 0.125},
 	},
 	collision_box = {
 		type = "fixed",

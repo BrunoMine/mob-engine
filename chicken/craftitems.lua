@@ -21,15 +21,27 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("chicken")
+
+
 -- Flesh
 minetest.register_craftitem("chicken:chicken_flesh", {
-	description = "Raw Chicken Flesh",
+	description = S("Raw Chicken Flesh"),
 	inventory_image = "chicken_flesh.png",
 	on_use = minetest.item_eat(1)
 })
 
 minetest.register_craftitem("chicken:chicken_meat", {
-	description = "Chicken Meat",
+	description = S("Chicken Meat"),
 	inventory_image = "chicken_meat.png",
 	on_use = minetest.item_eat(3)
 })
@@ -42,21 +54,21 @@ minetest.register_craft({
 
 -- White Chicken Feather
 minetest.register_craftitem("chicken:feather_white", {
-	description = "White Chicken Feather",
+	description = S("@1 Chicken Feather", S("White")),
 	inventory_image = "chicken_feather_white.png",
 	groups = {feather=1},
 })
 
 -- Black Chicken Feather
 minetest.register_craftitem("chicken:feather_black", {
-	description = "Black Chicken Feather",
+	description = S("@1 Chicken Feather", S("Black")),
 	inventory_image = "chicken_feather_black.png",
 	groups = {feather=1},
 })
 
 -- Brown Chicken Feather
 minetest.register_craftitem("chicken:feather_brown", {
-	description = "Brown Chicken Feather",
+	description = S("@1 Chicken Feather", S("Brown")),
 	inventory_image = "chicken_feather_brown.png",
 	groups = {feather=1},
 })

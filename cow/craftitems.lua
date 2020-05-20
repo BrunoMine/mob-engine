@@ -20,24 +20,34 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("cow")
 
 -- Bucket with Milk
 core.register_craftitem("cow:bucket_milk", {
-	description = "Milk Bucket",
+	description = S("Milk Bucket"),
 	inventory_image = "cow_bucket_milk.png",
 	stack_max = 1,
 })
 
 -- Raw Beef Meat
 core.register_craftitem("cow:raw_beef", {
-	description = "Raw Beef Meat",
+	description = S("Raw Beef Meat"),
 	inventory_image = "cow_raw_beef.png",
 	on_use = core.item_eat(1)
 })
 
 -- Roast Beef
 core.register_craftitem("cow:roast_beef", {
-	description = "Roast Beef",
+	description = S("Roast Beef"),
 	inventory_image = "cow_roast_beef.png",
 	on_use = core.item_eat(5)
 })
@@ -51,49 +61,49 @@ core.register_craft({
 
 -- White and Black Cow Leather
 core.register_craftitem("cow:leather_white_and_black", {
-	description = "White and Black Cow Leather",
+	description = S("@1 Cow Leather", S("White and Black")),
 	inventory_image = "cow_leather_white_and_black.png",
 	groups = {leather=1},
 })
 
 -- Black Cow Leather
 core.register_craftitem("cow:leather_black", {
-	description = "Black Cow Leather",
+	description = S("@1 Cow Leather", S("Black")),
 	inventory_image = "cow_leather_black.png",
 	groups = {leather=1},
 })
 
 -- White and Brown Cow Leather
 core.register_craftitem("cow:leather_white_and_brown", {
-	description = "White and Brown Cow Leather",
+	description = S("@1 Cow Leather", S("White and Brown")),
 	inventory_image = "cow_leather_white_and_brown.png",
 	groups = {leather=1},
 })
 
 -- Brown Cow Leather
 core.register_craftitem("cow:leather_brown", {
-	description = "Brown Cow Leather",
+	description = S("@1 Cow Leather", S("Brown")),
 	inventory_image = "cow_leather_brown.png",
 	groups = {leather=1},
 })
 
 -- Brown and Black Cow Leather
 core.register_craftitem("cow:leather_brown_and_black", {
-	description = "Brown and Black Cow Leather",
+	description = S("@1 Cow Leather", S("Brown and Black")),
 	inventory_image = "cow_leather_brown_and_black.png",
 	groups = {leather=1},
 })
 
 -- Brown and Black Cow Leather
 core.register_craftitem("cow:leather_white", {
-	description = "White Cow Leather",
+	description = S("@1 Cow Leather", S("White")),
 	inventory_image = "cow_leather_white.png",
 	groups = {leather=1},
 })
 
 -- Grey Cow Leather
 core.register_craftitem("cow:leather_grey", {
-	description = "Grey Cow Leather",
+	description = S("@1 Cow Leather", S("Grey")),
 	inventory_image = "cow_leather_grey.png",
 	groups = {leather=1},
 })

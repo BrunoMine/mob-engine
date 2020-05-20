@@ -21,44 +21,55 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("ghost")
+
 -- Spawn chance
 local spawn_chance = tonumber(minetest.settings:get("ghost_spawn_chance") or 1)
 
 local def = {
-	
+
 	-- MOB description
-	description = "Ghost",
-	
+	description = S("Ghost"),
+
 	-- MOB preset
 	mob_preset = "default",
-	
+
 	stats = {
 		hp = 12,
-		lifetime = 600, 
+		lifetime = 600,
 		burn_light = {min = 15, max = 15},
 		can_fly = true,
 		can_panic = false,
 		has_falldamage = false,
 		hostile = true,
 	},
-	
+
 	combat = {
 		attack_damage = 2,
 		attack_speed = 1.1,
 		attack_radius = 1.5,
 		attack_hit_interval = 1.5,
 		attack_collide_with_target = true,
-		
+
 		search_enemy = true,
 		search_timer = 2,
 		search_radius = 12,
 		search_type = "player",
 	},
-	
+
 	modes = creatures.make_mob_modes({
-		fly_speed = 2, 
+		fly_speed = 2,
 		fly_run_speed = 2.6,
-		attack = true, 
+		attack = true,
 		fly_max_height = 25,
 		fly_target_offset = 2.1,
 	}),
@@ -87,7 +98,7 @@ local def = {
 
 	spawning = {
 		ambience = {
-			
+
 			-- [1] Surface ABM
 			creatures.make_spawn_ambience({
 				preset = "surface_abm",
@@ -97,7 +108,7 @@ local def = {
 					time = {min = 18500, max = 4000},
 				},
 			}),
-			
+
 			-- [2] Surface Generated
 			creatures.make_spawn_ambience({
 				preset = "surface_gen",
@@ -107,7 +118,7 @@ local def = {
 					time = {min = 18500, max = 4000},
 				},
 			}),
-			
+
 			-- [3] Cave ABM
 			creatures.make_spawn_ambience({
 				preset = "cave_abm",
@@ -118,7 +129,7 @@ local def = {
 					light = {min = 0, max = 8},
 				},
 			}),
-			
+
 			-- [4] Cave Generated
 			creatures.make_spawn_ambience({
 				preset = "cave_gen",
@@ -129,9 +140,9 @@ local def = {
 					light = {min = 0, max = 8},
 				},
 			}),
-			
+
 		},
-		
+
 		spawn_egg = { texture = "ghost_spawner_egg.png", },
 
 		spawner = {

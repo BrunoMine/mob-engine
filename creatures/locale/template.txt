@@ -1,0 +1,6 @@
+# textdomain:creatures
+
+Flesh=
+Cooked Meat=
+Rotten Flesh=
+Shears=

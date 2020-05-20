@@ -21,15 +21,25 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("creatures")
 
 core.register_craftitem("creatures:flesh", {
-	description = "Flesh",
+	description = S("Flesh"),
 	inventory_image = "creatures_flesh.png",
 	on_use = core.item_eat(2),
 })
 
 core.register_craftitem("creatures:meat", {
-	description = "Cooked Meat",
+	description = S("Cooked Meat"),
 	inventory_image = "creatures_meat.png",
 	on_use = core.item_eat(4),
 })
@@ -41,13 +51,13 @@ core.register_craft({
 })
 
 core.register_craftitem("creatures:rotten_flesh", {
-	description = "Rotten Flesh",
+	description = S("Rotten Flesh"),
 	inventory_image = "creatures_rotten_flesh.png",
 	on_use = core.item_eat(1),
 })
 
 core.register_tool("creatures:shears", {
-	description = "Shears",
+	description = S("Shears"),
 	inventory_image = "creatures_shears.png",
 })
 
