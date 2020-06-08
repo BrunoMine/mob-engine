@@ -37,11 +37,11 @@ creatures.register_on_register_mob(function(mob_name, def)
 		self.timers.pos = 0
 		
 		self.last_pos = self.object:get_pos()
-		self.last_node = get_node(self.last_pos)
+		self.last_node = get_node(self.last_pos) or {name="ignore"}
 		self.last_light = get_light(self.last_pos)
 		
 		self.current_pos = self.object:get_pos()
-		self.current_node = get_node(self.current_pos)
+		self.current_node = get_node(self.current_pos) or {name="ignore"}
 		
 	end)
 	
