@@ -54,6 +54,9 @@ creatures.register_on_register_mob(function(mob_name, def)
 		if self.timers.pos >= 0.5 then
 			self.timers.pos = 0
 			
+			-- Check curent node
+			if self.current_node == nil then self.current_node = {name="ignore"} end
+			
 			-- localize some things
 			local current_pos = self.object:get_pos()
 			
