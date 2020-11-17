@@ -21,12 +21,22 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("chicken")
 
 local function timer(step, entity)
 	if not entity or not entity.ref then
 		return
 	end
-	
+
 	local vel = entity.ref:getvelocity()
 	if vel ~= nil and vel.x == 0 and vel.y == 0 and vel.z == 0 then
 		if math.random(1, 100) <= 5 then
@@ -58,7 +68,7 @@ function throw_egg(player, strength)
 end
 
 core.register_craftitem("chicken:egg", {
-	description = "Chicken Egg",
+	description = S("Chicken Egg"),
 	inventory_image = "chicken_egg.png",
 	on_use = function(itemstack, user, pointed_thing)
 		if throw_egg(user, 22) then
@@ -69,7 +79,7 @@ core.register_craftitem("chicken:egg", {
 })
 
 core.register_craftitem("chicken:fried_egg", {
-	description = "Fried Egg",
+	description = S("Fried Egg"),
 	inventory_image = "chicken_fried_egg.png",
 	on_use = core.item_eat(2)
 })

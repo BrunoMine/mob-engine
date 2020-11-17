@@ -1,0 +1,13 @@
+# textdomain:chicken
+
+Chicken=
+Raw Chicken Flesh=
+Chicken Meat=
+@1 Chicken Feather=
+White=
+Black=
+Brown=
+Chicken Egg=
+Fried Egg=
+Seed Feeder=
+Nest=

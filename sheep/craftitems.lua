@@ -21,17 +21,27 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("sheep")
 
 -- Flesh
 core.register_craftitem("sheep:sheep_flesh", {
-	description = "Raw Sheep Flesh",
+	description = S("Raw Sheep Flesh"),
 	inventory_image = "sheep_flesh.png",
 	on_use = core.item_eat(1)
 })
 
 -- Meat
 core.register_craftitem("sheep:sheep_meat", {
-	description = "Sheep Meat",
+	description = S("Sheep Meat"),
 	inventory_image = "sheep_meat.png",
 	on_use = core.item_eat(3)
 })

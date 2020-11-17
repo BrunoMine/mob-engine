@@ -20,33 +20,43 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("cow")
 
 -- Cowboy Bell
 minetest.register_node("cow:cowboy_bell", {
-	description = "Cowboy Bell",
+	description = S("Cowboy Bell"),
 	inventory_image = "cow_cowboy_bell.png",
 	drawtype = "nodebox",
 	paramtype = "light",
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.25, -0.5, -0.25, 0.25, -0.375, 0.25}, 
-			{-0.1875, -0.375, -0.1875, 0.1875, -0.125, 0.1875}, 
-			{-0.125, -0.125, -0.125, 0.125, -0.0625, 0.125}, 
-			{-0.0625, -0.0625, -0.0625, 0.0625, 0, 0.0625}, 
+			{-0.25, -0.5, -0.25, 0.25, -0.375, 0.25},
+			{-0.1875, -0.375, -0.1875, 0.1875, -0.125, 0.1875},
+			{-0.125, -0.125, -0.125, 0.125, -0.0625, 0.125},
+			{-0.0625, -0.0625, -0.0625, 0.0625, 0, 0.0625},
 		}
 	},
 	tiles = {
 		"cow_cowboy_bell_top.png", -- Top
 		"cow_cowboy_bell_bottom.png", -- Bottom
-		"cow_cowboy_bell_side1.png", -- Right 
+		"cow_cowboy_bell_side1.png", -- Right
 		"cow_cowboy_bell_side1.png", -- Left
 		"cow_cowboy_bell_side2.png^[transformFX", -- Back
 		"cow_cowboy_bell_side2.png" -- Front
 	},
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25}, 
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25},
 	},
 	collision_box = {
 		type = "fixed",

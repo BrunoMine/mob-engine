@@ -1,0 +1,17 @@
+# textdomain:cow
+
+Cowboy Bell=
+Cow=
+Milk Bucket=
+Raw Beef Meat=
+Roast Beef=
+@1 Cow Leather=
+White and Black=
+Black=
+White and Brown=
+Brown=
+Brown and Black=
+White=
+Grey=
+Hay Feeder=
+Drinking Fountain=

@@ -1,0 +1,8 @@
+# textdomain:sheep
+
+Sheep=
+Raw Sheep Flesh=
+Sheep Meat=
+Hay Feeder=
+Sheep Drinking Fountain=
+Shepherd's Wooden Stick=

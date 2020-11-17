@@ -20,23 +20,33 @@ be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 ]]
 
+--[[
+	2020-05-20
+
+	As per License's rule number 2:
+	- Modified by h4ml3t to add localization (translation) file support.
+--]]
+
+-- Used for localization
+
+local S = minetest.get_translator("cow")
 
 creatures.register_mob("cow:cow", {
-	
+
 	-- MOB description
-	description = "Cow",
-	
+	description = S("Cow"),
+
 	-- MOB preset
 	mob_preset = "default",
-	
+
 	stats = {
 		hp = 18,
 	},
-	
+
 	hunger = {
 		water = {
 			nodes = {
-				cow.cow_drinking_fountain, 
+				cow.cow_drinking_fountain,
 				"group:water",
 			}
 		},
@@ -44,38 +54,38 @@ creatures.register_mob("cow:cow", {
 			feeders = {cow.cow_hay_feeder},
 		},
 	},
-	
+
 	modes = creatures.make_mob_modes({
-		walk_speed = 0.8, 
-		run_speed = 1.2, 
-		
+		walk_speed = 0.8,
+		run_speed = 1.2,
+
 		-- Follow
-		follow_items = {["farming:wheat"]=true}, 
-		
+		follow_items = {["farming:wheat"]=true},
+
 		-- Eat
 		eat_full_time = 4,
 		eat_exact_time = 1.2,
-		eat_sound = {"creatures_eat_grass", 1.0, 10}, 
+		eat_sound = {"creatures_eat_grass", 1.0, 10},
 		eat_nodes = {
-			["default:grass_1"] = {remove=true}, 
-			["default:grass_2"] = {remove=true}, 
-			["default:grass_3"] = {remove=true}, 
-			["default:grass_4"] = {remove=true}, 
-			["default:grass_5"] = {remove=true}, 
-			["default:dirt_with_grass"] = {replace="default:dirt"}, 
+			["default:grass_1"] = {remove=true},
+			["default:grass_2"] = {remove=true},
+			["default:grass_3"] = {remove=true},
+			["default:grass_4"] = {remove=true},
+			["default:grass_5"] = {remove=true},
+			["default:dirt_with_grass"] = {replace="default:dirt"},
 		},
 	}),
-	
+
 	mob_node = { name = "cow:cowboy_bell" },
-	
+
 	model = {
 		mesh = "cow.b3d",
 		textures = {"cow_white_and_black.png"},
-		c_box = {0.9, 1.2}, 
+		c_box = {0.9, 1.2},
 		rotation = -90.0,
 		scale = {x = 3.7, y = 3.7},
 		vision_height = 0.9,
-		weight = 100, 
+		weight = 100,
 		animations = {
 			idle = {	frames = {  1,  30, 18}},
 			walk = {	frames = { 31,  60, 20}},
@@ -84,7 +94,7 @@ creatures.register_mob("cow:cow", {
 			death = {	frames = {121, 135, 15, false}, duration = 2.52},
 		},
 	},
-	
+
 	randomize = {
 		values = {
 			{textures = {"cow_white_and_black.png"}, tags = { leather_color = "white_and_black" }},
@@ -96,7 +106,7 @@ creatures.register_mob("cow:cow", {
 			{textures = {"cow_brown.png"}, tags = { leather_color = "brown" }},
 		},
 	},
-	
+
 	sounds = {
 		on_damage = {"cow_damage"},
 		on_death = {"cow_damage"},
@@ -105,17 +115,17 @@ creatures.register_mob("cow:cow", {
 			idle = {"cow", 0.6},
 		},
 	},
-	
+
 	get_staticdata = function(self)
 		return {
 			["cow:last_milk_day"] = self["cow:last_milk_day"],
 		}
 	end,
-	
+
 	spawning = {
-		
+
 		ambience = {
-			
+
 			-- [1] 'Default Env' Spawn env node with dirt
 			creatures.make_spawn_ambience({
 				preset = "default_env",
@@ -133,16 +143,16 @@ creatures.register_mob("cow:cow", {
 					spawn_env_seed = 4687381594,
 				},
 			}),
-			
+
 		},
-		
+
 		spawn_egg = { texture = "cow_spawner_egg.png", },
-		
+
 		spawner = {
 			dummy_scale = {x=1.75, y=1.75},
 		},
 	},
-	
+
 	child = {
 		name = "cow:cow_child",
 		days_to_grow = 7,
@@ -151,50 +161,50 @@ creatures.register_mob("cow:cow", {
 			scale = {x = 2.35, y = 2.35}
 		},
 	},
-	
+
 	mating = {
-		child_mob = "cow:cow_child", 
-		interval = 5, 
+		child_mob = "cow:cow_child",
+		interval = 5,
 		birth_multiplier = 0.2,
-		spawn_type = "mob_node", 
+		spawn_type = "mob_node",
 	},
-	
+
 	drops = function(self)
-		
+
 		if self.is_child then return end
-		
+
 		local items = {}
-		
+
 		-- Meat
 		if self.death_reason == "burn" then
 			table.insert(items, {"cow:roast_beef"})
 		else
 			table.insert(items, {"cow:raw_beef"})
 		end
-		
+
 		table.insert(items, {"cow:leather_" .. self.leather_color})
-		
+
 		creatures.drop_items(self.object:get_pos(), items)
 	end,
-	
+
 	on_rightclick = function(self, clicker)
 		if self.is_died == true or self.is_child == true then return end
-		
+
 		local itemstack = clicker:get_wielded_item()
-		
+
 		if itemstack:get_name() == "bucket:bucket_empty" then
-			
+
 			if self["cow:last_milk_day"] == nil then
 				self["cow:last_milk_day"] = -1
 			end
-			
+
 			local server_time = minetest.get_day_count() + minetest.get_timeofday()
-			
+
 			-- Check last time
 			if self["cow:last_milk_day"]+1 > server_time then
 				return
 			end
-			
+
 			local inv = clicker:get_inventory()
 			if inv:room_for_item("main", "cow:bucket_milk 1") == true then
 				inv:remove_item("main", "bucket:bucket_empty 1")
@@ -203,7 +213,7 @@ creatures.register_mob("cow:cow", {
 				self["cow:last_milk_day"] = server_time
 				core.sound_play("cow_bucket_milk", {pos = self.object:get_pos(), max_hear_distance = 5, gain = 1})
 			end
-			
+
 		end
 	end,
 })
